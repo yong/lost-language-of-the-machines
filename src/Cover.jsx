@@ -11,7 +11,7 @@ const images = [snowflake1, snowflake2]
 const Cover = () => {
   return (
     <div class="app" style={{ height: '100vh', width: '100vw',
-        background: `url('./cover.png') no-repeat center center / cover`,
+        background: `url('./cover.jpg') no-repeat center center / cover`,
         display: 'flex', // Added for centering content vertically
         flexDirection: 'column',
         alignItems: 'center',
