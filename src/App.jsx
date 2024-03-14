@@ -19,7 +19,7 @@ const TextBox = () => {
 
 function App() {
   return (
-    <div>
+    <div className={'w-full h-full'}>
       <Cover />
       <TextBox />
     </div>

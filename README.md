@@ -1,8 +1,5 @@
-# React + Vite
+# Lost Language of the Machines
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In a world half a millennium in the future, where computer science as we know it has become the stuff of legends, two unlikely students embark on a journey through the annals of ‘ancient’ programming. Meet Flamey, a robot with a flair for debate, styled in the charming fashion of yesteryear’s technology. His settings? Permanently toggled to ‘teenager mode.’ Alongside him is Starlaxverse, a human girl whose heart melts at the slightest hint of cuteness. Guiding these two through the forgotten lore of loops and logic is Prof. Evergreen, a scholar as steadfast as his name suggests, yet facing the modern-day plight of filling classroom seats. Together, they’ll decode the mysteries of a bygone digital era and perhaps discover more about themselves in the process.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Copyright @2024 Xue Yong Zhi
