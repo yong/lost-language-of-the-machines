@@ -1,0 +1,14 @@
+body {
+  margin: 0;
+  font-family: sofia-pro, sans-serif;
+}
+
+h1 {
+  font-family: input-mono, monospace;
+}
+
+p {
+  margin: 0 0 30px 0;
+  font-size: 18px;
+}
+
