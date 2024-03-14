@@ -18,7 +18,7 @@ const Cover = () => {
         position: 'relative'
      }}>
       <Snowfall color="white" snowflakeCount={200} images={images} />
-      <h1 style={{
+      <h1 className="backdrop-blur-sm" style={{
         marginTop: "20vmin",
         textAlign: "center",
         color: 'rgb(222, 228, 253)',
