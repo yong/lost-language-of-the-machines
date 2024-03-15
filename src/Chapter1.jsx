@@ -2,7 +2,7 @@ const Chapter1 = () => {
     return (
         <div>
             <h1 className="text-center">Chapter 1 "One and Zero"</h1>
-<p>Flamey dashed into the History Hall, his metal feet rattling on the carbon fiber floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of Archaeology: Programmatic and Computational Studies of the Past class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
+<p className="mb-3 first-line:uppercase first-line:tracking-widest first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon fiber floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of Archaeology: Programmatic and Computational Studies of the Past class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
 
 <p>“Oh, Flamey, I’m so relieved you’re here!” Starlaxverse exclaimed, dragging him along. “Professor Evergreen is known to be a person with ATTITUDE.”</p>
 
@@ -12,14 +12,19 @@ const Chapter1 = () => {
 
 <p>“Well,” he muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic –Binary, how about I start with a poem?”</p>
 
-<img/>
+<p class="mb-3 text-center">
+Oh, Binary, the language of simplicity, <br/>
+With only 1 and 0, you create infinite possibilities. <br/>
+From two digits, a power grows <br/>
+Of logic, number, art, and code.<br/>
+</p>
 
-<p>Flamey and Starlaxverse looked at each other, not sure what to say. With the eager look of their professor waiting for feedback on his “new” style of teaching, Flamey slowly raised his hand and opened up: “Err… I want to know why Binary was invented? Why didn't ancient computers use NORMAL math, like 1,2,3,4,5,6,7,8,9,10…?”</p>
+<p>Flamey and Starlaxverse looked at each other, not sure what to say. With the eager look of their professor waiting for feedback on his “new” style of teaching, Flamey slowly raised his hand and opened up: “Err… I want to know why Binary was invented? Why didn't ancient computers use NORMAL math, like 1,2,3,4,5…?”</p>
 
 <p>“Convenience, young droid.” Prof. Evergreen elaborated, “Just like the fact that humans having ten fingers contributed to the popularity of the 10 based number system. Ancient computers used electric signals to communicate. So 1 represents On, 0 represents Off.” Professor gestured with his hand and a hologram of a cat flipping switch showed up. “By flipping the switch non stop, the cat generated the sequence of Ones and Zeros, which can be used to represent anything, including numbers”.</p>
 
 
-<img/>
+<img src="/chapter1/cat.png"/>
 
 <p>“Wow.” Starlaxverse was instantly convinced. Cat pictures are ageless for little girls like her.</p>
 <p>“So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air.</p>
