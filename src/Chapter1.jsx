@@ -12,7 +12,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Well,” he muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic –Binary, how about I start with a poem?”</p>
 
-<p class="mb-3 text-center">
+<p className="mb-3 text-center">
 Oh, Binary, the language of simplicity, <br/>
 With only 1 and 0, you create infinite possibilities. <br/>
 From two digits, a power grows <br/>
