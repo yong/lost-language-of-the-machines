@@ -1,3 +1,4 @@
+//Cover.jsx
 import React from 'react';
 import Snowfall from './react-snowfall/index.js';
 import { ParallaxBanner } from 'react-scroll-parallax';
