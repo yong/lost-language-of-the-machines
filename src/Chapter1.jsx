@@ -12,11 +12,11 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Well,” he muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic –Binary, how about I start with a poem?”</p>
 
-<p className="mb-3 text-center">
-Oh, Binary, the language of simplicity, <br/>
-With only 1 and 0, you create infinite possibilities. <br/>
-From two digits, a power grows <br/>
-Of logic, number, art, and code.<br/>
+<p className="mb-3 text-center bg-gradient-to-r from-blue-200 to-green-200 shadow-lg p-4 rounded-lg">
+  Oh, Binary, the language of simplicity, <br/>
+  With only 1 and 0, you create infinite possibilities. <br/>
+  From two digits, a power grows <br/>
+  Of logic, number, art, and code.<br/>
 </p>
 
 <p className="mb-3">Flamey and Starlaxverse looked at each other, not sure what to say. With the eager look of their professor waiting for feedback on his “new” style of teaching, Flamey slowly raised his hand and opened up: “Err… I want to know why Binary was invented? Why didn't ancient computers use NORMAL math, like 1,2,3,4,5…?”</p>
