@@ -2,6 +2,7 @@
 import Poem from './Poem';
 import Rule1 from './Rule1';
 import Rule2 from './Rule2';
+import NextButton from '../NextButton';
 
 const Chapter1 = () => {
     return (
@@ -55,7 +56,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Nope”, Said Starlaxverse, “There is no such thing as too many cats.”</p>
 
-<p><i>To be continued...</i></p>
+<NextButton url="/chapter2.html" />
 
 </article>
     )
