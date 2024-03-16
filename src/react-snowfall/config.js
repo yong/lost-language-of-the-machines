@@ -9,4 +9,3 @@ export const snowfallBaseStyle = {
 };
 // Target of 60 frames per second
 export const targetFrameTime = 1000 / 60;
-//# sourceMappingURL=config.js.map

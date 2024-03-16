@@ -149,4 +149,3 @@ class Snowflake {
 }
 Snowflake.offscreenCanvases = new WeakMap();
 export default Snowflake;
-//# sourceMappingURL=Snowflake.js.map

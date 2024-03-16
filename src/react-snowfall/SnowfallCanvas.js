@@ -95,4 +95,3 @@ export class SnowfallCanvas {
 }
 _SnowfallCanvas_ctx = new WeakMap(), _SnowfallCanvas_canvas = new WeakMap();
 export default SnowfallCanvas;
-//# sourceMappingURL=SnowfallCanvas.js.map

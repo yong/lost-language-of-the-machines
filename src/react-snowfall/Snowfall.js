@@ -37,4 +37,3 @@ export const Snowfall = ({ color = defaultConfig.color, changeFrequency = defaul
     return (React.createElement("canvas", { ref: canvasRef, height: canvasSize.height, width: canvasSize.width, style: mergedStyle, "data-testid": "SnowfallCanvas" }));
 };
 export default Snowfall;
-//# sourceMappingURL=Snowfall.js.map

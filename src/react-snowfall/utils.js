@@ -44,4 +44,3 @@ export function getSize(element) {
         width: element.offsetWidth,
     };
 }
-//# sourceMappingURL=utils.js.map
