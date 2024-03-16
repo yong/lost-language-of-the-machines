@@ -1,5 +1,8 @@
 //Chapter2.jsx
-import NextButton from '../NextButton';
+import NextButton from '../NextButton'
+import Code from './Code'
+import Hex from './Hex'
+import Answer from './Answer'
 
 const Chapter2 = () => {
     return (
@@ -34,20 +37,16 @@ Flamey and Starlaxverse exchanged nervous glances. This wasn't exactly their pla
 </p>
 
 <p className="mb-3">
-"According to Mrs. Katseen's notes," Professor Evergreen continued, "we're to discuss ‘Aegis: Saga of Conflict, Idealism, and Identity’ a masterpiece penned by Edward Grant during the Third Human Robot War..." He paused. "You're familiar with it, I presume?"
-</p>
-
-<p className="mb-3">
-"No," Flamey confessed. "I thought binary was just for numbers."
-
-</p>
-
-<p className="mb-3">
-"And I've done five book reports on it since kindergarten," Flamey added proudly.  
+"According to Mrs. Katseen's notes," Professor Evergreen continued, "we're to discuss ‘Aegis: Saga of Conflict, Idealism, and Identity’ a masterpiece penned by Edward Grant during the Third Human Robot War..." 
+He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
 "Yes," Starlaxverse replied. "Often called ASCII, this text laid the foundation for our harmonious coexistence."
+</p>
+
+<p className="mb-3">
+"And I've done five book reports on it since kindergarten," Flamey added proudly.  
 </p>
 
 <p className="mb-3">
@@ -63,9 +62,7 @@ Flamey and Starlaxverse exchanged nervous glances. This wasn't exactly their pla
 "Precisely," Professor Evergreen said. "Since languages have finite letters and symbols, we can assign numbers to them. ASCII assigns 0-127 to represent English letters, both upper and lower case, along with special characters." Then he casted a chart in the air that showed the mapping.
 </p>
 
-<p className="mb-3">
-  TODO
-</p>
+<Hex/>
 
 <p className="mb-3">
 "Literature analysis is not  my area of expertise," he admitted, "and I would not want to give you a suboptimal experience. How about you two decipher a message using this ASCII together, then conclude our session?"
@@ -82,17 +79,13 @@ Flamey and Starlaxverse exchanged nervous glances. This wasn't exactly their pla
 
 <p className="mb-3">He then presented the code:</p>
 
-<p className="mb-3">
-  TODO
-</p>
+<Code/>
 
 <p className="mb-3">
 “So 54 is ‘T’, 68 is ‘h’, 65 is ‘e’....” The two friends started to translate. And the message slowly revealed itself: 
 </p>
 
-<h2>
-There are 10 types of people in the world: those who understand binary, and those who don't.
-</h2>
+<Answer/>
 
 <p className="mb-3">
 “Wait a sec…”,  Flamey was puzzled, “The math does not seem right, where are the other 8 types?”
@@ -101,7 +94,6 @@ There are 10 types of people in the world: those who understand binary, and thos
 <p className="mb-3">
 “Oh, Flamey….” Staverlax google, “now you are the one who doesn't understand binary”.
 </p>
-
 
 <p className="mb-3">
 A beat of silence followed. Then, Flamey's metallic form vibrated with laughter. "This binary joke got me."
