@@ -8,7 +8,7 @@ const Chapter1 = () => {
     return (
         <article className="text-wrap p-6 md:p-12 lg:p-24">
             <h1 className="text-center text-2xl font-bold mb-4">Chapter 1 "One and Zero"</h1>
-<p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon-titanium floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of Archaeology: Programmatic and Computational Studies of the Past class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
+<p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon-titanium floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of <b>'Archaeology: Programmatic and Computational Studies of the Past'</b> class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
 
 <p className="mb-3">“Oh, Flamey, I’m so relieved you’re here!” Starlaxverse exclaimed, dragging him along. “Professor Evergreen is known to be a person with ATTITUDE.”</p>
 

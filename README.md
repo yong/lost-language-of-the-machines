@@ -9,17 +9,14 @@ In a world half a millennium in the future, where computer science as we know it
 
 ## Table of Contents:
 1. One and Zero (Released)
-2. ASCII (Coming soon)
-3. Color and Image (In progress)
+2. ASCII (In progress)
+3. Color and Image (Planned)
 4. Logic Gate (Planned)
 5. Machine Code (Planned)
 6. Assembly (Planned)
-7. C (Planned)
-8. Java (Planned)
-9. Ruby (Planned)
-10. ...
+7. ...
 
-## Developer
+## Developer Instructions
 To run it locally:
 ```
 npm install

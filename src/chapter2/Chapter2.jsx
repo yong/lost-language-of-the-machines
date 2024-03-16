@@ -37,12 +37,12 @@ Flamey and Starlaxverse exchanged nervous glances. This wasn't exactly their pla
 </p>
 
 <p className="mb-3">
-"According to Mrs. Katseen's notes," Professor Evergreen continued, "we're to discuss ‘Aegis: Saga of Conflict, Idealism, and Identity’ a masterpiece penned by Edward Grant during the Third Human Robot War..." 
+"According to Mrs. Katseen's notes," Professor Evergreen continued, "we're to discuss <b>'Aegis: Saga of Conflict, Idealism, and Identity' </b> a masterpiece penned by Edward Grant during the Third Human Robot War..." 
 He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-"Yes," Starlaxverse replied. "Often called ASCII, this text laid the foundation for our harmonious coexistence."
+"Yes," Starlaxverse replied. "Often called <b>ASCII</b>, this text laid the foundation for our harmonious coexistence."
 </p>
 
 <p className="mb-3">
