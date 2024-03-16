@@ -1,6 +1,7 @@
 //Chapter1.jsx
 import Poem from './Poem';
 import Rule1 from './Rule1';
+import Rule2 from './Rule2';
 
 const Chapter1 = () => {
     return (
@@ -26,7 +27,7 @@ const Chapter1 = () => {
 <img src="/chapter1/cat.png"/>
 
 <p className="mb-3">“Wow.” Starlaxverse was instantly convinced. Cat pictures are ageless for little girls like her.</p>
-<p className="mb-3">“So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air.</p>
+<p className="mb-3">“So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air:</p>
 
 <Rule1/>
 
@@ -39,7 +40,8 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Once we run out of single symbols – whatever the number is - we are going to combine them to build more complicated numbers. “ Prof. Evergreen continued, “Remember Place Value that you learned at Elementary school? It is the value of each digit in a number based on its position. Here is the second rule of a number system,” Prof. Evergreen casted another slide in the air:</p>
 
-<img/>
+
+<Rule2/>
 
 <p className="mb-3">“Wow!” said Starlaxverse, not sure she was complimenting the rule or the cats on the slides wearing place value shirts.</p>
 
@@ -53,7 +55,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Nope”, Said Starlaxverse, “There is no such thing as too many cats.”</p>
 
-
+<p><i>To be continued...</i></p>
 
 </article>
     )
