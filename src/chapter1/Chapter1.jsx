@@ -3,6 +3,7 @@ import Poem from './Poem';
 import Rule1 from './Rule1';
 import Rule2 from './Rule2';
 import NextButton from '../NextButton';
+import LightBulb from './LightBulb';
 
 const Chapter1 = () => {
     return (
@@ -24,8 +25,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Convenience, young droid.” Prof. Evergreen elaborated, “Just like the fact that humans having ten fingers contributed to the popularity of the 10 based number system. Ancient computers used electric signals to communicate. So 1 represents On, 0 represents Off.” Professor gestured with his hand and a hologram of a cat flipping switch showed up. “By flipping the switch non stop, the cat generated the sequence of Ones and Zeros, which can be used to represent anything, including numbers”.</p>
 
-
-<img src="/chapter1/cat.png"/>
+<LightBulb/>
 
 <p className="mb-3">“Wow.” Starlaxverse was instantly convinced. Cat pictures are ageless for little girls like her.</p>
 <p className="mb-3">“So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air:</p>

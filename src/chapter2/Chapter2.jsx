@@ -62,7 +62,8 @@ He paused. "You're familiar with it, I presume?"
 "Precisely," Professor Evergreen said. "Since languages have finite letters and symbols, we can assign numbers to them. ASCII assigns 0-127 to represent English letters, both upper and lower case, along with special characters." Then he casted a chart in the air that showed the mapping.
 </p>
 
-<Hex/>
+<img src="/chapter2/asciitable.png"/>
+
 
 <p className="mb-3">
 "Literature analysis is not  my area of expertise," he admitted, "and I would not want to give you a suboptimal experience. How about you two decipher a message using this ASCII together, then conclude our session?"
@@ -74,8 +75,9 @@ He paused. "You're familiar with it, I presume?"
 
 <p className="mb-3">
 "Here you go," Professor Evergreen projected a series of digits and letters. "Binary numbers can be lengthy, so we'll use hexadecimal, or hex, which is base 16. It uses 0-9 for values zero to nine, and A-F for ten to fifteen."
-  
 </p>
+
+<Hex/>
 
 <p className="mb-3">He then presented the code:</p>
 
