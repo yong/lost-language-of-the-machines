@@ -20,7 +20,7 @@ In a world half a millennium in the future, where computer science as we know it
 To run it locally:
 ```
 npm install
-npm run dev
+npm run dev -- --host
 ```
 
 Copyright @2024 Xue Yong Zhi
