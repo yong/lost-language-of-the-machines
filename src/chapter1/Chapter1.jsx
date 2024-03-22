@@ -9,11 +9,11 @@ const Chapter1 = () => {
     return (
         <article className="text-wrap p-6 md:p-12 lg:p-24">
             <h1 className="text-center text-2xl font-bold mb-4">Chapter 1 "One and Zero"</h1>
-<p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon-titanium floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of <b>'Archaeology: Programmatic and Computational Studies of the Past'</b> class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
+<p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon-titanium floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of <b>'Archaeology Principles: Controlled Silicon of the Past'</b> class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
 
 <p className="mb-3">“Oh, Flamey, I’m so relieved you’re here!” Starlaxverse exclaimed, dragging him along. “Professor Evergreen is known to be a person with ATTITUDE.”</p>
 
-<p className="mb-3">Flamey groaned. He wouldn’t have signed up for this class if he had a choice. It was known to be dull and perplexing. Why did he have to learn about the old languages from the Controlled Silicon Age that ancient computers used to speak? The textbook listed a lot of strange names like Binary, Assembly, C, Python, Javascript blah blah. They went extinct 500 years ago!</p>
+<p className="mb-3">Flamey groaned. He wouldn’t have signed up for this class if he had not missed the registration deadline for another history course. APCSP was known to be dull and perplexing. Why did he have to learn about the old languages from the Controlled Silicon Era that ancient computers used to speak? The textbook listed a lot of strange names like Binary, Assembly, C, Python, Javascript blah blah. They went extinct 500 years ago!</p>
 
 <p className="mb-3">They entered the room through a glass door, where Prof. Evergreen was sitting behind his desk with lots of empty chairs. As expected, they were the only two students today.</p>
 
