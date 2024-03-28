@@ -7,7 +7,9 @@ In a world half a millennium in the future, where computer science as we know it
 
 ## Meet the characters
 Flamey: a robot with a flair for debate, styled in the charming fashion of yesteryear’s technology. His settings? Permanently toggled to ‘teenager mode.’ 
-Starlaxverse: a human girl whose heart melts at the slightest hint of cuteness. Guiding these two through the forgotten lore of loops and logic is.
+
+![starlaxverse](public/starlaxverse_avartar.png)Starlaxverse: a human girl whose heart melts at the slightest hint of cuteness. Guiding these two through the forgotten lore of loops and logic is.
+
 Prof. Evergreen: a scholar as steadfast as his name suggests, yet facing the modern-day plight of filling classroom seats.
 
 [Read the book online here](https://www.LostLanguageoftheMachines.com/).
