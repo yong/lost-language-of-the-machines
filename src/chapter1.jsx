@@ -1,16 +1,15 @@
 //main.jsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Cover from './Cover';
-import Chapter1 from './chapter1/Chapter1';
-import { ParallaxProvider } from 'react-scroll-parallax';
-//import Demo from './Demo';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import App from './chapter1/App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ParallaxProvider>
-      <Cover />
-      <Chapter1/>
-    </ParallaxProvider>
+      <Router>
+        <Routes>
+          <Route path='/*' element={<App/>} />
+        </Routes>
+      </Router>
   </React.StrictMode>,
 )

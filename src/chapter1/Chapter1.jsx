@@ -4,6 +4,25 @@ import Rule1 from './Rule1';
 import Rule2 from './Rule2';
 import NextButton from '../NextButton';
 import LightBulb from './LightBulb';
+import { useNavigate } from 'react-router-dom';
+
+const BounceButton = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/chapter1/homework');
+  };
+
+  return (
+    <div className="flex justify-center">
+      <div onClick={handleClick} className="animate-bounce bg-white dark:bg-slate-800 p-2 w-10 h-10 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full flex items-center justify-center">
+        <svg className="w-6 h-6 text-violet-500" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </div>
+  )
+}
 
 const Chapter1 = () => {
     return (
@@ -56,7 +75,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Nope”, Said Starlaxverse, “There is no such thing as too many cats.”</p>
 
-<NextButton url="/chapter2.html" />
+<BounceButton/>
 
 </article>
     )
