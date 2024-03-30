@@ -1,5 +1,5 @@
 {
-  "name": "from-0-1-to-everything",
+  "name": "lost-language-of-the-machines",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "framer-motion": "^11.0.20",
     "react": "^18.2.0",
