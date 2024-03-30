@@ -18,6 +18,7 @@ In a world half a millennium in the future, where computer science as we know it
 1. One and Zero (Released)
 
 _Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as dull as it is rumored? Follow Flamey and Starlaxverse to figure out_
+
 2. ASCII (In progress)
 3. Color and Image (Planned)
 4. Logic Gate (Planned)
