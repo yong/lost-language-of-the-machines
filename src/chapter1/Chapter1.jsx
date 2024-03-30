@@ -2,7 +2,7 @@
 import Poem from './Poem';
 import Rule1 from './Rule1';
 import Rule2 from './Rule2';
-import LightBulb from './LightBulb';
+//import LightBulb from './LightBulb';
 import { TypeAnimation } from 'react-type-animation';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ const BounceButton = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center mt-8">
       <LaterTonight/>
       <div onClick={handleClick} className="animate-bounce bg-white dark:bg-slate-800 p-2 w-10 h-10 ring-1 ring-slate-900/5 dark:ring-slate-200/20 shadow-lg rounded-full">
         <svg className="w-6 h-6 text-violet-500" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +64,9 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Convenience, young droid.” Prof. Evergreen elaborated, “Just like the fact that humans having ten fingers contributed to the popularity of the 10 based number system. Ancient computers used electric signals to communicate. So 1 represents On, 0 represents Off.” Professor gestured with his hand and a hologram of a cat flipping switch showed up. “By flipping the switch non stop, the cat generated the sequence of Ones and Zeros, which can be used to represent anything, including numbers”.</p>
 
-<LightBulb/>
+<div className="max-w-screen-md mx-auto">
+    <img src="/chapter1/cat.png" alt="Cat" />
+</div>
 
 <p className="mb-3">“Wow.” Starlaxverse was instantly convinced. Cat pictures are ageless for little girls like her.</p>
 <p className="mb-3">“So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air:</p>

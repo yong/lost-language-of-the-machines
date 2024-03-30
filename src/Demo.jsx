@@ -1,13 +1,12 @@
 //main.jsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ParallaxProvider } from 'react-scroll-parallax';
-import AnimatedFIFOList from './AnimatedFIFOList';
+import Chat from './chapter1/Chat';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ParallaxProvider>
-      <AnimatedFIFOList/>
-    </ParallaxProvider>
+    
+      <h1>Demo</h1>
+      <Chat/>
   </React.StrictMode>,
 )
