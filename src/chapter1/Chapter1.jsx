@@ -54,7 +54,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">Flamey groaned. He wouldn’t have signed up for this class if he had not missed the registration deadline for another history course. APCSP was known to be dull and perplexing. Why did he have to learn about the old languages from the Controlled Silicon Era that ancient computers used to speak? The textbook listed a lot of strange names like Binary, Assembly, C, Python, Javascript blah blah. They went extinct 500 years ago!</p>
 
-<p className="mb-3">They entered the room through a glass door, where Prof. Evergreen was sitting behind his desk with lots of empty chairs. As expected, they were the only two students today.</p>
+<p className="mb-3">They entered the room through a glass bubble door, where Prof. Evergreen was sitting behind his desk with lots of empty chairs. As expected, they were the only two students today.</p>
 
 <p className="mb-3">“Well,” he muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic –Binary, how about I start with a poem?”</p>
 
@@ -85,7 +85,7 @@ const Chapter1 = () => {
 
 <Rule2/>
 
-<p className="mb-3">“Wow!” said Starlaxverse, not sure she was complimenting the rule or the cats on the slides wearing place value shirts.</p>
+<p className="mb-3">“Wow!” said Starlaxverse, not sure she was complimenting the rule or the cats on the slides holding signs.</p>
 
 <p className="mb-3">“Oh, it starts to make sense now.” As immune to any cuteness as he can be, Flamey found something: “So you can convert a binary number into decimal by adding up those parts.”</p>
 
