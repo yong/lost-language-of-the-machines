@@ -36,4 +36,4 @@ const Homework = () => {
     );
 }
 
-export default transition(Homework);
+export default Homework;

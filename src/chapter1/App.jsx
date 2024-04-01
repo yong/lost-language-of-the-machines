@@ -16,18 +16,18 @@ const Part1 = () => {
   )
 }
 
-const Part1Animated = transition(Part1);
+//const Part1Animated = transition(Part1);
 
 const App = () => {
     const location = useLocation();
     return (
         <>
-            <AnimatePresence mode='wait'>
+            {/*<AnimatePresence mode='wait'>*/}
             <Routes location={location} key={location.pathname}>
-                <Route index element={<Part1Animated />} />
+                <Route index element={<Part1 />} />
                 <Route path="/chapter1/homework" element={<Homework />} />
             </Routes>
-            </AnimatePresence>
+            {/*</AnimatePresence>*/}
         </>
     )
 }
