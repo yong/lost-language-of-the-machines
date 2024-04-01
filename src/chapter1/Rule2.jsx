@@ -26,7 +26,7 @@ const Rule2 = () => {
       <b className="text-blue-500">2583</b> = {DecimalExpression(2,3)} + {DecimalExpression(5,2)} + {DecimalExpression(8,1)} + {DecimalExpression(3, 0)}<br/>
       <b className="text-blue-500">1101</b> = {BinaryExpression(1, 3)} + {BinaryExpression(1, 2)}+ {BinaryExpression(0, 1)} + {BinaryExpression(1, 0)} = 13 in Decimal
       <div className="max-w-screen-md mx-auto">
-      <img src="/chapter1/rule2_cat.jpg" alt="rule2" />
+        <img src="/chapter1/rule2.jpg" alt="rule2" />
       </div>
     </div>
   )

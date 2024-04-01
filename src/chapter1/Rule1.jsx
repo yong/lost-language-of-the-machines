@@ -6,7 +6,7 @@ const Rule1 = () => {
 For example, <span className="text-red-600">10</span> based number system has ten: <b className="text-blue-500">0 1 2 3 4 5 6 7 8 9</b><br/>
 <span className="text-red-600">2</span> based number system has only two: <b className="text-blue-500">1</b> and <b className="text-blue-500">0</b>.<br/>
 <div className="max-w-screen-md mx-auto">
-        <img src="/chapter1/rule1.jpg" alt="rule2" />
+        <img src="/chapter1/rule1.jpg" alt="rule1" />
       </div>
   </div>)
 }
