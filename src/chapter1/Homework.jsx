@@ -31,7 +31,7 @@ const Homework = () => {
     return (
         <div className="flex flex-col justify-center min-h-screen w-full bg-black">
         <ChatRoom initialMessages={initialMessages}/>
-        <NextButton url="/chapter2.html" />
+        <NextButton url="/chapter2" />
         </div>
     );
 }
