@@ -4,11 +4,11 @@ import ChatRoom from "../react-chat/ChatRoom";
 
 
 const initialMessages = [
-    { d: 1, m: "Hi, 70 108 97 109 101 121" },
+    { d: 1, m: "Hi, 46 6C 61 6D 65 79" },
     { d: 0, m: "what??" },
     { d: 1, m: "that is your name in ASCII encoding" },
-    { d: 1, m: "F l a m e y" },
-    { d: 0, m: "😲 Hi,  83 116 97 114 108 97 120 118 101 114 115 101" },
+    { d: 1, m: "F  l  a  m  e  y\n46 6C 61 6D 65 79", s:1},
+    { d: 0, m: "😲 Hi, 53 74 61 72 6C 61 78 76 65 72 73 65" },
     { d: 1, m: "^_^" },
     { d: 0, m: "What is that? Look like a happy face 🤔" },
     { d: 1, m: "Yes, that is plain ASCII emoji before graphic emoji was inverted" },

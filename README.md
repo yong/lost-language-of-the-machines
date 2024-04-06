@@ -17,9 +17,12 @@ In a world half a millennium in the future, where computer science as we know it
 ## Table of Contents
 1. One and Zero (Released)
 
-_Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as dull as it is rumored? Follow Flamey and Starlaxverse to figure out_
+_Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as dull as it is rumored? Follow Flamey and Starlaxverse to figure out..._
 
 2. ASCII (In progress)
+
+_It turns out, in the very old days, 128 numbers was all it took to create every message and game on computers..._
+
 3. Color and Image (Planned)
 4. Logic Gate (Planned)
 5. Machine Code (Planned)
