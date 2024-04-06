@@ -1,5 +1,5 @@
 import transition from "../transition";
-import NextButton from '../NextButton';
+import NextButton from '../common/NextButton';
 import ChatRoom from "../react-chat/ChatRoom";
 
 
@@ -29,7 +29,7 @@ const initialMessages = [
 
 const Homework = () => {
     return (
-        <div className="flex flex-col justify-center min-h-screen w-full bg-yellow-300">
+        <div className="flex flex-col justify-center min-h-screen w-full bg-black">
         <ChatRoom initialMessages={initialMessages}/>
         <NextButton url="/chapter2.html" />
         </div>

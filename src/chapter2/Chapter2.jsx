@@ -1,5 +1,5 @@
 //Chapter2.jsx
-import NextButton from '../NextButton'
+import BounceButton from '../common/BounceButton'
 import Code from './Code'
 import Hex from './Hex'
 import Answer from './Answer'
@@ -101,7 +101,7 @@ He paused. "You're familiar with it, I presume?"
 A beat of silence followed. Then, Flamey's metallic form vibrated with laughter. "This binary joke got me."
 </p>
 
-<NextButton url="/chapter3.html" />
+<BounceButton url='/chapter2/homework'/>
 
 </article>
     )

@@ -2,12 +2,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Chapter2 from './chapter2/Chapter2';
+import Homework from './chapter2/Homework';
 import { ParallaxProvider, ParallaxBanner } from 'react-scroll-parallax';
-//import Demo from './Demo';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import ResetScrollWrapper from './common/ResetScrollWrapper';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ParallaxProvider>
+const Main = () => {
+    return (
+      <ParallaxProvider>
       <ParallaxBanner
         layers={[
           { image: './ascii.jpg' },
@@ -26,5 +28,28 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       />
       <Chapter2/>
     </ParallaxProvider>
+    )
+}
+
+const App = () => {
+  const location = useLocation();
+  return (
+          <Routes location={location} key={location.pathname}>
+              <Route index element={<Main />} />
+              <Route path="/chapter2/homework" element={<Homework />} />
+          </Routes>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ResetScrollWrapper>
+        <Routes>
+              <Route path="/chapter2" element={<Main />} />
+              <Route path="/chapter2/homework" element={<Homework />} />
+        </Routes>
+      </ResetScrollWrapper>
+      </BrowserRouter>
   </React.StrictMode>,
 )
