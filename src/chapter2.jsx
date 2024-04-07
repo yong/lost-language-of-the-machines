@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client'
 import Chapter2 from './chapter2/Chapter2';
 import Homework from './chapter2/Homework';
 import { ParallaxProvider, ParallaxBanner } from 'react-scroll-parallax';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ResetScrollWrapper from './common/ResetScrollWrapper';
 
 const Main = () => {
@@ -36,20 +36,19 @@ const App = () => {
   return (
           <Routes location={location} key={location.pathname}>
               <Route index element={<Main />} />
-              <Route path="/chapter2/homework" element={<Homework />} />
+              <Route path="homework" element={<Homework />} />
           </Routes>
   )
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <ResetScrollWrapper>
         <Routes>
-              <Route path="/chapter2" element={<Main />} />
-              <Route path="/chapter2/homework" element={<Homework />} />
+          <Route path='/*' element={<App/>} />
         </Routes>
       </ResetScrollWrapper>
-      </BrowserRouter>
+      </HashRouter>
   </React.StrictMode>,
 )

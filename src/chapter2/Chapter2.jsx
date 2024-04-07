@@ -94,14 +94,14 @@ He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-“Oh, Flamey….” Staverlax google, “now you are the one who doesn't understand binary”.
+“Oh, Flamey….” Starlaxverse google, “now you are the one who doesn't understand binary”.
 </p>
 
 <p className="mb-3">
 A beat of silence followed. Then, Flamey's metallic form vibrated with laughter. "This binary joke got me."
 </p>
 
-<BounceButton url='/chapter2/homework'/>
+<BounceButton url='homework'/>
 
 </article>
     )

@@ -58,7 +58,7 @@ const Chapter1 = () => {
 
 <p className="mb-3">“Nope”, Said Starlaxverse, “There is no such thing as too many cats.”</p>
 
-<BounceButton url='/chapter1/homework'/>
+<BounceButton url='homework'/>
 
 </article>
     )

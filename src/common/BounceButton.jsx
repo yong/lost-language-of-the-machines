@@ -5,7 +5,7 @@ const BounceButton = ({url}) => {
     const navigate = useNavigate();
   
     const handleClick = () => {
-      navigate(url);
+        navigate(url);
     };
   
     return (
