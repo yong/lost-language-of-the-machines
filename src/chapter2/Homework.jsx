@@ -11,7 +11,7 @@ const initialMessages = [
     { d: 0, m: "😲 Hi, 53 74 61 72 6C 61 78 76 65 72 73 65" },
     { d: 1, m: "^_^" },
     { d: 0, m: "What is that? Look like a happy face 🤔" },
-    { d: 1, m: "Yes, that is plain ASCII emoji before graphic emoji was inverted" },
+    { d: 1, m: "Yes, that is plain ASCII emoji before graphic emoji was invented" },
     { d: 1, m: "I saw them in a history book" },
     { d: 1, m: "There are other way to smile, like  :) , but you have to look sideway for this one" },
     { d: 0, m: "Wow, it is hard to do things in the old days with only 128 characters" },

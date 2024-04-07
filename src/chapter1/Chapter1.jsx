@@ -9,7 +9,7 @@ import BounceButton from '../common/BounceButton';
 
 const Chapter1 = () => {
     return (
-        <article className="text-wrap p-6 md:p-12 lg:p-24">
+        <article className="text-wrap p-6 md:p-12 lg:p-24 lg:ml-36 lg:mr-36">
             <h1 className="text-center text-2xl font-bold mb-4">Chapter 1 "One and Zero"</h1>
 <p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">Flamey dashed into the History Hall, his metal feet rattling on the carbon-titanium floor. He quickly glanced at the displays on his time tracker, wondering if he was late for his first day of <b>'Archaeology Principles: Controlled Silicon of the Past'</b> class. He felt a tug on his arm and turned to see Starlaxverse, his best human friend.</p>
 

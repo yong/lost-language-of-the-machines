@@ -6,7 +6,7 @@ import Answer from './Answer'
 
 const Chapter2 = () => {
     return (
-        <article className="text-wrap p-6 md:p-12 lg:p-24">
+        <article className="text-wrap p-6 md:p-12 lg:p-24 lg:ml-36 lg:mr-36">
             <h1 className="text-center text-2xl font-bold mb-4">Chapter 2 "ASCII"</h1>
 <p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">
 Despite a recent brush with overheating, Flamey spotted his friend Starlaxverse enthusiastically waving from the iconic blue steps of Literature Hall. "Flamey! Creative Writing too?"
@@ -84,7 +84,11 @@ He paused. "You're familiar with it, I presume?"
 <Code/>
 
 <p className="mb-3">
-“So 54 is ‘T’, 68 is ‘h’, 65 is ‘e’....” The two friends started to translate. And the message slowly revealed itself: 
+“So 54 is ‘T’, 68 is ‘h’, 65 is ‘e’....” The two friends started to translate. "And 20 is a whitespace..." 
+</p>
+
+<p className="mb-3">
+And the message slowly revealed itself: 
 </p>
 
 <Answer/>
@@ -94,7 +98,7 @@ He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-“Oh, Flamey….” Starlaxverse google, “now you are the one who doesn't understand binary”.
+“Oh, Flamey….” Starlaxverse giggled, “now you are the one who doesn't understand binary”.
 </p>
 
 <p className="mb-3">
