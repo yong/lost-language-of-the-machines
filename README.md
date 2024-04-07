@@ -12,18 +12,18 @@ In a world half a millennium in the future, where computer science as we know it
 
 ![evergreen](public/evergreen_avatar.png)Prof. Evergreen: a scholar as steadfast as his name suggests, yet facing the modern-day plight of filling classroom seats.
 
-[Read the book online here](https://www.LostLanguageoftheMachines.com/).
+[# Read the book online here](https://www.LostLanguageoftheMachines.com/).
 
 ## Table of Contents
-1. One and Zero (Released)
+1. [One and Zero](https://www.LostLanguageoftheMachines.com/chapter1) (Released)
 
 _Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as dull as it is rumored? Follow Flamey and Starlaxverse to figure out..._
 
-2. ASCII (In progress)
+2. [ASCII](https://www.LostLanguageoftheMachines.com/chapter2) (Released)
 
 _It turns out, in the very old days, 128 numbers was all it took to create every message and game on computers..._
 
-3. Color and Image (Planned)
+3. Color and Image (In progress)
 4. Logic Gate (Planned)
 5. Machine Code (Planned)
 6. Assembly (Planned)

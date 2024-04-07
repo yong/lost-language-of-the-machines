@@ -3,6 +3,7 @@ import BounceButton from '../common/BounceButton'
 import Code from './Code'
 import Hex from './Hex'
 import Answer from './Answer'
+import AsciiTable from './AsciiTable'
 
 const Chapter2 = () => {
     return (
@@ -62,7 +63,7 @@ He paused. "You're familiar with it, I presume?"
 "Precisely," Professor Evergreen said. "Since languages have finite letters and symbols, we can assign numbers to them. ASCII assigns 0-127 to represent English letters, both upper and lower case, along with special characters." Then he casted a chart in the air that showed the mapping.
 </p>
 
-<img src="/chapter2/asciitable.png"/>
+<AsciiTable/>
 
 
 <p className="mb-3">
@@ -98,7 +99,7 @@ And the message slowly revealed itself:
 </p>
 
 <p className="mb-3">
-“Oh, Flamey….” Starlaxverse giggled, “now you are the one who doesn't understand binary”.
+“Oh, Flamey….” Starlaxverse giggled, “You are the one who doesn't understand binary”.
 </p>
 
 <p className="mb-3">
