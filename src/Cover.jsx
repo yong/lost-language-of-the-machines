@@ -33,7 +33,7 @@ const Cover = () => {
   return (
     <ParallaxBanner
       layers={[
-        { image: './cover.jpg' },
+        { image: '/cover.jpg' },
         {
           speed: -20,
           children: (
