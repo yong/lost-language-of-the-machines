@@ -12,7 +12,7 @@ const Main = () => {
       <ParallaxProvider>
       <ParallaxBanner
         layers={[
-          { image: './ascii.jpg' },
+          { image: '/ascii.jpg' },
           {
             speed: -20,
             children: (
