@@ -20,7 +20,7 @@ While it is still early in the morning, with fewer flying vehicles leaving trace
 
 <p className="mb-3">They entered the room through a glass bubble door, where Prof. Evergreen was sitting behind his desk with lots of empty chairs. As expected, they were the only two students today.</p>
 
-<p className="mb-3">“Well,” rof. Evergreen muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic –Binary, how about I start with a poem?”</p>
+<p className="mb-3">“Well,” Prof. Evergreen muttered. “I guess I have to adapt, otherwise this class will not be offered next year. As history has taught us, modern kids have no patience for long lectures. For today’s topic – Binary, how about I start with a poem?”</p>
 
 <Poem/>
 
