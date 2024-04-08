@@ -51,7 +51,7 @@ He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-"ASCII, intriguing," Professor Evergreen murmured. "There's also an ancient text encoding method called ASCII, standing for American Standard Code for Information Interchange. Remember I mentioned binary representing anything? Have you considered how text can be encoded?"  
+"ASCII, intriguing," Professor Evergreen murmured. "There's also an ancient text encoding method called ASCII, standing for <b>American Standard Code for Information Interchange</b>. Remember I mentioned binary representing anything? Have you considered how text can be encoded?"  
 </p>
 
 
@@ -80,7 +80,12 @@ He paused. "You're familiar with it, I presume?"
 
 <Hex/>
 
-<p className="mb-3">He then presented the code:</p>
+<p className="mb-3">
+  "What? When people are talking about binary, they actually mean hex?" Flamey was not convinced about that idea.
+</p>
+
+<p className="mb-3">
+"Yes", Prof Evergrenn nodded. He then presented the code:</p>
 
 <Code/>
 
