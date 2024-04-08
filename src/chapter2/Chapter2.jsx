@@ -10,7 +10,7 @@ const Chapter2 = () => {
         <article className="text-wrap p-6 md:p-12 lg:p-24 lg:ml-36 lg:mr-36">
             <h1 className="text-center text-2xl font-bold mb-4">Chapter 2 "ASCII"</h1>
 <p className="mb-3 first-letter:text-7xl first-letter:font-bold first-letter:me-3 first-letter:float-start">
-Despite a recent brush with overheating, Flamey spotted his friend Starlaxverse enthusiastically waving from the iconic blue steps of Literature Hall. "Flamey! Creative Writing too?"
+Despite a recent brush with overheating, Flamey spotted his friend Starlax enthusiastically waving from the iconic blue steps of Literature Hall. "Flamey! Creative Writing too?"
 </p>
 
 <p className="mb-3">
@@ -18,7 +18,7 @@ Despite a recent brush with overheating, Flamey spotted his friend Starlaxverse 
 </p>
 
 <p className="mb-3">
-"Not at all," Starlaxverse smiled. "But Mrs. Katseen's class is popular. Early arrival secures better seats."  
+"Not at all," Starlax smiled. "But Mrs. Katseen's class is popular. Early arrival secures better seats."  
 </p>
 
 <p className="mb-3">
@@ -34,7 +34,7 @@ Despite a recent brush with overheating, Flamey spotted his friend Starlaxverse 
 </p>
 
 <p className="mb-3">
-Flamey and Starlaxverse exchanged nervous glances. This wasn't exactly their planned adventure.  
+Flamey and Starlax exchanged nervous glances. This wasn't exactly their planned adventure.  
 </p>
 
 <p className="mb-3">
@@ -43,7 +43,7 @@ He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-"Yes," Starlaxverse replied. "Often called <b>ASCII</b>, this text laid the foundation for our harmonious coexistence."
+"Yes," Starlax replied. "Often called <b>ASCII</b>, this text laid the foundation for our harmonious coexistence."
 </p>
 
 <p className="mb-3">
@@ -71,21 +71,20 @@ He paused. "You're familiar with it, I presume?"
 </p>
 
 <p className="mb-3">
-"Sure," Flamey and Starlaxverse agreed eagerly.  
+"Sure," Flamey and Starlax agreed eagerly.  
 </p>
 
 <p className="mb-3">
-"Here you go," Professor Evergreen projected a series of digits and letters. "Binary numbers can be lengthy, so we'll use hexadecimal, or hex, which is base 16. It uses 0-9 for values zero to nine, and A-F for ten to fifteen."
+"Before we do that, I have to teach you another thing," Professor Evergreen projected a slide. "Binary numbers can be lengthy, so we'll use hexadecimal, or hex, which is base 16. It uses 0-9 for values zero to nine, and A-F for ten to fifteen."
 </p>
 
 <Hex/>
 
 <p className="mb-3">
-  "What? When people are talking about binary, they actually mean hex?" Flamey was not convinced about that idea.
-</p>
+“What? When people discuss binary, they’re actually referring to hex?” Flamey’s instinct was to declare this as ‘cheating,’ but he halted mid-thought. Urgency tugged at him; he yearned to unravel the puzzle and slip out of class a little earlier.</p>
 
 <p className="mb-3">
-"Yes", Prof Evergrenn nodded. He then presented the code:</p>
+"Yes, it happens a lot", Prof Evergrenn nodded. He then presented the code:</p>
 
 <Code/>
 
@@ -104,7 +103,7 @@ And the message slowly revealed itself:
 </p>
 
 <p className="mb-3">
-“Oh, Flamey….” Starlaxverse giggled, “You are the one who doesn't understand binary”.
+“Oh, Flamey….” Starlax giggled, “You are the one who doesn't understand binary”.
 </p>
 
 <p className="mb-3">

@@ -8,7 +8,7 @@ const initialMessages = [
     { d: 0, m: "what??" },
     { d: 1, m: "that is your name in ASCII encoding" },
     { d: 1, m: "F  l  a  m  e  y\n46 6C 61 6D 65 79", s:1},
-    { d: 0, m: "😲 Hi, 53 74 61 72 6C 61 78 76 65 72 73 65" },
+    { d: 0, m: "😲 Hi, 53 74 61 72 6C 61 78" },
     { d: 1, m: "^_^" },
     { d: 0, m: "What is that? Look like a happy face 🤔" },
     { d: 1, m: "Yes, that is plain ASCII emoji before graphic emoji was invented" },
