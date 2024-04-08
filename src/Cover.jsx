@@ -5,9 +5,9 @@ import { ParallaxBanner } from 'react-scroll-parallax';
 import {motion} from 'framer-motion';
 
 const snowflake1 = document.createElement('img')
-snowflake1.src = './one.png'
+snowflake1.src = '/one.png'
 const snowflake2 = document.createElement('img')
-snowflake2.src = './zero.png'
+snowflake2.src = '/zero.png'
 
 const images = [snowflake1, snowflake2]
 
