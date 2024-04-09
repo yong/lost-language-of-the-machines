@@ -14,7 +14,7 @@ const withParallax = (WrappedComponent, imageSrc) => {
                 speed: -20,
                 children: (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <h1 className="backdrop-blur-sm text-center font-bold text-white z-50 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
+                        <h1 className="backdrop-blur-sm text-center font-bold text-black z-50 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
                             Lost Language of the Machines
                         </h1>
                     </div>
