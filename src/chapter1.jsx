@@ -4,9 +4,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ResetScrollWrapper from './common/ResetScrollWrapper';
-import Cover from './Cover';
+import Cover from './chapter1/Cover';
 import Chapter1 from './chapter1/Chapter1';
-import Homework from './chapter1/Homework';
+import Chat from './chapter1/Chat';
 import { ParallaxProvider } from 'react-scroll-parallax';
 //import transition from '../transition';
 //import { AnimatePresence } from 'framer-motion';
@@ -30,7 +30,7 @@ const App = () => {
             {/*<AnimatePresence mode='wait'>*/}
             <Routes location={location} key={location.pathname}>
                 <Route index element={<Part1 />} />
-                <Route path="homework" element={<Homework />} />
+                <Route path="chat" element={<Chat />} />
             </Routes>
             {/*</AnimatePresence>*/}
         </>

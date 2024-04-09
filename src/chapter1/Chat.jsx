@@ -27,7 +27,7 @@ const initialMessages = [
     { d: 0, m: "whatever, I will see you in class tomorrow" },
 ];
 
-const Homework = () => {
+const Chat = () => {
     return (
         <div className="flex flex-col justify-center min-h-screen w-full bg-black">
         <ChatRoom initialMessages={initialMessages}/>
@@ -36,4 +36,4 @@ const Homework = () => {
     );
 }
 
-export default Homework;
+export default Chat;

@@ -59,7 +59,7 @@ While it is still early in the morning, with fewer flying vehicles leaving trace
 
 <p className="mb-3">“Nope”, Said Starlax, “There is no such thing as too many cats.”</p>
 
-<BounceButton url='homework'/>
+<BounceButton url='chat'/>
 
 </article>
     )

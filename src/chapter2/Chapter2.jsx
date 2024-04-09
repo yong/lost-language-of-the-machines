@@ -110,7 +110,7 @@ And the message slowly revealed itself:
 A beat of silence followed. Then, Flamey's metallic form vibrated with laughter. "This binary joke got me."
 </p>
 
-<BounceButton url='homework'/>
+<BounceButton url='chat'/>
 
 </article>
     )
