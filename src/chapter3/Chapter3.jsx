@@ -30,7 +30,9 @@ Starlax pulled out her screenbook and started to do some sketching. Meanwhile, F
 
 //////
 
-`“How do you encode a whole picture?” Starlax stopped her work and joined the conversation."`
+`“How do you encode a whole picture?” Starlax stopped her work and joined the conversation.
+"There are lots of ways to do that,” Prof. Evergreen replied. But he paused as lots of other students started to enter the studio. “It seems I have to exit now. I will leave this picture as a clue. I am sure you can figure it out.”`
+
 ];
 
 const Chapter3 = () => {
@@ -56,7 +58,11 @@ const Chapter3 = () => {
 
             {renderParagraphs(storyParts[3], 3)}
 
-            <h1>TODO</h1>
+            <div className="mb-3 font-mono text-center bg-blue-200 border-4 border-dashed border-blue-500 p-4 rounded-lg">
+                <div className="max-w-screen-md mx-auto flex items-center justify-center">
+                    <img src="/chapter3/mario.png" alt="mario" />
+                </div>
+            </div>
 
             <BounceButton url='chat'/>
 
