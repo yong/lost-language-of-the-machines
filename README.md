@@ -24,6 +24,9 @@ _Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as du
 _It turns out, in the very old days, 128 numbers was all it took to create every message and game on computers..._
 
 3. [Color and Image](https://www.LostLanguageoftheMachines.com/chapter3) (In progress)
+
+_I see trees of 00FF00, FF0000 roses too…_
+
 4. Logic Gate (Planned)
 5. Machine Code (Planned)
 6. Assembly (Planned)
