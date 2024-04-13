@@ -7,7 +7,7 @@ import BounceButton from '../common/BounceButton';
 import renderParagraphs from '../common/renderParagraphs';
 
 const storyParts = [
-`While it is still early in the morning, with fewer flying vehicles leaving traces in the sky, the only thing that is distributing the peaceful silence is Flamey's footsteps rattling on the carbon-titanium floor of the History Hall. A quick glance at his time tracker confirmed his worst fear: there were only two minutes left before the start of the ‘<b>Archaeology Principles: Controlled Silicon of the Past</b>’ class. As he focused on getting there on time, he felt a tug on his arm and turned to see Starlax, his best human friend.
+`While it is still early in the morning, with fewer flying vehicles leaving traces in the sky, the only thing that is distributing the peaceful silence is Flamey's footsteps rattling on the carbon-titanium floor of the History Hall. A quick glance at his time tracker confirmed his worst fear: there were only two minutes left before the start of the ‘Archaeology Principles: Controlled Silicon of the Past’ class. As he focused on getting there on time, he felt a tug on his arm and turned to see Starlax, his best human friend.
 
 “Oh, Flamey, I’m so relieved you’re here!” Starlax exclaimed, dragging him along. “Professor Evergreen is known to be a person with ATTITUDE.”
 
@@ -21,7 +21,7 @@ They entered the room through a glass bubble door, where Prof. Evergreen was sit
 
 `Flamey and Starlax looked at each other, not sure what to say. With the eager look of their professor waiting for feedback on his “new” style of teaching, Flamey slowly raised his hand and opened up: “Err… I want to know why Binary was invented? Why didn't ancient computers use NORMAL math, like 1,2,3,4,5…?”
 
-“Convenience, young droid.” Prof. Evergreen elaborated, “Just like the fact that humans having ten fingers contributed to the popularity of the 10 based number system. Ancient computers used electric signals to communicate. So 1 represents On, 0 represents Off.” Professor gestured with his hand and a hologram of a cat flipping switch showed up. “By flipping the switch non stop, the cat generated the sequence of Ones and Zeros, which can be used to represent anything, including numbers”.`,
+“Convenience, young droid.” Prof. Evergreen elaborated, “Just like the fact that humans having ten fingers contributed to the popularity of the 10 based number system. Ancient computers used electric signals to communicate. So natually 1 represents On, 0 represents Off.” Professor gestured with his hand and a hologram of a cat flipping switch showed up. “By flipping the switch non stop, the cat generated the sequence of Ones and Zeros, which can be used to represent anything, including numbers”.`,
 
 /////
 
