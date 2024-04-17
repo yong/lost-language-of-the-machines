@@ -22,8 +22,9 @@ const initialMessages = [
     { d: 0, m: "ok, the data part is pretty the same ... RGB encoding... except they order the pixels upside down" },
     { d: 0, m: "Aha! Starlax, I think you are a true genius, they do put a note at the front" },
     { d: 1, m: "What? I was joking🥴" },
-    { d: 0, m: "They call it header, bascially it starts with BM in ASCII (42 4D) to tell this is a bitmap format, then followed by some information about the file, like the width and height of the image (10 10)" },
-    { d: 1, m: "Oh...too bad we didn't invent a new file format...I thought we can name it after my cat if we did" },
+    { d: 0, m: "They call it header, bascially it starts with BM in ASCII (42 4D) to tell this is a bitmap format, then followed by some information about the file, like size of the file, and the width and height of the image (10 10)" },
+    { d: 1, m: "Oh...too bad we didn't invent a new file format...I thought we can name it after my cat if we did. like 'Purry Nova Graphics', PNG for short " },
+    { d: 0, m: "Come on😒...btw that name PNG was taken...Portable Network Graphics, 1996" }
 ];
 
 const Chat = () => {
