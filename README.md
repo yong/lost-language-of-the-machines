@@ -6,7 +6,7 @@ _This book is currently in the creation phase._
 In a world half a millennium in the future, where computer science as we know it has become the stuff of legends, two unlikely students embark on a journey through the annals of ‘ancient’ programming. 
 
 ## Meet the characters
-![flamey](public/flamey_avatar.png)Flamey: a retro-style robot with a flair for debate, styled in the charming fashion of yesteryear’s technology. His settings? Permanently toggled to ‘teenager mode.’ 
+![flamey](public/flamey_avatar.png)Flamey T48: a retro-style robot with a flair for debate, styled in the charming fashion of yesteryear’s technology. His settings? Permanently toggled to ‘teenager mode.’ 
 
 ![starlaxverse](public/starlaxverse_avatar.png)Starlax Verse: a human girl whose heart melts at the slightest hint of cuteness. Guiding these two through the forgotten lore of loops and logic is.
 

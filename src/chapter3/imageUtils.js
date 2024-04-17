@@ -1,3 +1,5 @@
+//imageUtils.js
+
 export function rgbToHex(color) {
     // Remove the # from the start of the color
     color = color.slice(1);

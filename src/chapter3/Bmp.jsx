@@ -2,15 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { buildBmpHexCode } from './imageUtils';
 
 // New component to display hex code with color
-function HexCode({ code, color, backgroundColor='#FFFFFF'}) {
-  return <span style={{ color, backgroundColor, fontFamily: 'Courier New', fontSize: '0.8em' }}>{code}</span>;
+function HexCode({ code, color, backgroundColor='white'}) {
+  return <span style={{ color, backgroundColor }} className="font-mono text-sm">{code}</span>;
 }
 
+function ColorPicker({selectedColor, onColorClick }) {
+  const colors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#FFFF00', '#0000FF', '#FFA500', '#800080', '#FFC0CB'];
+  return (
+    <div className="flex mb-5">
+      {colors.map((color, i) => (
+        <div 
+          key={i} 
+          onClick={() => onColorClick(color)} 
+          style={{ 
+            backgroundColor: color, 
+            border: selectedColor === color ? '2px solid #000' : '1px solid #000' 
+          }}
+          className="w-5 h-5"
+        >
+          {selectedColor === color && <span className="text-white">✔️</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Bmp() {
-  const colors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#FFFF00', '#0000FF', '#FFA500', '#800080', '#FFC0CB'];
+  
   const [grid, setGrid] = useState(Array(16).fill().map(() => Array(16).fill('#FFFFFF')));
-  const [selectedColor, setSelectedColor] = useState('#FFFFFF');
+  const [selectedColor, setSelectedColor] = useState('#FFFF00');
 
   const handleCellClick = (x, y) => {
     const newGrid = grid.slice();
@@ -22,28 +42,21 @@ function Bmp() {
     setSelectedColor(color);
   };
 
-  // Change white to light gray
-  const displayColor = selectedColor === '#FFFFFF' ? '#D3D3D3' : selectedColor;
-
   // Convert grid to BMP hex code
   const hexCode = buildBmpHexCode(grid);
-  console.log(hexCode)
   const bmpHexCode = hexCode.map((row, i) => (
-    <div key={i}>
+    <div key={i} className="flex">
       {row.map((code, j) => (
-        <HexCode key={j} code={code.text} backgroundColor={code.backgroundColor} color={code.color === '#FFFFFF' ? '#D3D3D3' : code.color} />
+        <HexCode key={j} code={code.text} backgroundColor={code.backgroundColor} color={code.color === '#FFFFFF' ? 'gray-300' : code.color} />
       ))}
     </div>
   ));
 
   // Convert hex code to Blob and create object URL
   const hexString = hexCode.flat().map(code => code.text).join('');
-  console.log(hexString)
   const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
   const blob = new Blob([byteArray], { type: 'image/bmp' });
-  console.log("blob", blob)
   const url = URL.createObjectURL(blob);
-  console.log("url", url)
 
   // Clean up object URL
   useEffect(() => {
@@ -51,28 +64,28 @@ function Bmp() {
   }, [url]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <h1>BMP Image Creator</h1>
-      <p>Select a color and click on the grid to paint. The grid represents a 16x16 BMP image.</p>
-      <div style={{ display: 'flex', marginBottom: '20px' }}>
-        {colors.map((color, i) => (
-          <div key={i} onClick={() => handleColorClick(color)} style={{ backgroundColor: color, width: '20px', height: '20px', border: selectedColor === color ? '2px solid #000' : '1px solid #000' }}>
-            {selectedColor === color && <span>✔️</span>}
+    <div className="flex flex-col items-center">
+      <h1 className="text-2xl font-bold">BMP Image Creator</h1>
+      <p className="mb-4">Select a color and click on the grid to paint. The grid represents a 16x16 BMP image.</p>
+      <ColorPicker selectedColor={selectedColor} onColorClick={setSelectedColor} />
+
+      <a href={url} download="image.bmp" className="mb-5">Download BMP</a> {/* Download link */}
+      <div className="flex flex-col md:flex-row justify-between w-full md:w-4/5">
+        <div className="flex flex-wrap">
+        {grid.map((row, y) => (
+          <div key={y} className="flex">
+            {row.map((color, x) => (
+              <div 
+                key={`${x}-${y}`} 
+                onClick={() => handleCellClick(x, y)} 
+                style={{ backgroundColor: color }} 
+                className="w-5 h-5 border border-black"
+              />
+            ))}
           </div>
         ))}
-      </div>
-      <a href={url} download="image.bmp">Download BMP</a> {/* Download link */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', width: '80%' }}>
-        <div>
-          {grid.map((row, y) => (
-            <div key={y} style={{ display: 'flex' }}>
-              {row.map((color, x) => (
-                <div key={`${x}-${y}`} onClick={() => handleCellClick(x, y)} style={{ backgroundColor: color, width: '20px', height: '20px', border: '1px solid #000' }} />
-              ))}
-            </div>
-          ))}
         </div>
-        <div>{bmpHexCode}</div> {/* Display hex code in rows */}
+        <div className="flex flex-col">{bmpHexCode}</div> {/* Display hex code in rows */}
       </div>
     </div>
   );

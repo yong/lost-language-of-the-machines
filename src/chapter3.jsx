@@ -3,7 +3,7 @@ import './index.css';
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Chapter3 from './chapter3/Chapter3';
-import Bmp from './chapter3/Bmp';
+import Chat from './chapter3/Chat';
 
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ResetScrollWrapper from './common/ResetScrollWrapper';
@@ -16,7 +16,7 @@ const App = () => {
   return (
           <Routes location={location} key={location.pathname}>
               <Route index element={<Main />} />
-              <Route path="chat" element={<Bmp />} />
+              <Route path="chat" element={<Chat />} />
           </Routes>
   )
 }
