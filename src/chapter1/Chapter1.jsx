@@ -25,7 +25,7 @@ They entered the room through a glass bubble door, where Prof. Evergreen was sit
 
 /////
 
-`“Wow.” Starlax was instantly convinced. Cat pictures are ageless for little girls like her.
+`“Wow.” Starlax was instantly convinced. It was clear that the image of the cat had captured her imagination.
 “So here is the first rule of a number system”, Prof. Evergreen projected a slide in the air:`,
 
 /////
