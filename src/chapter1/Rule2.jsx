@@ -27,7 +27,7 @@ const Rule2 = () => {
       <div>
         Decimal number <b className="text-blue-500">2583</b> can be represented as: {DecimalExpression(2,3)}+{DecimalExpression(5,2)}+{DecimalExpression(8,1)}+{DecimalExpression(3, 0)}<br/><br/>
 
-        Simillarly, Binary number <b className="text-blue-500">1101</b> can be represented as: {BinaryExpression(1, 3)}+{BinaryExpression(1, 2)}+{BinaryExpression(0, 1)}+{BinaryExpression(1, 0)} which is thirteen in Decimal
+        Similarly, Binary number <b className="text-blue-500">1101</b> can be represented as: {BinaryExpression(1, 3)}+{BinaryExpression(1, 2)}+{BinaryExpression(0, 1)}+{BinaryExpression(1, 0)} which is thirteen in Decimal
       </div>
       
       <div className="max-w-screen-md mx-auto flex items-center justify-center">

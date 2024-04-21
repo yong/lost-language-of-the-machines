@@ -7,7 +7,7 @@ import BounceButton from '../common/BounceButton';
 import renderParagraphs from '../common/renderParagraphs';
 
 const storyParts = [
-`While it is still early in the morning, with fewer flying vehicles leaving traces in the sky, the only thing that is distributing the peaceful silence is Flamey's footsteps rattling on the carbon-titanium floor of the History Hall. A quick glance at his time tracker confirmed his worst fear: there were only two minutes left before the start of the ‘Archaeology Principles: Controlled Silicon of the Past’ class. As he focused on getting there on time, he felt a tug on his arm and turned to see Starlax, his best human friend.
+`While it was still early in the morning, with fewer flying vehicles leaving traces in the sky, the only thing that disturbed the peaceful silence was Flamey’s footsteps rattling on the carbon-titanium floor of the History Hall. A quick glance at his time tracker confirmed his worst fear: there were only two minutes left before the start of the ‘Archaeology Principles: Controlled Silicon of the Past’ class. As he focused on getting there on time, he felt a tug on his arm and turned to see Starlax, his best human friend.
 
 “Oh, Flamey, I’m so relieved you’re here!” Starlax exclaimed, dragging him along. “Professor Evergreen is known to be a person with ATTITUDE.”
 
