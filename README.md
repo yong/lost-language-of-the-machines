@@ -14,6 +14,8 @@ In a world half a millennium in the future, where computer science as we know it
 
 [# Read the book online here](https://www.LostLanguageoftheMachines.com/).
 
+I am collecting feedback on [Hacker News](https://news.ycombinator.com/item?id=40090580).
+
 ## Table of Contents
 1. [One and Zero](https://www.LostLanguageoftheMachines.com/chapter1) (Draft Released)
 
