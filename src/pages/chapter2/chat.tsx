@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 
 //import transition from "../transition";
-import NextButton from '../../components/NextButton';
+import NextButton from '../../components/common/NextButton';
 import ChatRoom from "../../react-chat/ChatRoom";
 
 

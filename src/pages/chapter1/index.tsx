@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { ParallaxProvider } from 'react-scroll-parallax';
-import Cover from './Cover';
-import Chapter1 from './Chapter1';
+import Cover from '../../components/chapter1/Cover';
+import Chapter1 from '../../components/chapter1/Chapter1';
 
 const App: NextPage = () => {
   return (

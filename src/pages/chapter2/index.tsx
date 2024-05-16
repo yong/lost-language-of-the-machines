@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
-import withCover from '../../components/withCover';
-import Chapter2 from './Chapter2';
+import withCover from '../../components/common/withCover';
+import Chapter2 from '../../components/chapter2/Chapter2';
 
 const Main = withCover(Chapter2, '/chapter2/ascii.jpg');
 

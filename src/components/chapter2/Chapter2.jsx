@@ -1,10 +1,10 @@
 //Chapter2.jsx
-import BounceButton from '../../components/BounceButton'
+import BounceButton from '../common/BounceButton'
 import Code from './Code'
 import Hex from './Hex'
 import Answer from './Answer'
 import AsciiTable from './AsciiTable'
-import renderParagraphs from '../../components/renderParagraphs'
+import renderParagraphs from '../common/renderParagraphs'
 
 const storyParts = [
 `Despite a recent brush with overheating, Flamey spotted his friend Starlax enthusiastically waving from the iconic blue steps of Literature Hall. "Flamey! Creative Writing too?"

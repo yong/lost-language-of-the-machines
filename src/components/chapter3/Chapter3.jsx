@@ -1,6 +1,6 @@
 //Chapter3.jsx
-import BounceButton from '../../components/BounceButton'
-import renderParagraphs from '../../components/renderParagraphs';
+import BounceButton from '../common/BounceButton'
+import renderParagraphs from '../common/renderParagraphs';
 import RGB from './RGB';
 import RGB2 from './RGB2';
 
