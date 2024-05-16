@@ -35,10 +35,12 @@ _I see trees of 00FF00, FF0000 roses too…_
 7. ...
 
 ## Developer Instructions
+The book is mostly built with React, Next.js, and Tailwind CSS.
+
 To run it locally:
 ```
 npm install
-npm run dev -- --host
+npm run dev -- -H 0.0.0.0
 ```
 
 Copyright @2024 Xue Yong Zhi
