@@ -1,6 +1,8 @@
+import { NextPage } from 'next';
+
 //import transition from "../transition";
-import NextButton from '../common/NextButton';
-import ChatRoom from "../react-chat/ChatRoom";
+import NextButton from '../../components/NextButton';
+import ChatRoom from "../../react-chat/ChatRoom";
 
 
 const initialMessages = [
@@ -28,7 +30,7 @@ const initialMessages = [
     { d: 0, m: "whatever, I will see you in class tomorrow" },
 ];
 
-const Chat = () => {
+const Chat: NextPage = () => {
     return (
         <div className="flex flex-col justify-center min-h-screen w-full bg-black">
         <ChatRoom initialMessages={initialMessages}/>

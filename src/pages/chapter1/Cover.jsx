@@ -1,15 +1,8 @@
 //Cover.jsx
-import React from 'react';
-import Snowfall from '../react-snowfall/index.js';
+import React, { useState, useEffect } from 'react';
+import Snowfall from '../../react-snowfall/index.js';
 import { ParallaxBanner } from 'react-scroll-parallax';
 import {motion} from 'framer-motion';
-
-const snowflake1 = document.createElement('img')
-snowflake1.src = '/chapter1/one.png'
-const snowflake2 = document.createElement('img')
-snowflake2.src = '/chapter1/zero.png'
-
-const images = [snowflake1, snowflake2]
 
 const Title = () => {
   return (
@@ -30,6 +23,16 @@ const Title = () => {
 }
 
 const Cover = () => {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const snowflake1 = new Image();
+    snowflake1.src = '/chapter1/one.png';
+    const snowflake2 = new Image();
+    snowflake2.src = '/chapter1/zero.png';
+    setImages([snowflake1, snowflake2]);
+  }, []);
+
   return (
     <ParallaxBanner
       layers={[

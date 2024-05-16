@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ChatRoom.css';
+//import './ChatRoom.css';
 
 const MessageItem = ({ d, m, s }) => {
 	const messagePosition = d === 1

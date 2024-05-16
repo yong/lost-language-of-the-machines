@@ -1,6 +1,6 @@
 //Chapter3.jsx
-import BounceButton from '../common/BounceButton'
-import renderParagraphs from '../common/renderParagraphs';
+import BounceButton from '../../components/BounceButton'
+import renderParagraphs from '../../components/renderParagraphs';
 import RGB from './RGB';
 import RGB2 from './RGB2';
 
@@ -64,7 +64,7 @@ const Chapter3 = () => {
                 </div>
             </div>
 
-            <BounceButton url='chat'/>
+            <BounceButton url='chapter3/chat'/>
 
         </article>
     )

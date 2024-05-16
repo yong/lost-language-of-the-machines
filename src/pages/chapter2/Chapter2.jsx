@@ -1,10 +1,10 @@
 //Chapter2.jsx
-import BounceButton from '../common/BounceButton'
+import BounceButton from '../../components/BounceButton'
 import Code from './Code'
 import Hex from './Hex'
 import Answer from './Answer'
 import AsciiTable from './AsciiTable'
-import renderParagraphs from '../common/renderParagraphs'
+import renderParagraphs from '../../components/renderParagraphs'
 
 const storyParts = [
 `Despite a recent brush with overheating, Flamey spotted his friend Starlax enthusiastically waving from the iconic blue steps of Literature Hall. "Flamey! Creative Writing too?"
@@ -73,7 +73,7 @@ const Chapter2 = () => {
             {renderParagraphs(storyParts[3], 3)}
             <Answer/>
             {renderParagraphs(storyParts[4], 4)}
-            <BounceButton url='chat'/>
+            <BounceButton url='chapter2/chat'/>
         </article>
     )
 }
