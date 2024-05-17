@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://www.lostlanguageofthemachines.com</loc>
+        <loc>https://www.lostlanguageofthemachines.com/chapter1</loc>
         <lastmod>2024-04-17</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>https://www.lostlanguageofthemachines.com/chapter1/chat</loc>
+        <lastmod>2024-05-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1</priority>
     </url>
@@ -13,8 +19,20 @@
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>https://www.lostlanguageofthemachines.com/chapter2/chat</loc>
+        <lastmod>2024-05-16</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>https://www.lostlanguageofthemachines.com/chapter3</loc>
         <lastmod>2024-04-17</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+     <url>
+        <loc>https://www.lostlanguageofthemachines.com/chapter3/chat</loc>
+        <lastmod>2024-05-16</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
