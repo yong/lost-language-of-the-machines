@@ -25,7 +25,7 @@ const initialMessages = [
     { d: 0, m: "Hub? anyway, keep dividing 3 by 2, got 1 and remainder 1, write it down: 101" },
     { d: 0, m: "Finally, 1 divided by 2 is 0, remainder is 1, so we have 1101" },
     { d: 0, m: "Oh, I found easier way starting with biggest place value!" },
-    { d: 1, m: "RT%$^@#$%@#@##@^#@#$%@#burrrrrrrr" },
+    { d: 1, m: "RT%$#$%@^#@#$%@#burrrrrrrr" },
     { d: 0, m: "r u still there? is your cat typing?" },
     { d: 0, m: "whatever, I will see you in class tomorrow" },
 ];
