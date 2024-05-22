@@ -39,9 +39,18 @@ const MessageItem: React.FC<MessageItemProps> = ({ d, m, s }) => {
 
 interface MessageListProps {
   messages: Message[];
+  userMessage: boolean;
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+const MessageList: React.FC<MessageListProps> = ({ messages, userMessage }) => {
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (userMessage) {
+      endOfMessagesRef.current?.scrollIntoView();
+    }
+  }, [messages, userMessage]);
+
   return (
     <div className="max-w-md mx-auto bg-white p-4">
       {messages.map((messageItem, index) => (
@@ -52,6 +61,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
           s={messageItem.s}
         />
       ))}
+      <div ref={endOfMessagesRef} />
     </div>
   );
 };
@@ -105,14 +115,16 @@ interface ChatRoomProps {
 
 const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   const [messages, setMessages] = useState(initialMessages);
+  const [userMessage, setUserMessage] = useState(false);
 
   const handleSendMessage = (message: string) => {
     setMessages([...messages, { d: 0, m: message, s: false }]);
+    setUserMessage(true);
   };
 
   return (
     <div className="">
-      <MessageList messages={messages} />
+      <MessageList messages={messages} userMessage={userMessage} />
       <InputMessage onSendMessage={handleSendMessage}/>
     </div>
   );
