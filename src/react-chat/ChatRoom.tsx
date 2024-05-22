@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
+import React, { useEffect, useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
 
 interface Message {
   d: number;
@@ -17,7 +17,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ d, m, s }) => {
   const senderAvatar = d === 1 ? '/starlaxverse_avatar.png' : '/flamey_avatar.png';
 
   return (
-    <div className={`flex ${messagePosition} mb-4`}>
+    <div className={`flex ${messagePosition} mb-4 message-animation`}>
       <img src={senderAvatar} alt="Avatar" className="w-10 h-10 rounded-full" />
       <div className={`ml-4 mr-4 p-2 rounded-lg ${d === 1 ? 'bg-gray-200' : 'bg-blue-500 text-white'}`}>
         {s ? (
