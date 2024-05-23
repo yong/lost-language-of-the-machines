@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import TypingIndicator from './TypingIndicator'
 
 interface Message {
   role: string;
@@ -111,6 +112,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   const [interactiveMode, setInteractiveMode] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   const fetchToken = useMutation({
     mutationFn: async () => {
@@ -127,6 +129,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
+      setIsTyping(true);
+
       let currentToken = token; // Capture the token value
       if (!currentToken) {
         // If no token yet, optimistically send the chat request
@@ -150,6 +154,10 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
     onError: (error) => {
       console.error("Error to chat mutation:", error);
       setError("Connection is lost");
+      setIsTyping(false);
+    },
+    onSuccess: () => {
+      setIsTyping(false);
     }
   });
 
@@ -162,7 +170,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   
       if (response.choices && response.choices.length > 0) {
         const chatGPTMessage = response.choices[0].message.content.trim();
-        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage, s: 1 }]);
+        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage, s: 0 }]);
       } else {
         // Handle the error when there's no choices in the response
         console.error("No choices in the response");
@@ -172,10 +180,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
       console.error("An error occurred while sending the message:", error);
     }
   };
-    
+  
   return (
     <div className='max-w-md mx-auto bg-white'>
       <MessageList messages={messages} interactiveMode={interactiveMode} />
+      {isTyping && <TypingIndicator/>}
       {error ? (
         <div className="flex items-center justify-center text-red-500">
           {error}
@@ -184,7 +193,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
         <InputMessage onSendMessage={handleSendMessage}/>
       ) : (
         <div className="flex items-center justify-center text-gray-500">
-          startax has left the conversation
+          Starlax has left the conversation
         </div>
       )}
     </div>
