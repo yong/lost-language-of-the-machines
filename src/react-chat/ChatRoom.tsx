@@ -110,6 +110,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   const [messages, setMessages] = useState(initialMessages);
   const [interactiveMode, setInteractiveMode] = useState(false);
   const [token, setToken] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchToken = useMutation({
     mutationFn: async () => {
@@ -120,7 +121,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
     },
     onError: (error) => {
       console.error("Error fetching token:", error);
-      // Potentially handle the error in your UI (e.g., show a message)
+      setError("Connection error");
     }
   });
 
@@ -148,17 +149,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
     },
     onError: (error) => {
       console.error("Error to chat mutation:", error);
-      // Handle the error in your UI (e.g., retry, show an error message)
+      setError("Connection is lost");
     }
   });
 
   const handleSendMessage = async(message: string) => {
     setMessages([...messages, { role: "user", content: message }]);
     setInteractiveMode(true);
-  
-    if (!token) {
-      await fetchToken.mutateAsync();
-    }
 
     try {
       const response = await chatMutation.mutateAsync(message);
@@ -179,7 +176,11 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   return (
     <div className='max-w-md mx-auto bg-white'>
       <MessageList messages={messages} interactiveMode={interactiveMode} />
-      {messages.length - initialMessages.length <= 10 ? (
+      {error ? (
+        <div className="flex items-center justify-center text-red-500">
+          {error}
+        </div>
+      ) : messages.length - initialMessages.length <= 10 ? (
         <InputMessage onSendMessage={handleSendMessage}/>
       ) : (
         <div className="flex items-center justify-center text-gray-500">
