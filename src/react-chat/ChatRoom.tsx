@@ -7,15 +7,6 @@ interface Message {
   s?: number;
 }
 
-interface MessageListProps {
-  messages: Message[];
-  userMessage: boolean;
-}
-
-interface InputMessageProps {
-  onSendMessage: (message: string) => void;
-}
-
 const MessageItem: React.FC<Message> = ({ role, content, s }) => {
   if (role === 'system') {
     return null;
@@ -45,14 +36,19 @@ const MessageItem: React.FC<Message> = ({ role, content, s }) => {
   );
 };
 
-const MessageList: React.FC<MessageListProps> = ({ messages, userMessage }) => {
+interface MessageListProps {
+  messages: Message[];
+  interactiveMode: boolean;
+}
+
+const MessageList: React.FC<MessageListProps> = ({ messages, interactiveMode }) => {
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (userMessage) {
+    if (interactiveMode) {
       endOfMessagesRef.current?.scrollIntoView();
     }
-  }, [messages, userMessage]);
+  }, [messages, interactiveMode]);
 
   return (
     <div className="max-w-md mx-auto bg-white p-4">
@@ -63,6 +59,10 @@ const MessageList: React.FC<MessageListProps> = ({ messages, userMessage }) => {
     </div>
   );
 };
+
+interface InputMessageProps {
+  onSendMessage: (message: string) => void;
+}
 
 const InputMessage: React.FC<InputMessageProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState('');
@@ -82,10 +82,10 @@ const InputMessage: React.FC<InputMessageProps> = ({ onSendMessage }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
       <div className="flex items-center p-4">
         <input
           type="text"
+          maxLength={280}
           placeholder="Type a message"
           className="flex-grow h-10 px-4 rounded-full bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={message}
@@ -99,7 +99,6 @@ const InputMessage: React.FC<InputMessageProps> = ({ onSendMessage }) => {
           <i className="fa fa-send-o"></i>
         </button>
       </div>
-    </div>
   );
 };
 
@@ -109,7 +108,7 @@ interface ChatRoomProps {
 
 const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   const [messages, setMessages] = useState(initialMessages);
-  const [userMessage, setUserMessage] = useState(false);
+  const [interactiveMode, setInteractiveMode] = useState(false);
 
   const mutation = useMutation({
     mutationFn: (message: string) =>
@@ -127,7 +126,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
 
   const handleSendMessage = async(message: string) => {
     setMessages([...messages, { role: "user", content: message }]);
-    setUserMessage(true);
+    setInteractiveMode(true);
   
     try {
       const response = await mutation.mutateAsync(message);
@@ -146,8 +145,8 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   };
     
   return (
-    <div>
-      <MessageList messages={messages} userMessage={userMessage} />
+    <div className='max-w-md mx-auto bg-white'>
+      <MessageList messages={messages} interactiveMode={interactiveMode} />
       <InputMessage onSendMessage={handleSendMessage}/>
     </div>
   );
