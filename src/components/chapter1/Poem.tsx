@@ -1,4 +1,4 @@
-//Poem.jsx
+//Poem.tsx
 
 const Poem = () => {
     return (<p className="mb-3 font-mono text-center bg-gradient-to-r from-blue-200 to-green-200 shadow-lg p-4 rounded-lg">

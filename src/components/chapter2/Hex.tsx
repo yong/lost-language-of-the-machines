@@ -1,4 +1,4 @@
-//Hex.jsx
+//Hex.tsx
 import React from 'react';
 
 const Hex = () => {

@@ -1,4 +1,4 @@
-//RGB2.jsx
+//RGB2.tsx
 import React, { useState } from 'react';
 import Block from '@uiw/react-color-block';
 

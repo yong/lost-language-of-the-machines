@@ -1,8 +1,12 @@
-//Chapter3.jsx
+//Chapter3.tsx
+import Image from 'next/image';
 import BounceButton from '../common/BounceButton'
 import renderParagraphs from '../common/renderParagraphs';
 import RGB from './RGB';
 import RGB2 from './RGB2';
+
+import StarWarImage from '../../../public/chapter3/starwar.png';
+import MarioImage from '../../../public/chapter3/mario.png';
 
 const storyParts = [
 `Fall is always Flamey’s favorite season. The trees of green and skies of blue always put his mind at ease. On his way to the Art Studio, his mind was filled with thoughts about the art project he was going to do that day.
@@ -44,7 +48,7 @@ const Chapter3 = () => {
 
             <div className="mb-3 font-mono text-center bg-blue-200 border-4 border-dashed border-blue-500 p-4 rounded-lg">
                 <div className="max-w-screen-md mx-auto flex items-center justify-center">
-                    <img src="/chapter3/starwar.png" alt="starwar" />
+                    <Image src={StarWarImage} alt="starwar" />
                 </div>
             </div>
 
@@ -60,7 +64,7 @@ const Chapter3 = () => {
 
             <div className="mb-3 font-mono text-center bg-blue-200 border-4 border-dashed border-blue-500 p-4 rounded-lg">
                 <div className="max-w-screen-md mx-auto flex items-center justify-center">
-                    <img src="/chapter3/mario.png" alt="mario" />
+                    <Image src={MarioImage} alt="mario" />
                 </div>
             </div>
 

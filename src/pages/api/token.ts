@@ -10,11 +10,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const secretKey: jwt.Secret | undefined = process.env.JWT_SECRET;
+    if (!secretKey) {
+      return res.status(500).json({ error: 'JWT secret key is not set' });
+    }
+
     // Generate a UUID for the user
     const userId = uuidv4();
 
     // Generate a JWT that expires in 5 minutes
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '5m' });
+    const token = jwt.sign({ userId }, secretKey, { expiresIn: '5m' });
 
     // Send the token back to the client
     res.status(200).json({ token });

@@ -1,3 +1,4 @@
+//AsciiTable.tsx
 import React from 'react';
 
 const AsciiTable = () => {
@@ -8,7 +9,7 @@ const AsciiTable = () => {
   const thirdQuarter = asciiChars.slice(quarter * 2, quarter * 3);
   const fourthQuarter = asciiChars.slice(quarter * 3);
 
-  const renderTable = (chars, start) => (
+  const renderTable = (chars: string[], start: number) => (
     <table className="w-full text-center divide-y divide-gray-200">
       <thead>
         <tr>

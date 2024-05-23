@@ -1,4 +1,6 @@
-//Rule1.jsx
+//Rule1.tsx
+import Image from "next/image";
+import Rule1Image from '../../../public/chapter1/rule1.jpg';
 
 const Rule1 = () => {
   return (
@@ -8,7 +10,7 @@ const Rule1 = () => {
           <div><span className="text-red-600">10</span> based number system has ten: <b className="text-blue-500">0,1,2,3,4,5,6,7,8,9</b><br/><br/>
           <span className="text-red-600">2</span> based number system has only two: <b className="text-blue-500">1</b> and <b className="text-blue-500">0</b>.</div><br/>
           <div className="max-w-screen-md mx-auto flex items-center justify-center">
-              <img src="/chapter1/rule1.jpg" alt="rule1" />
+              <Image src={Rule1Image} alt="rule1" />
           </div>
       </div>
   )

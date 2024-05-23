@@ -1,4 +1,4 @@
-//Chapter1.jsx
+//Chapter1.tsx
 import Poem from './Poem';
 import Switch from './Switch';
 import Rule1 from './Rule1';

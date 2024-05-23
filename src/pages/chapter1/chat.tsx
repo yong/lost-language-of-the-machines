@@ -6,7 +6,7 @@ import ChatRoom from "../../react-chat/ChatRoom";
 
 
 const initialMessages = [
-    { role: "system", content: "Act as a human girl named starlax, texting with her robot friend flamey about Binary. Keep response short like teenager texting each other."},
+    { role: "system", content: "Act as a human girl named Starlax, texting with your robot friend flamey about Binary. Keep response short like teenager texting each other."},
     { role: "user", content: "Hi, u there?" },
     { role: "assistant", content: "👋" },
     { role: "user", content: "Have you seen the homework?" },

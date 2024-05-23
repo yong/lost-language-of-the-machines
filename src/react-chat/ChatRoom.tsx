@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import TypingIndicator from './TypingIndicator'
+import Image from 'next/image';
+
+import StartlaxImage from '../../public/starlaxverse_avatar.png';
+import FlameyImage from '../../public/flamey_avatar.png';
 
 interface Message {
   role: string;
@@ -14,11 +18,11 @@ const MessageItem: React.FC<Message> = ({ role, content, s }) => {
   }
 
   const messagePosition = role === "assistant" ? 'flex-row-reverse' : 'flex-row';
-  const senderAvatar = role === "assistant" ? '/starlaxverse_avatar.png' : '/flamey_avatar.png';
+  const senderAvatar = role === "assistant" ? StartlaxImage : FlameyImage;
 
   return (
     <div className={`flex ${messagePosition} mb-4 message-animation`}>
-      <img src={senderAvatar} alt="Avatar" className="w-10 h-10 rounded-full" />
+      <Image src={senderAvatar} alt="Avatar" className="w-10 h-10 rounded-full" />
       <div className={`ml-4 mr-4 p-2 rounded-lg ${role === "assistant" ? 'bg-gray-200' : 'bg-blue-500 text-white'}`}>
         {s ? (
           <pre>

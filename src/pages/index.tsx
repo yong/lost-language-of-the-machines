@@ -6,7 +6,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     router.replace('/chapter1');
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return null;
 }

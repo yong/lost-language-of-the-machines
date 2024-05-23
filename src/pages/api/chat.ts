@@ -16,8 +16,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const secretKey: jwt.Secret | undefined = process.env.JWT_SECRET;
+    if (!secretKey) {
+      return res.status(500).json({ error: 'JWT secret key is not set' });
+    }
+
     // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET);
+    jwt.verify(token, secretKey);
 
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

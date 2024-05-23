@@ -1,6 +1,8 @@
-//Rule2.jsx
+//Rule2.tsx
+import Image from "next/image";
+import Rule2Image from '../../../public/chapter1/rule2.jpg';
 
-const DecimalExpression = (symbol, index) => {
+const DecimalExpression = (symbol: number, index:number) => {
   return (
     <>
       <b className="text-blue-500">{symbol}</b>*<span className="text-red-600">10</span><sup className="text-green-600">{index}</sup>
@@ -8,7 +10,7 @@ const DecimalExpression = (symbol, index) => {
   )
 }
 
-const BinaryExpression = (symbol, index) => {
+const BinaryExpression = (symbol: number, index: number) => {
   return (
     <>
       <b className="text-blue-500">{symbol}</b>*<span className="text-red-600">2</span><sup className="text-green-600">{index}</sup>
@@ -31,7 +33,7 @@ const Rule2 = () => {
       </div>
       
       <div className="max-w-screen-md mx-auto flex items-center justify-center">
-        <img src="/chapter1/rule2.jpg" alt="rule2" />
+        <Image src={Rule2Image} alt="rule2" />
       </div>
     </div>
   )

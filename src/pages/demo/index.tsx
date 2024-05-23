@@ -1,4 +1,4 @@
-import Bmp from '../../components/chapter3/Bmp';
+import Bmp from '../../components/demo/Bmp';
 
 import { NextPage } from 'next';
 

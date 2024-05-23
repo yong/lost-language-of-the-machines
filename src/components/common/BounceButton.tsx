@@ -1,6 +1,7 @@
-import { TypeAnimation } from 'react-type-animation';
+import { TypeAnimation } from 'react-type-animation'
+import {UrlProps} from '../common/types'
 
-const BounceButton = ({url}) => {
+const BounceButton: React.FC<UrlProps> = ({url}) => {
     return (
       <div className="flex flex-col items-center justify-center mt-8">
         <LaterTonight/>

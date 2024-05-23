@@ -1,4 +1,4 @@
-//Chapter2.jsx
+//Chapter2.tsx
 import BounceButton from '../common/BounceButton'
 import Code from './Code'
 import Hex from './Hex'
