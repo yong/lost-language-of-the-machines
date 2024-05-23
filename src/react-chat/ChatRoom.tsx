@@ -162,7 +162,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   
       if (response.choices && response.choices.length > 0) {
         const chatGPTMessage = response.choices[0].message.content.trim();
-        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage }]);
+        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage, s: 1 }]);
       } else {
         // Handle the error when there's no choices in the response
         console.error("No choices in the response");
