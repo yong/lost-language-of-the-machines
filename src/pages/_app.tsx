@@ -2,7 +2,10 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head'; // Import the Head component
 import Script from 'next/script';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '../global.css'; // Import your global styles if you have any
+
+const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps }: AppProps)  => {
     return (
@@ -24,7 +27,9 @@ const MyApp = ({ Component, pageProps }: AppProps)  => {
             `}
             </Script>
             <Script src="https://kit.fontawesome.com/b51c8c9efe.js" crossOrigin="anonymous" />
-            <Component {...pageProps} />
+            <QueryClientProvider client={queryClient}>
+                <Component {...pageProps} />
+            </QueryClientProvider>
         </>
     );
 }
