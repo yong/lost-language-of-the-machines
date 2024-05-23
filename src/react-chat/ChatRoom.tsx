@@ -113,10 +113,9 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
 
   const mutation = useMutation({
     mutationFn: (message: string) =>
-      fetch('https://api.openai.com/v1/chat/completions', {
+      fetch('/api/chat', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -127,7 +126,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   });
 
   const handleSendMessage = async(message: string) => {
-    setMessages([...messages, { role: "user", content: message, s: false }]);
+    setMessages([...messages, { role: "user", content: message }]);
     setUserMessage(true);
   
     try {
@@ -135,7 +134,7 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   
       if (response.choices && response.choices.length > 0) {
         const chatGPTMessage = response.choices[0].message.content.trim();
-        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage, s: false }]);
+        setMessages(prevMessages => [...prevMessages, { role: "assistant", content: chatGPTMessage }]);
       } else {
         // Handle the error when there's no choices in the response
         console.error("No choices in the response");
