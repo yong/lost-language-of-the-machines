@@ -1,18 +1,31 @@
-// pages/api/chat.js
+// pages/api/chat.ts
 
-export default async function handler(req, res) {
+import { NextApiRequest, NextApiResponse } from 'next';
+import jwt from 'jsonwebtoken';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).end(); // Method Not Allowed
   }
 
+  // Get the token from the Authorization header
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   try {
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET);
+
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({"messages": req.body, "model": "gpt-4o"})
     });
 
     if (!openaiResponse.ok) {
@@ -26,4 +39,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'An error occurred while processing the request' });
   }
 }
-

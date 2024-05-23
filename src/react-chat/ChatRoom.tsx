@@ -109,27 +109,59 @@ interface ChatRoomProps {
 const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   const [messages, setMessages] = useState(initialMessages);
   const [interactiveMode, setInteractiveMode] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
-  const mutation = useMutation({
-    mutationFn: (message: string) =>
-      fetch('/api/chat', {
+  const fetchToken = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/token', { method: 'POST' });
+      const data = await res.json();
+      setToken(data.token);
+      return data.token;
+    },
+    onError: (error) => {
+      console.error("Error fetching token:", error);
+      // Potentially handle the error in your UI (e.g., show a message)
+    }
+  });
+
+  const chatMutation = useMutation({
+    mutationFn: async (message: string) => {
+      let currentToken = token; // Capture the token value
+      if (!currentToken) {
+        // If no token yet, optimistically send the chat request
+        currentToken = await fetchToken.mutateAsync(); 
+      }
+
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentToken}` 
         },
-        body: JSON.stringify({
-          "messages": messages,
-          "model": "gpt-4o"
-        })
-      }).then(res => res.json())
+        body: JSON.stringify(messages)
+      });
+
+      if (!res.ok) {
+        throw new Error("Chat request failed"); // Throw an error for handling
+      }
+      return res.json();
+    },
+    onError: (error) => {
+      console.error("Error to chat mutation:", error);
+      // Handle the error in your UI (e.g., retry, show an error message)
+    }
   });
 
   const handleSendMessage = async(message: string) => {
     setMessages([...messages, { role: "user", content: message }]);
     setInteractiveMode(true);
   
+    if (!token) {
+      await fetchToken.mutateAsync();
+    }
+
     try {
-      const response = await mutation.mutateAsync(message);
+      const response = await chatMutation.mutateAsync(message);
   
       if (response.choices && response.choices.length > 0) {
         const chatGPTMessage = response.choices[0].message.content.trim();
@@ -147,7 +179,13 @@ const ChatRoom: React.FC<ChatRoomProps> = ({initialMessages}) => {
   return (
     <div className='max-w-md mx-auto bg-white'>
       <MessageList messages={messages} interactiveMode={interactiveMode} />
-      <InputMessage onSendMessage={handleSendMessage}/>
+      {messages.length - initialMessages.length <= 10 ? (
+        <InputMessage onSendMessage={handleSendMessage}/>
+      ) : (
+        <div className="flex items-center justify-center text-gray-500">
+          startax has left the conversation
+        </div>
+      )}
     </div>
   );
 };

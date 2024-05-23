@@ -12,13 +12,15 @@
     "@tanstack/react-query": "^5.37.1",
     "@uiw/react-color-block": "^2.1.1",
     "framer-motion": "^11.0.20",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.3",
     "react": "^18",
     "react-dom": "^18",
     "react-fast-compare": "^3.2.2",
     "react-router-dom": "^6.22.3",
     "react-scroll-parallax": "^3.4.5",
-    "react-type-animation": "^3.2.0"
+    "react-type-animation": "^3.2.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.35.6",
