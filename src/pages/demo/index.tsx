@@ -2,13 +2,11 @@ import Bmp from '../../components/demo/Bmp';
 
 import { NextPage } from 'next';
 
-import withCover from '../../components/common/withCover';
-import Switch from '@/components/demo/Switch';
+import FourSwitches from '@/components/demo/FourSwitches';
 
 const App: NextPage = () => {
   return (
-    <Switch/>
-
+    <FourSwitches/>
   );
 }
 
