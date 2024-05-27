@@ -25,38 +25,73 @@ const Switch: React.FC = () => {
   return (
     <div
       onClick={handleSwitch}
-      className={`flex flex-col justify-between items-center h-72 w-48 z-10 m-auto mt-24 bg-[#fff4d3] rounded-lg ${isChecked ? "shadow-md" : ""}`}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "300px",
+        width: "200px",
+        zIndex: 1,
+        margin: "100px auto 0 auto",
+        backgroundColor: "#fff4d3",
+        borderRadius: "10px",
+        boxShadow: isChecked ? "0 2px 2px #d0b57b" : "none",
+      }}
     >
-      <Screw className="mt-2" />
+      <Screw className="mt-8" />
       <div
-        className={`switch cursor-pointer h-36 w-24 bg-[#fffaea] rounded overflow-hidden ${isChecked ? "shadow-lg" : ""} flex flex-col justify-between`}
+        className="switch"
         style={{
+          cursor: "pointer",
+          height: "150px",
+          width: "100px",
+          background: "#fffaea",
+          borderRadius: "5px",
+          overflow: "hidden",
           boxShadow: isChecked
             ? "0 10px 10px -5px rgba(233,219,176,1), 0 0 0 1px rgba(0,0,0,.1), 0 0 0 4px #fff4d3,0 0 0 5px rgba(0,0,0,.1)"
             : "0 10px 10px -5px rgba(233,219,176,0), 0 0 0 1px rgba(0,0,0,.1), 0 0 0 4px #fff4d3,0 0 0 5px rgba(0,0,0,.1)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <div
-          className={`block h-18 text-center leading-18 w-full ${isChecked ? "bg-[#fff4d3] text-[#64bf60]" : "bg-[#efe0b1] text-[#bfa371]"} rounded-t-lg`}
           style={{
+            display: "block",
+            height: "75px",
+            textAlign: "center",
+            lineHeight: "75px",
+            width: "100%",
             marginTop: isChecked ? "0px" : "5px",
+            background: isChecked ? "#fff4d3" : "#efe0b1",
+            color: isChecked ? "#64bf60" : "#bfa371",
             textShadow: isChecked ? "0 0 3px #38ff2e" : "none",
+            borderRadius: "5px 5px 0 0",
           }}
         >
           ON
         </div>
         <div
-          className={`block h-16 text-center leading-16 w-full ${isChecked ? "bg-[#fffaea] text-[#d7bf95]" : "bg-[#fff4d3] text-[#a4441a]"} rounded-b-lg`}
           style={{
+            display: "block",
+            height: "70px",
+            textAlign: "center",
+            lineHeight: "70px",
+            width: "100%",
             marginBottom: isChecked ? "5px" : "0px",
+            background: isChecked ? "#fffaea" : "#fff4d3",
             boxShadow: isChecked ? "0 5px 0 #d0b57b" : "none",
+            color: isChecked ? "#d7bf95" : "#a4441a",
             textShadow: isChecked ? "0 0 0px transparent" : "0 0 3px #ff4e00",
+            borderRadius: "0 0 5px 5px",
           }}
         >
           OFF
         </div>
       </div>
-      <Screw className="mb-2" />
+      <Screw className="mb-8" />
     </div>
   );
 };
