@@ -6,11 +6,11 @@ interface ScrewProps {
 
 const Screw: React.FC<ScrewProps> = ({ className }) => (
   <div
-    className={`absolute h-4 w-4 rounded-full left-1/2 -translate-x-1/2 ${className} bg-[#e3d4a5]`}
+    className={`h-4 w-4 rounded-full ${className} bg-[#e3d4a5]`}
     style={{ boxShadow: "inset 0 2px 0 rgba(0,0,0,.15)" }}
   >
     <div
-      className="absolute h-full w-[2px] left-1/2 -translate-x-1/2 bg-[rgba(0,0,0,0.2)]"
+      className="h-full w-[2px] mx-auto bg-[rgba(0,0,0,0.2)]"
     ></div>
   </div>
 );
@@ -26,8 +26,10 @@ const Switch: React.FC = () => {
     <div
       onClick={handleSwitch}
       style={{
-        position: "relative",
-        display: "block",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
         height: "300px",
         width: "200px",
         zIndex: 1,
@@ -37,7 +39,7 @@ const Switch: React.FC = () => {
         boxShadow: isChecked ? "0 2px 2px #d0b57b" : "none",
       }}
     >
-      <Screw className="top-8" />
+      <Screw className="mt-8" />
       <div
         className="switch"
         style={{
@@ -45,27 +47,24 @@ const Switch: React.FC = () => {
           height: "150px",
           width: "100px",
           background: "#fffaea",
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          margin: "-75px 0 0 -50px",
           borderRadius: "5px",
           overflow: "hidden",
           boxShadow: isChecked
             ? "0 10px 10px -5px rgba(233,219,176,1), 0 0 0 1px rgba(0,0,0,.1), 0 0 0 4px #fff4d3,0 0 0 5px rgba(0,0,0,.1)"
             : "0 10px 10px -5px rgba(233,219,176,0), 0 0 0 1px rgba(0,0,0,.1), 0 0 0 4px #fff4d3,0 0 0 5px rgba(0,0,0,.1)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <div
           style={{
             display: "block",
-            position: "absolute",
             height: "75px",
             textAlign: "center",
             lineHeight: "75px",
-            width: "100px",
-            top: isChecked ? "0px" : "5px",
-            left: "0",
+            width: "100%",
+            marginTop: isChecked ? "0px" : "5px",
             background: isChecked ? "#fff4d3" : "#efe0b1",
             color: isChecked ? "#64bf60" : "#bfa371",
             textShadow: isChecked ? "0 0 3px #38ff2e" : "none",
@@ -77,13 +76,11 @@ const Switch: React.FC = () => {
         <div
           style={{
             display: "block",
-            position: "absolute",
             height: "70px",
             textAlign: "center",
             lineHeight: "70px",
-            width: "100px",
-            bottom: "5px",
-            left: "0",
+            width: "100%",
+            marginBottom: isChecked ? "5px" : "0px",
             background: isChecked ? "#fffaea" : "#fff4d3",
             boxShadow: isChecked ? "0 5px 0 #d0b57b" : "none",
             color: isChecked ? "#d7bf95" : "#a4441a",
@@ -94,7 +91,7 @@ const Switch: React.FC = () => {
           OFF
         </div>
       </div>
-      <Screw className="bottom-8" />
+      <Screw className="mb-8" />
     </div>
   );
 };
