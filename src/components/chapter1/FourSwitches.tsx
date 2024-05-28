@@ -92,7 +92,7 @@ const FourSwitches: React.FC = () => {
                     <b>Switches Speak Binary!</b> When we look at them, they create a binary code: <b className="text-blue-500">{switchStates.map(state => state ? '1' : '0').join('')}</b>. 
                     Ancient computers use billions of tiny "switches" like these to store information.
                 </p>
-                <Image src={CatImage} alt="cat" layout="responsive" className="w-1/4 md:w-1/5 lg:w-1/6 animate-bounce"/> {/* Adjust the width here */}
+                <Image src={CatImage} alt="cat" layout="responsive" className="w-1/8 md:w-1/10 lg:w-1/12 animate-bounce"/>
             </div>
 
         </div>
