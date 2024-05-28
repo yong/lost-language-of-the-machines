@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import OnImage from '../../../public/chapter1/bulb-on.png'
 import OffImage from '../../../public/chapter1/bulb-off.png'
+import CatImage from '../../../public/chapter1/cat_reaching.png'
 
 interface ScrewProps {
     className: string;
@@ -31,7 +32,7 @@ const Switch: React.FC<SwitchProps> = ({intialState}) => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center  w-1/4">
+        <div className="flex flex-col items-center justify-center w-1/4 border-t border-black mt-4">
         <Image
           src={isOn ? OnImage : OffImage}
           alt="Light Bulb"
@@ -39,7 +40,7 @@ const Switch: React.FC<SwitchProps> = ({intialState}) => {
         />
         <div
             onClick={handleSwitch}
-            className={"flex flex-col justify-between items-center h-36 w-24 z-10 m-auto mt-16 bg-[#fff4d3] rounded-lg shadow-md"}
+            className={"flex flex-col justify-between items-center h-36 w-24 z-10 m-auto mt-12 bg-[#fff4d3] rounded-lg shadow-md"}
         >
             <Screw className="mt-4" />
             <div
@@ -78,11 +79,14 @@ const Switch: React.FC<SwitchProps> = ({intialState}) => {
 
 const FourSwitches: React.FC = () => {
     return (
-        <div className="flex justify-between w-full">
-            <Switch intialState={true} />
-            <Switch intialState={true} />
-            <Switch intialState={false} />
-            <Switch intialState={true} />
+        <div className="flex flex-col items-center w-full px-4"> 
+            <div className="flex justify-between w-full">
+                <Switch intialState={true} />
+                <Switch intialState={true} />
+                <Switch intialState={false} />
+                <Switch intialState={true} />
+            </div>
+            <Image src={CatImage} alt="cat" className="w-1/2 md:w-1/3 lg:w-1/4 mt-4 animate-bounce"/>
         </div>
     );
 };
