@@ -81,18 +81,18 @@ const FourSwitches: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center w-full bg-blue-200 border-4 border-dashed border-blue-500 rounded-lg">
+        <div className="mb-3 flex flex-col items-center w-full bg-blue-200 border-4 border-dashed border-blue-500 rounded-lg">
             <div className="flex justify-between w-full">
                 {switchStates.map((state, index) => (
                     <Switch key={index} isOn={state} handleSwitch={() => handleSwitch(index)} />
                 ))}
             </div>
             <div className="flex justify-between w-full pt-12">
-                <p className="flex-grow pl-4 pr-4 font-mono">
+                <p className="flex-grow px-4 pb-4 font-mono">
                     <b>Switches Speak Binary!</b> When we look at them, they create a binary code: <b className="text-blue-500">{switchStates.map(state => state ? '1' : '0').join('')}</b>. 
                     Ancient computers use billions of tiny "switches" like these to store information.
                 </p>
-                <Image src={CatImage} alt="cat" className="w-1/4 md:w-1/5 lg:w-1/6 animate-bounce"/> {/* Adjust the width here */}
+                <Image src={CatImage} alt="cat" layout="responsive" className="w-1/4 md:w-1/5 lg:w-1/6 animate-bounce"/> {/* Adjust the width here */}
             </div>
 
         </div>
