@@ -1,12 +1,11 @@
-import Bmp from '../../components/demo/Bmp';
 
 import { NextPage } from 'next';
 
-import FourSwitches from '@/components/demo/FourSwitches';
+import Bmp from '@/components/demo/Bmp';
 
 const App: NextPage = () => {
   return (
-    <FourSwitches/>
+    <Bmp/>
   );
 }
 
