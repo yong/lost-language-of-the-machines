@@ -3,47 +3,48 @@ import { NextPage } from 'next';
 
 //import Bmp from '@/components/demo/Bmp';
 
-const ThousandCube = () => {
+import React, { FC } from 'react';
+
+/*
+const ThousandCube2: FC<{transparent: boolean}> = (transparent) => {
   return (
     <div className="w-24 h-24" style={{ perspective: '600px' }}>
       <div className="w-full h-full relative" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(-10deg) rotateY(-15deg)', backgroundColor: '#BA8C63' }}>
-        <div className="absolute w-24 h-24 grid grid-cols-10 grid-rows-10" style={{ transform: 'translateZ(50px)', backgroundColor: '#BA8C63' }}>{Array(100).fill(<div className="border border-black"></div>)}</div>
+        <div className="absolute w-24 h-24 grid grid-cols-10 grid-rows-10" style={{ transform: 'translateZ(48px)', backgroundColor: '#BA8C63' }}>{Array(100).fill(<div className="border border-black"></div>)}</div>
         <div className="absolute w-24 h-24 grid grid-cols-10 grid-rows-10" style={{ transform: 'rotateY(90deg) translateZ(48px)', backgroundColor: '#BA8C63' }}>{Array(100).fill(<div className="border border-black"></div>)}</div>
         <div className="absolute w-24 h-24 grid grid-cols-10 grid-rows-10" style={{ transform: 'rotateX(90deg) translateZ(48px)', backgroundColor: '#BA8C63' }}>{Array(100).fill(<div className="border border-black"></div>)}</div>
       </div>
     </div>
   );
+}*/
+
+interface PlaceValueProps {
+  cols: number;
+  rows: number;
+  depth: number;
+  transparent?: boolean;
 }
 
-const HundredBoard = () => {
+const PlaceValue: FC<PlaceValueProps> = ({ cols, rows, depth, transparent }) => {
+  const color = transparent ? 'rgba(255, 255, 255, 0.3)' : '#BA8C63';
+  const borderColor = transparent ? 'rgba(0, 0, 0, 0.3)' : 'black';
+
   return (
-    <div className="w-24 h-24" style={{ perspective: '600px' }}>
-      <div className="w-full h-full relative" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(-10deg) rotateY(-15deg)', backgroundColor: '#BA8C63' }}>
-        <div className="absolute w-24 h-24 grid grid-cols-10 grid-rows-10 border-black" style={{ transform: 'translateZ(5px)', backgroundColor: '#BA8C63' }}>{Array(100).fill(<div className="border border-black"></div>)}</div>
+    <div style={{ width: `${cols * 10}px`, height: `${rows * 10}px`, perspective: '600px' }}>
+      <div className="w-full h-full relative" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(-10deg) rotateY(-15deg)', backgroundColor: color }}>
+        {Array(depth).fill(0).map((_, i) => (
+          <div key={i} className="absolute border-black" style={{ width: `${cols * 10}px`, height: `${rows * 10}px`, transform: `translateZ(${i * 10}px)`, backgroundColor: color, borderColor: borderColor, display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}>{Array(cols * rows).fill(<div className="border border-black"></div>)}</div>
+        ))}
       </div>
     </div>
   );
 }
 
-const TenBead = () => {
-  return (
-    <div className="w-2.5 h-24" style={{ perspective: '600px' }}>
-      <div className="w-full h-full relative" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(-10deg) rotateY(-15deg)', backgroundColor: '#BA8C63' }}>
-        <div className="absolute w-2.5 h-24 grid grid-cols-1 grid-rows-10 border-black" style={{ transform: 'translateZ(5px)', backgroundColor: '#BA8C63' }}>{Array(10).fill(<div className="border border-black"></div>)}</div>
-      </div>
-    </div>
-  );
-}
+export const ThousandCube: FC<{ transparent?: boolean }> = ({ transparent }) => <PlaceValue cols={10} rows={10} depth={10} transparent={transparent} />;
+export const HundredBoard: FC<{ transparent?: boolean }> = ({ transparent }) => <PlaceValue cols={10} rows={10} depth={1} transparent={transparent} />;
+export const TenBead: FC<{ transparent?: boolean }> = ({ transparent }) => <PlaceValue cols={1} rows={10} depth={1} transparent={transparent} />;
+export const OneUnit: FC<{ transparent?: boolean }> = ({ transparent }) => <PlaceValue cols={1} rows={1} depth={1} transparent={transparent} />;
 
-const OneUnit = () => {
-  return (
-    <div className="w-2.5 h-2.5" style={{ perspective: '600px', backgroundColor: '#BA8C63' }}>
-      <div className="w-full h-full relative" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(-10deg) rotateY(-15deg)', backgroundColor: '#BA8C63' }}>
-        <div className="absolute w-2.5 h-2.5 border-2 border-black" style={{ backgroundColor: '#BA8C63' }}></div>
-      </div>
-    </div>
-  );
-}
 
 const brickStyle = (color: string) => ({
   color: color,
@@ -66,7 +67,7 @@ const Legos = () => {
       </div>
 
       <div className='flex flex-wrap justify-between filter drop-shadow-2xl'>
-        <ThousandCube/><HundredBoard/><TenBead/><OneUnit/>
+        <ThousandCube transparent={false}/><HundredBoard transparent={false}/><TenBead transparent={false}/><OneUnit transparent={false}/>
       </div>
       
     </div>
