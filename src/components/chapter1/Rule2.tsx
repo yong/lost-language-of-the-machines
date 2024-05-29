@@ -1,6 +1,6 @@
 //Rule2.tsx
-import Image from "next/image";
-import Rule2Image from '../../../public/chapter1/rule2.jpg';
+import PlaceValues from "./PlaceValues";
+import Legos from "./Legos";
 
 const DecimalExpression = (symbol: number, index:number) => {
   return (
@@ -21,20 +21,27 @@ const BinaryExpression = (symbol: number, index: number) => {
 const Rule2 = () => {
   return (
     <div className="mb-3 font-mono text-center bg-blue-200 border-4 border-dashed border-blue-500 p-4 rounded-lg">
-      <div className="text-2xl font-bold">In a number system with base <span className="text-red-600">X</span>, 
-      each <span className="text-blue-500">symbol</span>’s place value corresponds to a power of <span className="text-red-600">X</span>, 
-      with the exponent being the <span className="text-blue-500">symbol</span>’s <span className="text-green-600">position</span>, starting from <span className="text-green-600">0</span> on the right.</div><br/>
+      <div className="text-2xl font-bold">The places values of a base-<span className="text-red-600">X</span> number system always strat from 1 as the rightmost, then the place value will be multipled by <span className="text-red-600">X</span> each time you move left.
+      </div><br/>
 
       <div className="text-base">For example:</div>
       <div>
-        Decimal number <b className="text-blue-500">2583</b> can be represented as: {DecimalExpression(2,3)}+{DecimalExpression(5,2)}+{DecimalExpression(8,1)}+{DecimalExpression(3, 0)}<br/><br/>
-
-        Similarly, Binary number <b className="text-blue-500">1101</b> can be represented as: {BinaryExpression(1, 3)}+{BinaryExpression(1, 2)}+{BinaryExpression(0, 1)}+{BinaryExpression(1, 0)} which is thirteen in Decimal
+        In decimal (which is based on <span className="text-red-600">10</span>), we have places like the 
+        <b style={{color: "#BA8C63"}}> ones</b>, 
+        <b style={{color: "#BA8C63"}}>tens</b>, 
+        <b style={{color: "#BA8C63"}}>hundreds</b>, 
+        <b style={{color: "#BA8C63"}}>thousands</b>, and so on. Each place is <span className="text-red-600">10</span> times bigger than the one before it. <br/>
       </div>
-      
-      <div className="max-w-screen-md mx-auto flex items-center justify-center">
-        <Image src={Rule2Image} alt="rule2" />
+      <PlaceValues/>
+      <div>
+        Similarly, In binary (which is based on <span className="text-red-600">2</span>), we have places like the 
+        <b style={{color: "#757575"}}> ones</b>, 
+        <b style={{color: "#039be5"}}>twos</b>, 
+        <b style={{color: "#43a047"}}>fours</b>,and 
+        <b style={{color: "#f63"}}> eights</b>. Each place is 
+        <span className="text-red-600"> 2</span> times bigger than the one before it.
       </div>
+      <Legos/>
     </div>
   )
 }

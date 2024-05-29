@@ -2,6 +2,7 @@
 import Poem from './Poem';
 import Rule1 from './Rule1';
 import Rule2 from './Rule2';
+import Rule3 from './Rule3';
 import BounceButton from '../common/BounceButton';
 import renderParagraphs from '../common/renderParagraphs';
 import FourSwitches from './FourSwitches';
@@ -30,7 +31,7 @@ They entered the room through a glass bubble door, where Prof. Evergreen was sit
 
 /////
 
-`“What if a number system’s base is larger than ten? Don’t we run out of numbers to use?” Flamey quickly found a way to argue - how can you blame him? As his brain cpu is set to teenage mode, argument is his specialty.
+`“What if a number system’s base is larger than ten? Don’t we run out of digits to use?” Flamey quickly found a way to argue - how can you blame him? As his brain cpu is set to teenage mode, argument is his specialty.
 
 “You can invent more symbols beyond 0 to 9, or just reuse existing symbols, like letters.” Prof. Evergreen replied as he had heard of this question millions of times. “For example, the 16-based number system (Hex), which is also very popular, uses: A for ten, B for eleven, C for twelve, D for thirteen, E for fourteen and F for fifteen.”
 
@@ -40,11 +41,16 @@ They entered the room through a glass bubble door, where Prof. Evergreen was sit
 
 //////
 
-`“Wow!” said Starlax, not sure she was complimenting the rule or the cats on the slides holding signs.
+`
 
-“Oh, it starts to make sense now.” As immune to any cuteness as he can be, Flamey found something: “So you can convert a binary number into decimal by adding up those parts.”
+“Oh, it starts to make sense now.” Flamey found something: “So binary actually works the same way as decimal, you count the number of places values then adding them up.”
 
-“Good find.” Nodded Prof. Evergreen, ”But we ran out of time. As science has shown, your attention must be depleted now.” Prof. Evergreen walked out of the room in a rush without even acknowledging his two students.
+“Good find.” Nodded Prof. Evergreen, "That is how you convert a binary number into decimal. 1101 in binary is 1*8+1*4+0*2+1*1, which is 13 in decimal."`,
+
+`
+“Wow!” said Starlax, not sure she was complimenting the rule or the cats on the slides holding signs.
+
+”I'd like to show you more, but we ran out of time. As science has shown, your attention must be depleted now.” Prof. Evergreen walked out of the room in a rush without even acknowledging his two students.
 
 “Hmm…” Starlax looked at Flamey with a puzzled look, “He is definitely a man with character, but not the way I expected.”
 
@@ -66,6 +72,8 @@ const Chapter1 = () => {
             {renderParagraphs(storyParts[3], 3)}
             <Rule2/>
             {renderParagraphs(storyParts[4], 4)}
+            <Rule3/>
+            {renderParagraphs(storyParts[5], 5)}
             <BounceButton url='chapter1/chat'/>
         </article>
     )

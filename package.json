@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@formkit/drag-and-drop": "^0.0.38",
     "@tanstack/react-query": "^5.37.1",
     "@uiw/react-color-block": "^2.1.1",
     "framer-motion": "^11.0.20",
