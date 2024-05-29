@@ -15,7 +15,7 @@ const Title = () => {
       animate="visible"
       transition={{duration: 0.5, delay: 0.25}}
     >
-    <h1 className="backdrop-blur-sm text-center font-bold text-white z-50 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
+    <h1 className="backdrop-blur-sm text-center font-bold text-white z-50 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl" style={{fontFamily: "VT323"}}>
       Lost Language of the Machines
     </h1>
     </motion.div>
