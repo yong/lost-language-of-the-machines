@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import OnImage from '../../../public/chapter1/bulb-on.png'
@@ -75,10 +75,26 @@ const Switch: React.FC<SwitchProps> = ({ isOn, handleSwitch }) => {
 
 const FourSwitches: React.FC = () => {
     const [switchStates, setSwitchStates] = useState([true, true, false, true]);
+    const [isCatJumping, setIsCatJumping] = useState(false);
 
     const handleSwitch = (index: number) => {
         setSwitchStates(switchStates.map((state, i) => i === index ? !state : state));
+        setIsCatJumping(true);
     };
+
+    const handleCatClick = () => {
+        setIsCatJumping(true);
+    };
+
+    useEffect(() => {
+        if (isCatJumping) {
+            const timer = setTimeout(() => {
+                setIsCatJumping(false);
+            }, 500); // adjust the time as needed
+
+            return () => clearTimeout(timer);
+        }
+    }, [isCatJumping]);
 
     return (
         <div className="mb-3 flex flex-col items-center w-full bg-blue-200 border-4 border-dashed border-blue-500 rounded-lg">
@@ -87,16 +103,19 @@ const FourSwitches: React.FC = () => {
                     <Switch key={index} isOn={state} handleSwitch={() => handleSwitch(index)} />
                 ))}
             </div>
-            <div className="flex justify-between w-full pt-12">
-                <p className="flex-grow px-4 pb-4 font-mono">
-                    <b>Switches Speak Binary!</b> When we look at them, they create a binary code: <b className="text-blue-500">{switchStates.map(state => state ? '1' : '0').join('')}</b>. 
+            <div className="grid grid-cols-4 gap-4 w-full pt-12">
+                <p className="col-span-3 px-4 pb-4 font-mono">
+                    <b>Switches Speak Binary!</b> When we look at them, they create a binary code: <b className="text-blue-500">{switchStates.map(state => state ? '1' : '0').join('')}</b>.
                     Ancient computers use billions of tiny "switches" like these to store information.
                 </p>
-                <Image src={CatImage} alt="cat" layout="responsive" className="w-1/8 md:w-1/10 lg:w-1/12 animate-bounce"/>
+                <button onClick={handleCatClick}>
+                    <Image src={CatImage} alt="cat" layout="responsive" className={`w-full ${isCatJumping ? 'animate-bounce' : ''}`} />
+                </button>
             </div>
 
         </div>
     );
 };
+
 
 export default FourSwitches;
