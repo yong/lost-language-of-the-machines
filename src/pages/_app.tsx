@@ -14,7 +14,7 @@ const MyApp = ({ Component, pageProps }: AppProps)  => {
                 <link rel="icon" type="image/svg+xml" href="/icon.svg" />
                 <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet'/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta name="description" content="An interactive storybook that aims to teach children the fundamentals of computing. . Set 500 years in the future, the narrative follows two curious friends—one a robot, the other human—as they delve into the history of our computers, a subject now ancient to them." />
+                <meta name="description" content="Discover 'Lost Language of the Machines,' an interactive storybook where kids learn about computing with friends from the future. Start the adventure now!" />
                 <title>Lost Language of the Machines</title>
             </Head>
             <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-ZJ7TNMPC51" />
