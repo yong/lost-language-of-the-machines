@@ -29,6 +29,7 @@ const initialMessages = [
     { role: "assistant", content: "RT%$#$%@^#@#$%@#burrrrrrrr" },
     { role: "user", content: "r u still there? is your cat typing?" },
     { role: "user", content: "whatever, I will see you in class tomorrow" },
+    { role: "assistant", content: "Sorry, Purry🐱 walked on my keyboard. I'd love to heard the the way you found!"},
 ];
 
 const Chat: NextPage = () => {

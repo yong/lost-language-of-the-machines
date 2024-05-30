@@ -27,6 +27,7 @@ const initialMessages = [
     { role: "assistant", content: "They even used it to build games" },
     { role: "user", content: "anyway, it is impressive to be able to create amazing things with combinations of simple stuff" },
     { role: "user", content: "Wait...do I sound like Prof Evergreen?" },
+    { role: "assistant", content: "A bit" },
 ];
 
 const Chat: NextPage = () => {

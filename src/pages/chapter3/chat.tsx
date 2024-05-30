@@ -27,7 +27,8 @@ const initialMessages = [
     { role: "assistant", content: "What? I was joking🥴" },
     { role: "user", content: "They call it header, bascially it starts with BM in ASCII (42 4D) to tell this is a bitmap format, then followed by some information about the file, like size of the file, and the width and height of the image (10 10)" },
     { role: "assistant", content: "Oh...too bad we didn't invent a new file format...I thought we can name it after my cat if we did. like 'Purry Nova Graphics', PNG for short " },
-    { role: "user", content: "Come on😒...btw that name PNG was taken...Portable Network Graphics, 1996" }
+    { role: "user", content: "Come on😒...btw that name PNG was taken...Portable Network Graphics, 1996" },
+    { role: "assistant", content: "bummer" },
 ];
 
 const Chat: NextPage = () => {
