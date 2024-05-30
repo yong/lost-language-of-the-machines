@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-
+import Head from 'next/head';
 //import transition from "../transition";
 import NextButton from '../../components/common/NextButton';
 import ChatRoom from "../../react-chat/ChatRoom";
@@ -35,8 +35,11 @@ const initialMessages = [
 const Chat: NextPage = () => {
     return (
         <div className="flex flex-col justify-center min-h-screen w-full bg-black">
-        <ChatRoom initialMessages={initialMessages}/>
-        <NextButton url="/chapter2" />
+            <Head>
+                <title>Chapter 1 Chat - Lost Language of the Machines</title>
+            </Head>
+            <ChatRoom initialMessages={initialMessages}/>
+            <NextButton url="/chapter2" />
         </div>
     );
 }
