@@ -25,7 +25,7 @@ _Is 'Archaeology Principles: Controlled Silicon of the Past' (APCSP) class as du
 
 _It turns out, in the very old days, 128 numbers was all it took to create every message and game on computers..._
 
-3. [Color and Image](https://www.LostLanguageoftheMachines.com/chapter3) (In progress)
+3. [Color and Image](https://www.LostLanguageoftheMachines.com/chapter3) (Draft Released)
 
 _I see trees of 00FF00, FF0000 roses too…_
 
@@ -33,6 +33,9 @@ _I see trees of 00FF00, FF0000 roses too…_
 5. Machine Code (Planned)
 6. Assembly (Planned)
 7. ...
+0. [Hello World!](https://www.LostLanguageoftheMachines.com/chapter0) (In Progress)
+
+_An alternative opening of the story, trying to add a main theme (building a minecraft style game world) to this story_
 
 ## Developer Instructions
 The book is mostly built with React, Next.js, and Tailwind CSS.
