@@ -11,8 +11,6 @@ const MyApp = ({ Component, pageProps }: AppProps)  => {
     return (
         <>
             <Head>
-                <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-                <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet'/>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta name="description" content="Discover 'Lost Language of the Machines,' an interactive storybook where kids learn about computing with friends from the future. Start the adventure now!" />
                 <title>Lost Language of the Machines</title>

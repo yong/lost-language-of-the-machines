@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @keyframes fadeNewChatMessage {
 	0% { opacity: 0; transform: translateY(1rem); }

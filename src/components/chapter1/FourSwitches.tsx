@@ -109,7 +109,7 @@ const FourSwitches: React.FC = () => {
                     Ancient computers use billions of tiny "switches" like these to store information.
                 </p>
                 <button onClick={handleCatClick}>
-                    <Image src={CatImage} alt="cat" layout="responsive" className={`w-full ${isCatJumping ? 'animate-bounce' : ''}`} />
+                    <Image src={CatImage} alt="cat" className={`w-full ${isCatJumping ? 'animate-bounce' : ''}`} />
                 </button>
             </div>
 
