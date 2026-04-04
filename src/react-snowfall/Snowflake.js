@@ -35,7 +35,7 @@ class Snowflake {
         const { radius, wind, speed, rotationSpeed } = this.config;
         this.params = {
             x: random(0, canvas.offsetWidth),
-            y: random(-canvas.offsetHeight, 0),
+            y: random(-canvas.offsetHeight, canvas.offsetHeight),
             rotation: random(0, 360),
             radius: random(...radius),
             speed: random(...speed),
