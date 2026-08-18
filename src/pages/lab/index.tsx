@@ -27,8 +27,12 @@ const WORLD: Entry[] = [
 ];
 
 const EXPERIMENTS: Entry[] = [
-  { href: '/lab/forge-run', name: 'Forge: a puppet you program', note: '★ the proposal — it does exactly what you said' },
-  { href: '/lab/forge-code', name: 'Forge: readable source', note: 'the game as a file a kid can read + edit' },
+  { href: '/lab/prototypes', name: '★ Prototypes to evaluate', note: 'five games from ground zero — start here' },
+  { href: '/lab/forge-run', name: 'A · A puppet you program', note: 'it does exactly what you said' },
+  { href: '/lab/forge-code', name: 'B · A file that grows', note: 'the game as a file a kid can read + edit' },
+  { href: '/lab/proto-decode', name: 'C · The lens', note: 'the same bytes are letters, colours, or a picture' },
+  { href: '/lab/proto-rules', name: 'D · The rules are things', note: 'you cannot win until you edit a rule' },
+  { href: '/lab/proto-teach', name: 'E · You teach it words', note: '“call that a dance” — chat IS the program' },
   { href: '/lab/chat', name: 'Chat UI', note: 'phone frame + narrated timeline' },
   { href: '/lab/scenes', name: 'Scroll Scenes', note: 'GSAP scene-by-scene reading' },
   { href: '/lab/three-d', name: 'Hologram Classroom', note: 'react-three-fiber, 3D' },

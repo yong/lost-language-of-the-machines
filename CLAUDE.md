@@ -36,6 +36,24 @@ just clicking. Candidates on the table:
 The View Source instinct is the one to protect: **small, readable, tweakable, and
 the tweak visibly changes the world.**
 
+### The evaluation board: `/lab/prototypes`
+
+Five playable directions, built from ground zero — none of them assume the
+13-chapter structure, the campus map, or CATVENTURE. They differ on two axes
+that actually matter: **what the kid manipulates** and **where the code lives**.
+
+| | Prototype | Manipulates | Code lives |
+|---|---|---|---|
+| A | `/lab/forge-run` — a puppet you program | instructions | a panel beside the world |
+| B | `/lab/forge-code` — a file that grows | values | the file itself |
+| C | `/lab/proto-decode` — the lens | raw data | nowhere; there is no code |
+| D | `/lab/proto-rules` — the rules are things | the rules | in the world, as objects |
+| E | `/lab/proto-teach` — you teach it words | a vocabulary | the conversation |
+
+Judge them on: can a kid do the first thing unprompted · is it behaviour or
+just appearance · is failure funnier than success · does it still teach in a
+year · could one person build all of it.
+
 ## The spine: build-a-game
 
 **Every chapter teaches one concept AND restores one piece of the game.** This is
