@@ -5,6 +5,37 @@ programming was forgotten. Flamey (a teenage robot), Starlax (his human friend),
 and Prof. Evergreen (the last person who speaks the lost language) restore a
 broken 200-year-old arcade game called CATVENTURE.
 
+## ⚠️ Status: mid-reconstruction — explore, don't settle
+
+The book is being rebuilt and **the interaction model is an open question**. Do not
+treat the current chapters as the target shape; treat them as the thing being
+replaced. When in doubt, prototype an option rather than commit to one.
+
+**All new work goes under `/lab`** — `src/pages/lab/*` and `src/components/lab/*`.
+The published book (`/chapter0` … `/chapter4`) stays untouched until a direction
+is chosen. Lab pages are `noindex` and reachable only from `/lab`, so no reader
+arrives by accident. (The shared world lives at `src/components/lab/world/`
+during the rebuild — the paths named under Architecture below are the
+post-reconstruction destination, not where the files are today.)
+
+### The open question: what kind of game?
+
+Chapters are moving from story-style prose toward **chat + game**. The hard part
+is the game: it must be **easy for a kid to join and not overwhelming**, and the
+kid should be able to **read the code and make small adjustments** — hands-on, not
+just clicking. Candidates on the table:
+
+- **Open-world / Minecraft-ish campus** — big agency, high build cost, and code
+  reading has to be bolted on somewhere.
+- **Canon-style clone-and-edit** ([tau.dev/2026/08/07/canon](https://tau.dev/2026/08/07/canon))
+  — a text-and-image world where *every* item has a clone button, anything you own
+  is editable, and every toy another player made doubles as a tutorial. Its
+  scripting language (Cant) is deliberately limited, and sparse docs are part of
+  the game. Built so the author's kid could learn the View Source way.
+
+The View Source instinct is the one to protect: **small, readable, tweakable, and
+the tweak visibly changes the world.**
+
 ## The spine: build-a-game
 
 **Every chapter teaches one concept AND restores one piece of the game.** This is
