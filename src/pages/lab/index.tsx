@@ -27,6 +27,7 @@ const WORLD: Entry[] = [
 ];
 
 const EXPERIMENTS: Entry[] = [
+  { href: '/lab/forge-run', name: 'Forge: a puppet you program', note: '★ the proposal — it does exactly what you said' },
   { href: '/lab/forge-code', name: 'Forge: readable source', note: 'the game as a file a kid can read + edit' },
   { href: '/lab/chat', name: 'Chat UI', note: 'phone frame + narrated timeline' },
   { href: '/lab/scenes', name: 'Scroll Scenes', note: 'GSAP scene-by-scene reading' },
