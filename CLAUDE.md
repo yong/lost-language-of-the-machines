@@ -50,9 +50,13 @@ that actually matter: **what the kid manipulates** and **where the code lives**.
 | D | `/lab/proto-rules` — the rules are things | the rules | in the world, as objects |
 | E | `/lab/proto-teach` — you teach it words | a vocabulary | the conversation |
 
-Judge them on: can a kid do the first thing unprompted · is it behaviour or
-just appearance · is failure funnier than success · does it still teach in a
-year · could one person build all of it.
+Judge them on: can a kid do the first thing unprompted · **does it work with a
+thumb on a phone** · is it behaviour or just appearance · is failure funnier
+than success · does it still teach in a year · could one person build all of it.
+
+The mobile constraint is not a tiebreaker, it is near the top of the list: D is
+all tapping and costs nothing on a phone; A and E both require typing code on a
+touch keyboard, which is the single biggest threat to "easy for a kid to join".
 
 ## The spine: build-a-game
 
@@ -79,6 +83,38 @@ flagged. It reads `src/data/jokes.ts` — keep that file updated when a joke get
 placed in or cut from a chapter. Cut jokes stay in the list on purpose so we
 stop re-pitching them. The page is `noindex` and deliberately unlinked from the
 campus map; it's a tool, not part of the book.
+
+## 📱 Mobile first — not mobile *also*
+
+**A kid reads this on a phone.** Assume a 390×844 screen held in one hand, with
+no keyboard, no hover, and a thumb for a cursor. Desktop is the bonus case, and
+a layout that only works at 1200px wide is not done — it is broken.
+
+This is a hard constraint on the game design, not just the CSS. It is also the
+strongest argument in the prototype evaluation below: **anything that requires
+typing pays a real tax on a phone**, and anything driven by tapping does not.
+
+1. **Never require a keyboard for a core action.** Arrow keys, Enter-to-submit
+   and keyboard shortcuts are *accelerators*, never the only way through. Every
+   one needs an on-screen equivalent — a D-pad, a button, a tap target in the
+   world. If a page says "arrow keys to move", it is unplayable on the device
+   most readers hold.
+2. **Boards and stages scale; they are never fixed pixels.** Size a world with
+   `width: min(100%, …)` plus `aspect-ratio`, and position things inside it in
+   **percentages**, not `px`. A hard-coded `CELL = 52` overflows a phone.
+3. **Tap targets are at least 44px.** Fine for a mouse is not fine for a thumb.
+   Colour swatches, steppers and rule toggles all need real hit area.
+4. **Text inputs use ≥16px font.** Below that, iOS Safari zooms the whole page
+   on focus and the reader loses the layout.
+5. **No hover-only affordances.** Anything revealed by `:hover` or a `title`
+   attribute does not exist on a touch screen.
+6. **The page never scrolls sideways.** Wide things (code, grids, tables) get
+   their own `overflow-x: auto` container.
+
+**Verify at 390px before calling any visual work done** — not by resizing a
+desktop window, but with a real mobile viewport (see Browser Automation below).
+Checking `document.documentElement.scrollWidth > clientWidth` catches overflow
+in one line.
 
 ## Writing principles
 

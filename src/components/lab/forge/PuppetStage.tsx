@@ -6,8 +6,12 @@ import { COLS, ROWS, LEVEL, FISH, Step, START } from './puppet';
 import { SPRITE, spriteColors } from './cartridge';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
-const CELL = 46;
-const PX = 2.5; // sprite pixel size — 16 * 2.5 = 40, sits inside a 46 cell
+// The board is fluid: it fills the width it is given, up to a comfortable max,
+// and everything inside is positioned in percentages. Fixed pixel cells used to
+// push a 460px board onto a 390px phone. See CLAUDE.md → mobile first.
+const MAX_W = COLS * 46;
+const PCT_X = 100 / COLS;
+const PCT_Y = 100 / ROWS;
 
 interface Props {
   step?: Step;
@@ -23,16 +27,20 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
 
   return (
     <div
-      className="relative rounded-xl border-4 border-gray-800 overflow-hidden"
-      style={{ width: COLS * CELL, height: ROWS * CELL, background: '#2B2158' }}
+      className="relative w-full rounded-xl border-4 border-gray-800 overflow-hidden"
+      style={{ maxWidth: MAX_W, aspectRatio: `${COLS} / ${ROWS}`, background: '#2B2158' }}
     >
-      {/* floor grid */}
-      <svg width={COLS * CELL} height={ROWS * CELL} className="absolute inset-0">
+      {/* floor grid — viewBox scales with the board */}
+      <svg
+        viewBox={`0 0 ${COLS} ${ROWS}`}
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full"
+      >
         {Array.from({ length: ROWS + 1 }, (_, r) => (
-          <line key={`h${r}`} x1={0} y1={r * CELL} x2={COLS * CELL} y2={r * CELL} stroke="#ffffff10" />
+          <line key={`h${r}`} x1={0} y1={r} x2={COLS} y2={r} stroke="#ffffff10" strokeWidth={0.02} />
         ))}
         {Array.from({ length: COLS + 1 }, (_, c) => (
-          <line key={`v${c}`} x1={c * CELL} y1={0} x2={c * CELL} y2={ROWS * CELL} stroke="#ffffff10" />
+          <line key={`v${c}`} x1={c} y1={0} x2={c} y2={ROWS} stroke="#ffffff10" strokeWidth={0.02} />
         ))}
       </svg>
 
@@ -42,10 +50,11 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
           ch === '#' ? (
             <div
               key={`w${x}-${y}`}
-              className="absolute rounded-sm"
+              className="absolute"
               style={{
-                left: x * CELL + 3, top: y * CELL + 3,
-                width: CELL - 6, height: CELL - 6,
+                left: `${x * PCT_X + 0.4}%`, top: `${y * PCT_Y + 0.6}%`,
+                width: `${PCT_X - 0.8}%`, height: `${PCT_Y - 1.2}%`,
+                borderRadius: 3,
                 background: '#4a3572', boxShadow: 'inset 0 -4px 0 #00000040',
               }}
             />
@@ -56,8 +65,8 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
       {/* the fish */}
       {!caught && (
         <motion.div
-          className="absolute flex items-center justify-center"
-          style={{ left: FISH.x * CELL, top: FISH.y * CELL, width: CELL, height: CELL, fontSize: 26 }}
+          className="absolute flex items-center justify-center text-[4.5vw] sm:text-2xl"
+          style={{ left: `${FISH.x * PCT_X}%`, top: `${FISH.y * PCT_Y}%`, width: `${PCT_X}%`, height: `${PCT_Y}%` }}
           animate={{ y: [0, -4, 0] }}
           transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
         >
@@ -67,18 +76,21 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
 
       {/* the puppet */}
       <motion.div
-        className="absolute"
-        animate={{ left: at.x * CELL + 3, top: at.y * CELL + 3 }}
+        className="absolute flex items-center justify-center"
+        animate={{ left: `${at.x * PCT_X}%`, top: `${at.y * PCT_Y}%` }}
         transition={{ duration: (stepMs * 0.9) / 1000, ease: 'linear' }}
+        style={{ width: `${PCT_X}%`, height: `${PCT_Y}%` }}
       >
         <motion.div
           animate={at.bonk ? { x: [0, 5, -3, 0] } : { x: 0 }}
           transition={{ duration: 0.22 }}
+          className="h-[86%] w-[86%]"
         >
           <div
-            className="grid"
+            className="grid h-full w-full"
             style={{
-              gridTemplateColumns: `repeat(16, ${PX}px)`,
+              gridTemplateColumns: 'repeat(16, 1fr)',
+              gridTemplateRows: 'repeat(16, 1fr)',
               // dir 2 = facing left; mirror the sprite so it looks where it walks
               transform: at.dir === 2 ? 'scaleX(-1)' : 'none',
             }}
@@ -87,7 +99,7 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
               row.split('').map((ch, x) => (
                 <div
                   key={`${x}-${y}`}
-                  style={{ width: PX, height: PX, backgroundColor: colors[ch] ?? 'transparent' }}
+                  style={{ backgroundColor: colors[ch] ?? 'transparent' }}
                 />
               ))
             )}
@@ -96,7 +108,7 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
 
         {at.bonk && (
           <div
-            className="absolute -top-4 left-8 text-amber-300 text-lg whitespace-nowrap"
+            className="absolute -top-3 left-[70%] whitespace-nowrap text-base text-amber-300 sm:text-lg"
             style={{ fontFamily: PIXEL_FONT }}
           >
             BONK
@@ -104,7 +116,7 @@ const PuppetStage: React.FC<Props> = ({ step, catColor, caught, stepMs = 180 }) 
         )}
 
         {at.bubble !== undefined && (
-          <div className="absolute -top-7 left-6 rounded-lg bg-white px-2 py-0.5 text-xs text-gray-900 whitespace-nowrap shadow">
+          <div className="absolute -top-5 left-[55%] whitespace-nowrap rounded-lg bg-white px-2 py-0.5 text-[10px] text-gray-900 shadow sm:text-xs">
             {at.bubble.trim() || '…'}
           </div>
         )}

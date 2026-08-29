@@ -22,8 +22,10 @@ const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
 const W = 8;
 const H = 5;
-const CELL = 44;
-const PX = 2.2;
+// Fluid board, percentage positioning — see CLAUDE.md → mobile first.
+const MAX_W = W * 44;
+const PCT_X = 100 / W;
+const PCT_Y = 100 / H;
 
 const DELTA = [{ x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 0, y: -1 }];
 
@@ -203,13 +205,14 @@ const ProtoTeach: NextPage = () => {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={busy ? 'watching…' : 'move 2'}
                   disabled={busy}
-                  className="flex-1 rounded-full bg-black/40 px-4 py-2 text-sm text-gray-100 outline-none focus:ring-1 focus:ring-sky-500 disabled:opacity-50"
-                  style={{ fontFamily: MONO }}
+                  className="min-h-11 flex-1 rounded-full bg-black/40 px-4 py-2 text-gray-100 outline-none focus:ring-1 focus:ring-sky-500 disabled:opacity-50"
+                  // 16px minimum, or iOS Safari zooms the page on focus
+                  style={{ fontFamily: MONO, fontSize: 16 }}
                 />
                 <button
                   type="submit"
                   disabled={busy}
-                  className="rounded-full bg-sky-600 px-4 text-sm text-white hover:bg-sky-500 disabled:opacity-40"
+                  className="min-h-11 touch-manipulation rounded-full bg-sky-600 px-5 text-sm text-white active:bg-sky-700 disabled:opacity-40 sm:hover:bg-sky-500"
                 >
                   send
                 </button>
@@ -219,29 +222,31 @@ const ProtoTeach: NextPage = () => {
             {/* what it does, and what it knows */}
             <div>
               <div
-                className="relative rounded-xl border-4 border-gray-800"
-                style={{ width: W * CELL, height: H * CELL, background: '#2B2158' }}
+                className="relative w-full rounded-xl border-4 border-gray-800"
+                style={{ maxWidth: MAX_W, aspectRatio: `${W} / ${H}`, background: '#2B2158' }}
               >
                 <motion.div
-                  className="absolute"
-                  animate={{ left: frame.x * CELL + 4, top: frame.y * CELL + 4 }}
+                  className="absolute flex items-center justify-center"
+                  animate={{ left: `${frame.x * PCT_X}%`, top: `${frame.y * PCT_Y}%` }}
                   transition={{ duration: 0.1 }}
+                  style={{ width: `${PCT_X}%`, height: `${PCT_Y}%` }}
                 >
                   <div
-                    className="grid"
+                    className="grid h-[86%] w-[86%]"
                     style={{
-                      gridTemplateColumns: `repeat(16, ${PX}px)`,
+                      gridTemplateColumns: 'repeat(16, 1fr)',
+                      gridTemplateRows: 'repeat(16, 1fr)',
                       transform: frame.dir === 2 ? 'scaleX(-1)' : 'none',
                     }}
                   >
                     {SPRITE.flatMap((row, y) =>
                       row.split('').map((ch, x) => (
-                        <div key={`${x}-${y}`} style={{ width: PX, height: PX, backgroundColor: colors[ch] ?? 'transparent' }} />
+                        <div key={`${x}-${y}`} style={{ backgroundColor: colors[ch] ?? 'transparent' }} />
                       ))
                     )}
                   </div>
                   {frame.bubble !== undefined && (
-                    <div className="absolute -top-6 left-5 whitespace-nowrap rounded-lg bg-white px-2 py-0.5 text-xs text-gray-900 shadow">
+                    <div className="absolute -top-4 left-[55%] whitespace-nowrap rounded-lg bg-white px-2 py-0.5 text-[10px] text-gray-900 shadow sm:text-xs">
                       {frame.bubble.trim() || '…'}
                     </div>
                   )}
@@ -257,19 +262,20 @@ const ProtoTeach: NextPage = () => {
                     <span key={w} className="rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-400">{w}</span>
                   ))}
                   {vocab.map((w) => (
-                    <span
-                      key={w}
-                      title={words[w].join(', ')}
-                      className="rounded bg-amber-400/15 px-2 py-0.5 text-xs text-amber-200"
-                    >
+                    <span key={w} className="rounded bg-amber-400/15 px-2 py-0.5 text-xs text-amber-200">
                       {w}
                     </span>
                   ))}
                 </div>
+                {/* definitions shown outright — a `title` tooltip does not exist on touch */}
                 {vocab.length > 0 && (
-                  <p className="mt-2 text-[11px] text-gray-500">
-                    {vocab.length} word{vocab.length > 1 ? 's' : ''} you taught it.
-                  </p>
+                  <ul className="mt-2 space-y-0.5">
+                    {vocab.map((w) => (
+                      <li key={w} className="text-[11px] text-gray-500" style={{ fontFamily: MONO }}>
+                        <span className="text-amber-300/80">{w}</span> = {words[w].join(', ')}
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </div>

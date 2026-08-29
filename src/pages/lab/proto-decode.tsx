@@ -176,11 +176,10 @@ const BlockCard: React.FC<{ block: Block }> = ({ block }) => {
           <button
             key={l.id}
             onClick={() => setLens(l.id)}
-            title={l.hint}
-            className={`rounded-md border px-2.5 py-1 text-xs transition ${
+            className={`min-h-11 touch-manipulation rounded-md border px-3 text-xs transition ${
               lens === l.id
                 ? 'border-amber-400 bg-amber-400/15 text-amber-200'
-                : 'border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700'
+                : 'border-gray-700 bg-gray-800 text-gray-400 active:bg-gray-600 sm:hover:bg-gray-700'
             }`}
             style={{ fontFamily: MONO }}
           >
@@ -188,6 +187,10 @@ const BlockCard: React.FC<{ block: Block }> = ({ block }) => {
           </button>
         ))}
       </div>
+      {/* the hint used to live in a `title` — invisible on a touch screen */}
+      <p className="mt-2 text-[11px] text-gray-600">
+        {LENSES.find((l) => l.id === lens)?.hint}
+      </p>
 
       <p className={`mt-3 min-h-[1.5rem] text-sm ${solved ? 'text-emerald-300' : 'text-gray-500'}`}>
         {solved ? block.reveal : 'Nothing here means anything yet. Try another lens.'}

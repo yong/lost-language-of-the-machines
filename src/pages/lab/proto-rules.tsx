@@ -16,12 +16,16 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
+import DPad from '@/components/lab/forge/DPad';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
 const W = 8;
 const H = 6;
-const CELL = 52;
+// Everything inside the board is positioned in PERCENTAGES so the world scales
+// to whatever width the phone gives it (see CLAUDE.md → mobile first).
+const PCT_X = 100 / W;
+const PCT_Y = 100 / H;
 
 // The fish is sealed in. No path exists. That is the point.
 const MAP = [
@@ -155,25 +159,26 @@ const ProtoRules: NextPage = () => {
             You can&rsquo;t reach the fish
           </h1>
           <p className="mb-8 max-w-2xl text-sm leading-relaxed text-gray-400">
-            Arrow keys to move. The fish is sealed inside a wall and there is no path to it — no amount of being good at this will help. Look underneath the world instead.
+            Tap the arrows to move (or use the arrow keys). The fish is sealed inside a wall and there is no path to it — no amount of being good at this will help. Look underneath the world instead.
           </p>
 
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
             {/* the world */}
-            <div>
+            <div className="w-full">
               <div
-                className="relative rounded-xl border-4 border-gray-800"
-                style={{ width: W * CELL, height: H * CELL, background: '#2B2158' }}
+                className="relative w-full rounded-xl border-4 border-gray-800"
+                style={{ maxWidth: 416, aspectRatio: `${W} / ${H}`, background: '#2B2158' }}
               >
                 {MAP.flatMap((row, y) =>
                   row.split('').map((ch, x) =>
                     ch === '#' ? (
                       <div
                         key={`w${x}-${y}`}
-                        className="absolute rounded-sm transition-all duration-300"
+                        className="absolute transition-all duration-300"
                         style={{
-                          left: x * CELL + 3, top: y * CELL + 3,
-                          width: CELL - 6, height: CELL - 6,
+                          left: `${x * PCT_X + 0.4}%`, top: `${y * PCT_Y + 0.6}%`,
+                          width: `${PCT_X - 0.8}%`, height: `${PCT_Y - 1.2}%`,
+                          borderRadius: 3,
                           background: ruleFor('WALL') === 'SOLID' ? '#4a3572' : '#4a357222',
                           border: ruleFor('WALL') === 'SOLID' ? 'none' : '2px dashed #4a3572',
                         }}
@@ -184,26 +189,25 @@ const ProtoRules: NextPage = () => {
 
                 {!caught && (
                   <motion.div
-                    className="absolute flex items-center justify-center"
-                    style={{ left: FISH.x * CELL, top: FISH.y * CELL, width: CELL, height: CELL, fontSize: 26 }}
+                    className="absolute flex items-center justify-center text-[5vw] sm:text-2xl"
+                    style={{ left: `${FISH.x * PCT_X}%`, top: `${FISH.y * PCT_Y}%`, width: `${PCT_X}%`, height: `${PCT_Y}%` }}
                     animate={{ y: [0, -4, 0] }}
                     transition={{ duration: 1.4, repeat: Infinity }}
                   >🐟</motion.div>
                 )}
 
                 <div
-                  className="absolute flex items-center justify-center"
-                  style={{ left: VACUUM.x * CELL, top: VACUUM.y * CELL, width: CELL, height: CELL, fontSize: 24 }}
-                  title={ruleFor('VACUUM')}
+                  className="absolute flex items-center justify-center text-[5vw] sm:text-2xl"
+                  style={{ left: `${VACUUM.x * PCT_X}%`, top: `${VACUUM.y * PCT_Y}%`, width: `${PCT_X}%`, height: `${PCT_Y}%` }}
                 >
                   {ruleFor('VACUUM') === 'DEADLY' ? '🤖' : '🧸'}
                 </div>
 
                 <motion.div
-                  className="absolute flex items-center justify-center"
-                  animate={{ left: pos.x * CELL, top: pos.y * CELL }}
+                  className="absolute flex items-center justify-center text-[5.5vw] sm:text-3xl"
+                  animate={{ left: `${pos.x * PCT_X}%`, top: `${pos.y * PCT_Y}%` }}
                   transition={{ duration: 0.12 }}
-                  style={{ width: CELL, height: CELL, fontSize: 28 }}
+                  style={{ width: `${PCT_X}%`, height: `${PCT_Y}%` }}
                 >🐱</motion.div>
 
                 <div
@@ -215,6 +219,10 @@ const ProtoRules: NextPage = () => {
               </div>
 
               <p className="mt-3 min-h-[2.5rem] max-w-[416px] text-sm text-emerald-300">{flash}</p>
+
+              <div className="mt-1 max-w-[416px]">
+                <DPad onMove={step} hint="or use the arrow keys" />
+              </div>
             </div>
 
             {/* the rules */}
@@ -225,23 +233,25 @@ const ProtoRules: NextPage = () => {
               <div className="space-y-2">
                 {rules.map((r) => (
                   <div key={r.subject} className="rounded-lg border border-gray-800 bg-[#181528] p-3">
-                    <div className="flex items-center gap-2" style={{ fontFamily: MONO }}>
+                    <div className="flex flex-wrap items-center gap-2" style={{ fontFamily: MONO }}>
                       <span className="rounded bg-gray-800 px-2 py-1 text-sm text-gray-300">{r.subject}</span>
                       <span className="text-xs text-gray-600">IS</span>
                       <button
                         onClick={() => cycle(r.subject)}
-                        className="rounded border-2 border-dashed border-amber-400/70 bg-amber-400/10 px-2 py-1 text-sm text-amber-200 hover:bg-amber-400/20"
+                        // min-h-11 = 44px, the thumb minimum
+                        className="min-h-11 touch-manipulation rounded border-2 border-dashed border-amber-400/70 bg-amber-400/10 px-4 text-sm text-amber-200 active:bg-amber-400/30 sm:hover:bg-amber-400/20"
                       >
                         {r.value}
                       </button>
-                      <span className="ml-auto text-[11px] text-gray-600">{r.note}</span>
                     </div>
+                    {/* was hover-only via ml-auto crowding; on touch it must simply be visible */}
+                    <p className="mt-1.5 text-[11px] text-gray-600">{r.note}</p>
                   </div>
                 ))}
               </div>
               <button
                 onClick={reset}
-                className="mt-3 rounded-md border border-gray-700 px-3 py-1 text-xs text-gray-400 hover:bg-gray-800"
+                className="mt-3 min-h-11 touch-manipulation rounded-md border border-gray-700 px-4 text-xs text-gray-400 active:bg-gray-700 sm:hover:bg-gray-800"
               >
                 put everything back
               </button>

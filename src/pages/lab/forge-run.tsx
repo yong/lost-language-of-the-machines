@@ -138,15 +138,16 @@ const ForgeRun: NextPage = () => {
                     spellCheck={false}
                     rows={9}
                     className="relative w-full resize-none rounded-lg bg-transparent p-2 text-amber-200 outline-none"
-                    style={{ fontFamily: MONO, fontSize: 14, lineHeight: '24px' }}
+                    // 16px minimum, or iOS Safari zooms the page on focus
+                    style={{ fontFamily: MONO, fontSize: 16, lineHeight: '24px' }}
                   />
                 </div>
 
                 <div className="mt-2 flex items-center gap-3">
                   <button
                     onClick={playing ? stop : start}
-                    className="rounded-md bg-emerald-600 px-4 py-1.5 text-white hover:bg-emerald-500"
-                    style={{ fontFamily: PIXEL_FONT, fontSize: 18 }}
+                    className="min-h-11 touch-manipulation rounded-md bg-emerald-600 px-6 text-white active:bg-emerald-700 sm:hover:bg-emerald-500"
+                    style={{ fontFamily: PIXEL_FONT, fontSize: 20 }}
                   >
                     {playing ? 'STOP ■' : 'RUN ▶'}
                   </button>

@@ -57,21 +57,22 @@ const ColorChip: React.FC<{
     <span className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-1.5 rounded px-1.5 py-0.5 border border-dashed border-amber-400/60 hover:bg-white/10"
+        className="inline-flex min-h-11 touch-manipulation items-center gap-1.5 rounded border border-dashed border-amber-400/60 px-2 active:bg-white/20 sm:hover:bg-white/10"
       >
         <span
-          className="w-3.5 h-3.5 rounded-sm border border-black/40"
+          className="h-4 w-4 rounded-sm border border-black/40"
           style={{ background: value }}
         />
         <span className="text-amber-300">{value}</span>
       </button>
       {open && (
-        <span className="absolute z-10 left-0 top-full mt-1 flex gap-1 rounded-lg bg-gray-900 p-1.5 border border-gray-700 shadow-xl">
+        <span className="absolute left-0 top-full z-10 mt-1 flex gap-1.5 rounded-lg border border-gray-700 bg-gray-900 p-2 shadow-xl">
           {options.map((o) => (
             <button
               key={o}
               onClick={() => { onChange(o); setOpen(false); }}
-              className="w-6 h-6 rounded border-2 hover:scale-110 transition"
+              // 40px swatches — a 24px target is a miss on a phone
+              className="h-10 w-10 touch-manipulation rounded border-2 transition active:scale-95"
               style={{ background: o, borderColor: o === value ? '#fbbf24' : 'transparent' }}
             />
           ))}
@@ -89,15 +90,17 @@ const NumberChip: React.FC<{
   onChange: (v: number) => void;
   render?: (v: number) => string;
 }> = ({ value, min, max, onChange, render }) => (
-  <span className="inline-flex items-center rounded border border-dashed border-amber-400/60">
+  <span className="inline-flex min-h-11 items-center rounded border border-dashed border-amber-400/60">
     <button
       onClick={() => onChange(Math.max(min, value - 1))}
-      className="px-1.5 text-gray-400 hover:text-white hover:bg-white/10"
+      aria-label="decrease"
+      className="h-11 w-9 touch-manipulation text-gray-400 active:bg-white/20 sm:hover:bg-white/10 sm:hover:text-white"
     >−</button>
     <span className="px-1.5 text-amber-300">{render ? render(value) : value}</span>
     <button
       onClick={() => onChange(Math.min(max, value + 1))}
-      className="px-1.5 text-gray-400 hover:text-white hover:bg-white/10"
+      aria-label="increase"
+      className="h-11 w-9 touch-manipulation text-gray-400 active:bg-white/20 sm:hover:bg-white/10 sm:hover:text-white"
     >+</button>
   </span>
 );
@@ -192,7 +195,7 @@ export const TierBlank: React.FC<{
               setPicked(c);
               if (c === CORRECT) onChange({ ...cartridge, catColor: CORRECT });
             }}
-            className="rounded-md border border-gray-600 bg-gray-800 px-2.5 py-1 text-xs hover:bg-gray-700"
+            className="min-h-11 touch-manipulation rounded-md border border-gray-600 bg-gray-800 px-3 text-xs active:bg-gray-600 sm:hover:bg-gray-700"
             style={{ fontFamily: MONO }}
           >
             {c}
@@ -239,14 +242,15 @@ export const TierFree: React.FC<{
         onChange={(e) => setText(e.target.value)}
         spellCheck={false}
         rows={5}
-        className="w-full rounded-lg bg-black/50 border border-gray-700 p-3 text-amber-200 outline-none focus:border-amber-500"
-        style={{ fontFamily: MONO, fontSize: 14, lineHeight: 1.7 }}
+        className="w-full rounded-lg border border-gray-700 bg-black/50 p-3 text-amber-200 outline-none focus:border-amber-500"
+        // 16px minimum, or iOS Safari zooms the page on focus
+        style={{ fontFamily: MONO, fontSize: 16, lineHeight: 1.7 }}
       />
       <div className="mt-2 flex items-center gap-3">
         <button
           onClick={run}
-          className="rounded-md bg-emerald-600 px-4 py-1.5 text-sm text-white hover:bg-emerald-500"
-          style={{ fontFamily: PIXEL_FONT, fontSize: 18 }}
+          className="min-h-11 touch-manipulation rounded-md bg-emerald-600 px-6 text-sm text-white active:bg-emerald-700 sm:hover:bg-emerald-500"
+          style={{ fontFamily: PIXEL_FONT, fontSize: 20 }}
         >
           RUN ▶
         </button>
