@@ -27,7 +27,8 @@ const WORLD: Entry[] = [
 ];
 
 const EXPERIMENTS: Entry[] = [
-  { href: '/lab/prototypes', name: '★ Prototypes to evaluate', note: 'five games from ground zero — start here' },
+  { href: '/lab/proto-rom', name: '⭐ F · No source, just bytes', note: 'THE DIRECTION — hack the cartridge' },
+  { href: '/lab/prototypes', name: '★ Prototypes to evaluate', note: 'the evaluation board' },
   { href: '/lab/forge-run', name: 'A · A puppet you program', note: 'it does exactly what you said' },
   { href: '/lab/forge-code', name: 'B · A file that grows', note: 'the game as a file a kid can read + edit' },
   { href: '/lab/proto-decode', name: 'C · The lens', note: 'the same bytes are letters, colours, or a picture' },

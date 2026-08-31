@@ -25,6 +25,19 @@ interface Proto {
 
 const PROTOS: Proto[] = [
   {
+    key: 'F',
+    href: '/lab/proto-rom',
+    name: 'No source, just bytes',
+    line: '128 bytes, no source, no compiler. Search for the orange you can see, and change it.',
+    manipulates: 'the binary itself',
+    codeLives: 'nowhere — the source is lost',
+    floor: 'lowest',
+    ceiling: 'medium',
+    build: 'small',
+    best: 'The premise forces it: nobody has the source, so of course you patch the ROM.',
+    worst: 'Changes values, never behaviour — but that wall is the plot, not a flaw.',
+  },
+  {
     key: 'A',
     href: '/lab/forge-run',
     name: 'A puppet you program',
@@ -155,8 +168,11 @@ const Prototypes: NextPage = () => (
         <Link href="/lab" className="text-xs text-gray-600 hover:text-gray-400">← the lab</Link>
 
         <h1 className="mb-3 mt-4 text-4xl text-white" style={{ fontFamily: PIXEL_FONT }}>
-          Five games, from ground zero
+          Six games, from ground zero
         </h1>
+        <p className="mb-3 max-w-2xl rounded-lg border border-amber-500/30 bg-amber-400/5 p-3 text-sm leading-relaxed text-amber-200/90">
+          <strong>F is the chosen direction.</strong> It is the only one the book&rsquo;s premise forces — the source language is lost, so patching the binary is the only thing the characters could do. The others stay here as the record of how that was decided.
+        </p>
         <p className="mb-3 max-w-2xl text-sm leading-relaxed text-gray-400">
           None of these assume the current chapter structure, the campus map, or CATVENTURE. They assume only the thing worth keeping: a kid, a machine that can be understood, and a cast that is funny about failure.
         </p>
