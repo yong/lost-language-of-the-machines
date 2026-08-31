@@ -56,6 +56,28 @@ actually runs is a binary too" — not as a teaching language.
 
 `/lab/proto-rom` is the working prototype of Act 1.
 
+#### Chapter 1 opens with the hack — and binary is the payoff, not the premise
+
+The old Chapter 1 taught base-2 and place value, then offered a mini-game. That
+is backwards for an opening. The new shape is **experience before explanation**:
+
+1. The cat is orange. Find the orange. **Make it green.** No lesson, forty
+   seconds in.
+2. The title is sitting in the letters column. Rename the game.
+3. Set the score to anything. Two bytes, one number.
+4. **Byte `0x18` is strange.** `+1` turns the sound on; `+2` turns the lights
+   *off* and puts a hat on the cat. It is plainly not counting anything.
+5. The reveal: it was never one number, it is **eight switches** — and that is
+   what binary is *for*. `251` tells you nothing; `11111011` tells you
+   everything.
+6. Invent your own combination. You just wrote a cheat code.
+
+The flags byte is why binary is **necessary** rather than a second notation for
+hex. It is also true: real cartridges and hardware registers pack booleans into
+bit fields exactly this way, and that is literally how Game Genie codes worked.
+Every one of the eight bits must do something *visible* on screen (hat, mirror,
+rainbow, ghost, debug grid…) or the lesson collapses back into a sentence.
+
 ### The earlier open question: what kind of game?
 
 Chapters are moving from story-style prose toward **chat + game**. The hard part

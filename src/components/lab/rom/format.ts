@@ -31,6 +31,8 @@ export const REGIONS: Region[] = [
     blurb: 'Two bytes make one bigger number. 0x00 0x0D is 13.' },
   { id: 'title',   label: 'TITLE',   start: 0x08, end: 0x17, hue: '#38bdf8',
     blurb: 'Text. Each byte is one letter — 0x43 is C, 0x41 is A. You can read it in the right-hand column.' },
+  { id: 'flags',   label: 'FLAGS',   start: 0x18, end: 0x18, hue: '#fbbf24',
+    blurb: 'This one is not a number. It is EIGHT SWITCHES packed into one byte — which is why it only makes sense written in binary.' },
   { id: 'palette', label: 'PALETTE', start: 0x20, end: 0x31, hue: '#f472b6',
     blurb: 'Six colours, three bytes each: red, green, blue. A colour really is just a number.' },
   { id: 'sprite',  label: 'SPRITE',  start: 0x40, end: 0x7f, hue: '#a78bfa',
@@ -63,6 +65,34 @@ const SPRITE_8 = [
   0,0,1,1,1,1,0,0,
 ];
 
+// ── the flags byte — the heart of "A Number Is a Switch" ────────────────────
+//
+// One byte at 0x18 that is not a quantity at all. Each of its eight bits turns
+// something on. This is not a teaching contrivance: real cartridges and real
+// hardware registers pack booleans into bit fields exactly like this, and
+// setting a bit you weren't supposed to set is precisely what a Game Genie code
+// does.
+//
+// It is also the only honest reason a kid needs binary. "5" tells you nothing
+// about this byte. "00000101" tells you everything.
+
+export interface Flag { bit: number; name: string; blurb: string }
+
+export const FLAGS: Flag[] = [
+  { bit: 0, name: 'SOUND',   blurb: 'the speaker works' },
+  { bit: 1, name: 'LIGHTS',  blurb: 'the cabinet lamp' },
+  { bit: 2, name: 'HAT',     blurb: 'nobody knows why this is here' },
+  { bit: 3, name: 'MIRROR',  blurb: 'everything faces the other way' },
+  { bit: 4, name: 'RAINBOW', blurb: 'the palette will not sit still' },
+  { bit: 5, name: 'BIG',     blurb: 'the cat, but more so' },
+  { bit: 6, name: 'GHOST',   blurb: 'half there' },
+  { bit: 7, name: 'DEBUG',   blurb: 'the grid the builders used' },
+];
+
+export const FLAGS_AT = 0x18;
+
+export const flagOn = (byte: number, bit: number) => ((byte >> bit) & 1) === 1;
+
 export const freshRom = (): Uint8Array => {
   const b = new Uint8Array(ROM_SIZE);
   b.set([0x43, 0x41, 0x54, 0x56], 0x00);        // "CATV"
@@ -71,6 +101,7 @@ export const freshRom = (): Uint8Array => {
   b[0x06] = 0x00; b[0x07] = 0x0d;                // score = 13
   const title = 'CATVENTURE      ';              // 16 bytes
   for (let i = 0; i < 16; i++) b[0x08 + i] = title.charCodeAt(i);
+  b[FLAGS_AT] = 0b00000010;                      // only LIGHTS survived the 500 years
   PALETTE_RGB.flat().forEach((v, i) => { b[0x20 + i] = v; });
   SPRITE_8.forEach((v, i) => { b[0x40 + i] = v; });
   return b;
@@ -86,6 +117,8 @@ export interface Cart {
   title: string;
   palette: string[];
   sprite: number[];
+  flags: number;
+  on: (name: string) => boolean;
 }
 
 const hex2 = (n: number) => n.toString(16).padStart(2, '0').toUpperCase();
@@ -98,6 +131,7 @@ export const readCart = (b: Uint8Array): Cart => {
   for (let i = 0; i < 6; i++) {
     palette.push(`#${hex2(b[0x20 + i * 3])}${hex2(b[0x21 + i * 3])}${hex2(b[0x22 + i * 3])}`);
   }
+  const flags = b[FLAGS_AT];
   const cart: Cart = {
     ok: magic === 'CATV',
     speed: b[0x05],
@@ -105,6 +139,11 @@ export const readCart = (b: Uint8Array): Cart => {
     title: String.fromCharCode(...b.slice(0x08, 0x18)).replace(/\0/g, ' ').trimEnd(),
     palette,
     sprite: Array.from(b.slice(0x40, 0x80)),
+    flags,
+    on: (name) => {
+      const f = FLAGS.find((x) => x.name === name);
+      return f ? flagOn(flags, f.bit) : false;
+    },
   };
   if (!cart.ok) {
     cart.fault = `This is not a cartridge. The first four bytes should spell CATV. They spell "${magic.replace(/[^\x20-\x7e]/g, '?')}".`;

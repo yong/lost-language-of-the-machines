@@ -18,7 +18,8 @@ import Link from 'next/link';
 import RomScreen from '@/components/lab/rom/RomScreen';
 import HexGrid from '@/components/lab/rom/HexGrid';
 import {
-  Cart, REGIONS, ROM_SIZE, findBytes, freshRom, hexToBytes, readCart, regionAt, toHex,
+  Cart, FLAGS, FLAGS_AT, REGIONS, ROM_SIZE, findBytes, freshRom, flagOn, hexToBytes,
+  readCart, regionAt, toHex,
 } from '@/components/lab/rom/format';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
@@ -166,6 +167,47 @@ const ProtoRom: NextPage = () => {
                     ))}
                   </div>
 
+                  {/* Eight bits, always. This is the row that makes binary
+                      necessary rather than decorative: the flags byte cannot be
+                      reasoned about in decimal at all. */}
+                  <div className="mb-3">
+                    <div className="mb-1 flex items-baseline justify-between">
+                      <span className="text-[10px] uppercase tracking-wider text-gray-600">
+                        the eight switches inside this byte
+                      </span>
+                      <span className="text-[10px] text-gray-600">tap one</span>
+                    </div>
+                    <div className="flex gap-1">
+                      {[7, 6, 5, 4, 3, 2, 1, 0].map((bit) => {
+                        const set = flagOn(value, bit);
+                        const flag = sel === FLAGS_AT ? FLAGS.find((f) => f.bit === bit) : undefined;
+                        return (
+                          <button
+                            key={bit}
+                            onClick={() => poke(sel, value ^ (1 << bit))}
+                            aria-label={`toggle bit ${bit}`}
+                            className={`flex min-h-11 flex-1 flex-col items-center justify-center rounded border touch-manipulation
+                              ${set ? 'border-amber-300 bg-amber-400/25 text-amber-200' : 'border-gray-700 bg-black/30 text-gray-600'}`}
+                            style={{ fontFamily: MONO }}
+                          >
+                            <span className="text-base leading-none">{set ? 1 : 0}</span>
+                            <span className="mt-0.5 text-[8px] leading-none text-gray-500">
+                              {flag ? flag.name.slice(0, 4) : 1 << bit}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {sel === FLAGS_AT && (
+                      <p className="mt-2 text-[11px] leading-relaxed text-amber-200/80">
+                        This byte is not a quantity. Written as <span style={{ fontFamily: MONO }}>{value}</span> it
+                        tells you nothing; written as{' '}
+                        <span style={{ fontFamily: MONO }}>{value.toString(2).padStart(8, '0')}</span> it tells you
+                        everything. <strong>A number is a switch.</strong>
+                      </p>
+                    )}
+                  </div>
+
                   <input
                     type="range" min={0} max={255} value={value}
                     onChange={(e) => poke(sel, Number(e.target.value))}
@@ -173,7 +215,11 @@ const ProtoRom: NextPage = () => {
                     aria-label="byte value"
                   />
                   <div className="flex flex-wrap gap-2">
-                    {[-16, -1, 1, 16].map((d) => (
+                    {/* On the flags byte the steppers ARE the place values, so
+                        "+1 then +2 then +4" each does something unrelated — the
+                        confusion that binary then explains. Elsewhere, ordinary
+                        ±1/±16 for nudging a colour channel. */}
+                    {(sel === FLAGS_AT ? [1, 2, 4, 8] : [-16, -1, 1, 16]).map((d) => (
                       <button
                         key={d}
                         onClick={() => poke(sel, value + d)}
@@ -242,6 +288,17 @@ const ProtoRom: NextPage = () => {
                   >
                     find “CAT”
                   </button>
+                  <button
+                    onClick={() => {
+                      setSelected(FLAGS_AT);
+                      setHits([FLAGS_AT]);
+                      setFound((f) => new Set(f).add('flags'));
+                      setNote('Byte 0x0018 does something odd. Add 1 and the sound comes back. Add 2 and something else entirely happens. It is not counting anything.');
+                    }}
+                    className="min-h-11 touch-manipulation rounded border border-amber-500/40 bg-amber-400/10 px-3 text-xs text-amber-200 active:bg-amber-400/25"
+                  >
+                    the strange byte
+                  </button>
                 </div>
 
                 {note && <p className="mt-3 text-xs leading-relaxed text-emerald-300">{note}</p>}
@@ -281,14 +338,31 @@ const ProtoRom: NextPage = () => {
             </div>
           </div>
 
-          {/* mischief */}
+          {/* the chapter-one shape */}
           <section className="mt-10 rounded-xl border border-amber-500/25 bg-amber-400/5 p-5">
-            <h2 className="mb-1 text-2xl text-amber-300" style={{ fontFamily: PIXEL_FONT }}>Try to break it</h2>
+            <h2 className="mb-1 text-2xl text-amber-300" style={{ fontFamily: PIXEL_FONT }}>
+              Chapter One, in order
+            </h2>
+            <p className="mb-3 max-w-2xl text-sm text-gray-400">
+              Every step is something the reader <em>does</em>. The binary lesson arrives at step 5 as the explanation of something confusing that already happened to them.
+            </p>
+            <ol className="max-w-2xl list-decimal space-y-1.5 pl-5 text-sm text-gray-300">
+              <li>The cat is orange. Find the orange. <strong>Make it green.</strong> No explanation, no lesson, forty seconds in.</li>
+              <li>The title is sitting in the letters column. Rename the game.</li>
+              <li>Set the score to whatever you like. Two bytes, one number.</li>
+              <li><strong>Byte 0x18 is strange.</strong> +1 turns the sound on. +2 does something completely unrelated. It is not counting.</li>
+              <li>The reveal: it was never one number. It is <strong>eight switches</strong> — and that is what binary is <em>for</em>.</li>
+              <li>Now invent your own combination and write it down. You just made a cheat code.</li>
+            </ol>
+          </section>
+
+          <section className="mt-6 rounded-xl border border-gray-800 bg-[#181528] p-5">
+            <h2 className="mb-2 text-2xl text-white" style={{ fontFamily: PIXEL_FONT }}>Try to break it</h2>
             <ul className="space-y-1.5 text-sm text-gray-300">
-              <li>▸ Find the orange and make the cat bright green.</li>
-              <li>▸ Change the title. The letters are in the right-hand column — 0x43 is C.</li>
-              <li>▸ Set the score to 9999. You will need <em>both</em> score bytes.</li>
-              <li>▸ Set byte 0x05 to 0. What stops?</li>
+              <li>▸ Turn on every switch at once. (What byte is that? You already know: <span style={{ fontFamily: MONO }}>11111111</span>.)</li>
+              <li>▸ Give the cat a hat and nothing else.</li>
+              <li>▸ Turn the lights off but leave the sound on.</li>
+              <li>▸ Set the score to 9999 — you will need <em>both</em> score bytes.</li>
               <li>▸ Break byte 0x00 and watch the console refuse the cartridge entirely.</li>
             </ul>
           </section>
