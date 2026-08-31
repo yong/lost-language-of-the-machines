@@ -56,6 +56,36 @@ actually runs is a binary too" — not as a teaching language.
 
 `/lab/proto-rom` is the working prototype of Act 1.
 
+#### Notation order is forced: binary → byte → hex → colour
+
+**Hex cannot be taught first.** Hex is not a rival notation to binary, it is
+*compression* of it — exactly four bits per symbol. Introduced first, "why
+sixteen?" has no answer. Introduced fourth, it answers a question the reader has
+already started asking with their thumbs.
+
+But hex is also **not a concept** — it is a typing convention. A reader can hack
+happily treating `FF` as a *label* meaning "all the way up" without knowing what
+base-16 is, exactly as you can use a hex editor without a lesson first.
+
+The problem this creates: colour is the most fun thing in the cartridge, and
+colour needs hex. The way out is not to reorder the notations but to notice that
+**a bit is not a digit, it is a light** — and a light is something a thumb can
+touch. `/lab/proto-bit` is the prototype:
+
+1. **One switch.** The machine is dead; one bit turns it on. A whole number
+   system, one button, no notation at all.
+2. **Eight switches in a row.** The number underneath is a *read-out of what you
+   just did*, not a lesson. "Byte" gets discovered as one row, never defined.
+3. **Eight rows is a picture.** The reader draws, and the eight numbers beside
+   their drawing are binary **they produced**. Real, too: this is how Game Boy
+   tiles, early Mac icons and every bitmap font actually worked.
+4. **Hex arrives as relief** — once eight digits per row is genuinely annoying.
+   Cut the byte in half; each half gets one symbol. That is the entire idea.
+5. **Colour** — three bytes, and now hex is worth having. The cartridge hack
+   begins.
+
+Nothing is explained before it has been felt.
+
 #### Chapter 1 opens with the hack — and binary is the payoff, not the premise
 
 The old Chapter 1 taught base-2 and place value, then offered a mini-game. That
