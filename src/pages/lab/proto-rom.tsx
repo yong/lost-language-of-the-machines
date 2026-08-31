@@ -10,7 +10,7 @@
 // The core move is real technique, not a teaching metaphor: SEARCH FOR A VALUE
 // YOU CAN SEE. You can see the cat is orange, so look for FF 99 33 in the
 // bytes. That is how Game Genie codes were found and how Cheat Engine works.
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -33,6 +33,14 @@ const ProtoRom: NextPage = () => {
   const [hits, setHits] = useState<number[]>([]);
   const [note, setNote] = useState<string>();
   const [perRow, setPerRow] = useState(8);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Tapping a byte near the top of a 700px dump used to leave the controls far
+  // below the fold. Bring them to the reader instead of making them hunt.
+  useEffect(() => {
+    if (selected === null) return;
+    editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [selected]);
 
   // The reader's own cartridge, persisted like every other Forge piece.
   useEffect(() => {
@@ -123,9 +131,20 @@ const ProtoRom: NextPage = () => {
             This is the whole cartridge — 128 bytes, the entire game. The language it was written in has been extinct for 500 years, so there is nothing to read and nothing to recompile. There are only numbers, and you can change them.
           </p>
 
+          {/* On a phone the console PINS to the top. The whole mechanic is
+              "change a byte and see it change in the same glance", and the dump
+              is taller than a viewport — without this the reader has to scroll
+              2000px between the slider and the screen it affects. Desktop keeps
+              the side-by-side layout below. */}
+          <div className="sticky top-0 z-30 -mx-4 mb-4 border-b border-gray-800/80 bg-[#12101f]/95 px-4 pb-2 pt-2 backdrop-blur lg:hidden">
+            <div className="mx-auto max-w-[200px]">
+              <RomScreen cart={cart} />
+            </div>
+          </div>
+
           <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
             {/* the dump */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:col-start-1 lg:row-start-1 lg:row-span-3">
               <div className="mb-2 flex items-baseline justify-between">
                 <span className="text-xs uppercase tracking-wider text-gray-500">cartridge dump — tap any byte</span>
                 <button onClick={reset} className="min-h-11 touch-manipulation rounded px-2 text-[11px] text-gray-500 active:text-gray-300">
@@ -141,7 +160,7 @@ const ProtoRom: NextPage = () => {
 
               {/* the byte editor — a byte is one number wearing four costumes */}
               {sel !== null && (
-                <div className="mt-3 rounded-xl border border-amber-500/30 bg-[#181528] p-4">
+                <div ref={editorRef} className="mt-3 scroll-mt-[200px] rounded-xl border border-amber-500/30 bg-[#181528] p-4">
                   <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-lg text-white" style={{ fontFamily: PIXEL_FONT }}>
                       byte 0x{sel.toString(16).padStart(4, '0')}
@@ -246,10 +265,13 @@ const ProtoRom: NextPage = () => {
             </div>
 
             {/* console + the search move */}
-            <div className="order-1 lg:order-2">
-              <RomScreen cart={cart} />
+            <div className="order-1 lg:col-start-2 lg:row-start-1">
+              {/* desktop only — on mobile this lives in the sticky bar above */}
+              <div className="hidden lg:block">
+                <RomScreen cart={cart} />
+              </div>
 
-              <div className="mt-4 rounded-xl border border-amber-500/25 bg-amber-400/5 p-4">
+              <div className="rounded-xl border border-amber-500/25 bg-amber-400/5 p-4 lg:mt-4">
                 <h2 className="mb-1 text-xl text-amber-300" style={{ fontFamily: PIXEL_FONT }}>
                   Search for what you can see
                 </h2>
@@ -303,9 +325,12 @@ const ProtoRom: NextPage = () => {
 
                 {note && <p className="mt-3 text-xs leading-relaxed text-emerald-300">{note}</p>}
               </div>
+            </div>
 
-              {/* the map fills in as the reader uncovers it */}
-              <div className="mt-4 rounded-xl border border-gray-800 bg-[#181528] p-4">
+            {/* the map fills in as the reader uncovers it — last on a phone,
+                since it is a progress tracker rather than a control */}
+            <div className="order-3 lg:col-start-2 lg:row-start-2">
+              <div className="rounded-xl border border-gray-800 bg-[#181528] p-4">
                 <div className="mb-2 text-[11px] uppercase tracking-wider text-gray-500">
                   what you&rsquo;ve worked out ({found.size}/{REGIONS.length})
                 </div>

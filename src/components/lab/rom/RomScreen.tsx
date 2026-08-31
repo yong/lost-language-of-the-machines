@@ -42,6 +42,10 @@ const RomScreen: React.FC<{ cart: Cart }> = ({ cart }) => {
         background: bg,
         filter: lights ? undefined : 'brightness(0.42)',
         transition: 'filter .3s',
+        // Text sizes off the CONSOLE, not the viewport: the same component
+        // renders at 200px in the mobile sticky bar and 340px on desktop, and
+        // vw units made the small one look cramped.
+        containerType: 'inline-size',
       }}
     >
       {/* DEBUG — the grid the builders used */}
@@ -58,7 +62,7 @@ const RomScreen: React.FC<{ cart: Cart }> = ({ cart }) => {
 
       <div
         className="absolute left-0 right-0 top-2 text-center text-amber-300"
-        style={{ fontFamily: PIXEL_FONT, fontSize: 'clamp(14px, 4.4vw, 22px)' }}
+        style={{ fontFamily: PIXEL_FONT, fontSize: '7.5cqw', lineHeight: 1.15 }}
       >
         {cart.title || ' '}
       </div>
@@ -99,7 +103,7 @@ const RomScreen: React.FC<{ cart: Cart }> = ({ cart }) => {
       {cart.on('SOUND') && (
         <motion.div
           className="absolute left-3 top-2 text-amber-300"
-          style={{ fontFamily: PIXEL_FONT, fontSize: 'clamp(13px, 4vw, 20px)' }}
+          style={{ fontFamily: PIXEL_FONT, fontSize: '6.5cqw', lineHeight: 1.15 }}
           animate={{ opacity: [1, 0.35, 1] }}
           transition={{ duration: 1.1, repeat: Infinity }}
         >
@@ -109,7 +113,7 @@ const RomScreen: React.FC<{ cart: Cart }> = ({ cart }) => {
 
       <div
         className="absolute bottom-2 right-3 text-amber-300"
-        style={{ fontFamily: PIXEL_FONT, fontSize: 'clamp(13px, 4vw, 20px)' }}
+        style={{ fontFamily: PIXEL_FONT, fontSize: '6.5cqw', lineHeight: 1.15 }}
       >
         SCORE {String(cart.score).padStart(5, '0')}
       </div>

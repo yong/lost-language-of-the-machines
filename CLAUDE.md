@@ -201,6 +201,16 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    attribute does not exist on a touch screen.
 6. **The page never scrolls sideways.** Wide things (code, grids, tables) get
    their own `overflow-x: auto` container.
+7. **The thing you change and the thing that changes must be visible together.**
+   No horizontal overflow is not enough — if a control is 2000px of scroll away
+   from the effect it produces, the mechanic is broken even though every metric
+   passes. On a phone, pin the stage (`sticky top-0`) and let the controls
+   scroll under it. Measure it: with a byte selected, the console and its slider
+   must both return `onScreen`.
+8. **Size text inside a scalable stage off the stage, not the viewport.** The
+   same console renders 200px wide on a phone and 340px on desktop, so `vw`
+   units make the small one cramped. Use `container-type: inline-size` plus
+   `cqw`.
 
 **Verify at 390px before calling any visual work done** — not by resizing a
 desktop window, but with a real mobile viewport (see Browser Automation below).
