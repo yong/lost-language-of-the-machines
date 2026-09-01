@@ -163,11 +163,14 @@ const ProtoRules: NextPage = () => {
           </p>
 
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
-            {/* the world */}
+            {/* the world — pinned on a phone. The rule tiles sit ~900px down
+                the page, so without this you tap WALL IS SOLID and cannot see
+                the wall change. See CLAUDE.md mobile rule 7. */}
             <div className="w-full">
+              <div className="sticky top-0 z-30 -mx-4 bg-[#12101f]/95 px-4 py-2 backdrop-blur lg:static lg:mx-0 lg:bg-transparent lg:p-0">
               <div
-                className="relative w-full rounded-xl border-4 border-gray-800"
-                style={{ maxWidth: 416, aspectRatio: `${W} / ${H}`, background: '#2B2158' }}
+                className="relative mx-auto w-full rounded-xl border-4 border-gray-800 lg:mx-0"
+                style={{ maxWidth: 300, aspectRatio: `${W} / ${H}`, background: '#2B2158' }}
               >
                 {MAP.flatMap((row, y) =>
                   row.split('').map((ch, x) =>
@@ -216,6 +219,8 @@ const ProtoRules: NextPage = () => {
                 >
                   SCORE {score}
                 </div>
+              </div>
+
               </div>
 
               <p className="mt-3 min-h-[2.5rem] max-w-[416px] text-sm text-emerald-300">{flash}</p>

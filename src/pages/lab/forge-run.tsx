@@ -117,6 +117,15 @@ const ForgeRun: NextPage = () => {
             The program is already working when the reader gets it. They change one line and press RUN. The machine never guesses what they meant — it does what they said, and that is both the joke and the lesson.
           </p>
 
+          {/* the puppet pins to the top on a phone: the stage used to sit
+              entirely below the fold, so you pressed RUN and watched nothing.
+              See CLAUDE.md mobile rule 7. */}
+          <div className="sticky top-0 z-30 -mx-6 mb-4 border-b border-gray-800/80 bg-[#12101f]/95 px-6 pb-2 pt-2 backdrop-blur lg:hidden">
+            <div className="mx-auto max-w-[300px]">
+              <PuppetStage step={current} catColor="#F2A03D" caught={caught} stepMs={stepMs} />
+            </div>
+          </div>
+
           <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
             {/* the controller — which is just the code */}
             <div>
@@ -182,8 +191,11 @@ const ForgeRun: NextPage = () => {
 
             {/* the stage */}
             <div>
-              <div className="mb-2 text-xs uppercase tracking-wider text-gray-500">the puppet</div>
-              <PuppetStage step={current} catColor="#F2A03D" caught={caught} stepMs={stepMs} />
+              <div className="mb-2 hidden text-xs uppercase tracking-wider text-gray-500 lg:block">the puppet</div>
+              {/* desktop only — on mobile the stage lives in the sticky bar */}
+              <div className="hidden lg:block">
+                <PuppetStage step={current} catColor="#F2A03D" caught={caught} stepMs={stepMs} />
+              </div>
 
               {/* the cast, watching */}
               <div className="mt-4 min-h-[104px] rounded-xl border border-gray-800 bg-[#181528] p-4">
