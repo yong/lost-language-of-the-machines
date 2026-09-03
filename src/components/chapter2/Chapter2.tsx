@@ -47,7 +47,7 @@ He paused. "You're familiar with it, I presume?"
 "Yes, it happens a lot", Prof Evergrenn nodded. He then presented the code:`,
 
 /////////////////
-`“So 54 is ‘T’, 68 is ‘h’, 65 is ‘e’....” The two friends started to translate. "And 20 is a whitespace..." 
+`“So 85 is ‘T’, 72 is ‘H’, 69 is ’E’....” The two friends started to translate. "And 20 is a whitespace..." 
 
 And the message slowly revealed itself: `,
 
