@@ -27,7 +27,8 @@ const WORLD: Entry[] = [
 ];
 
 const EXPERIMENTS: Entry[] = [
-  { href: '/lab/proto-bit', name: '⭐ The opening · A bit is a light', note: 'binary you draw with — no hex needed' },
+  { href: '/lab/novel', name: '⭐ Chapter One · chat novel', note: 'the story, with the toys inside the thread' },
+  { href: '/lab/proto-bit', name: 'The opening · A bit is a light', note: 'binary you draw with — no hex needed' },
   { href: '/lab/proto-rom', name: '⭐ F · No source, just bytes', note: 'THE DIRECTION — hack the cartridge' },
   { href: '/lab/prototypes', name: '★ Prototypes to evaluate', note: 'the evaluation board' },
   { href: '/lab/forge-run', name: 'A · A puppet you program', note: 'it does exactly what you said' },
