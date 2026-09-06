@@ -222,24 +222,33 @@ in one line.
 Chat fiction is a mature form — Hooked, Yarn, Wattpad Tap — and it has settled
 conventions worth copying rather than re-deriving. `/lab/novel` follows them.
 
-1. **One tap per message is correct.** It is the genre standard; Wattpad has
-   logged billions of taps. Do not replace it with auto-play — readers want to
-   control the pace.
-2. **The tap target is the WHOLE SCREEN, never a button.** This is the entire
-   difference between "mindless" and "slow". Our first version put a button in
-   the footer and it felt sluggish at exactly the same tap count. Note the trap:
-   putting the handler on the message list is not enough — on an early, nearly
-   empty screen most of the page is blank space *below* the messages, and taps
-   there must work too. Put it on the page container.
-3. **Rapid-fire lines arrive together.** A three-part joke is one beat, not
-   three taps (`rush: true` in the script). This cut Chapter 1 from 117 taps to
-   ~66 without cutting a single word.
+1. **The conversation plays itself, and stops only where the reader's hands are
+   needed.** The genre standard is one tap per message (Wattpad has logged
+   billions), and we tried it both ways: even with the whole screen as the tap
+   target and rapid-fire lines merged, ~66 taps to read one chapter tested
+   badly. **The toys already ask for the reader's hands; the prose should not.**
+   A tap still works — it skips the wait for anyone impatient.
+2. **Pace off reading speed, not a fixed tick.** `620ms + 34ms per character`,
+   capped at 2.3s, with `rush: true` lines at 420ms. Chapter 1 reads hands-free
+   in ~90 seconds plus however long the reader plays.
+3. **A gate halts playback and resumes the instant it is satisfied.** That is
+   the whole shape: the story waits for the switch to be flipped, then carries
+   on by itself.
 4. **Typing indicators are a narrative device, not a transition.** On every
    message they are dead time; on four per chapter they are suspense. Reserve
    them for the beat before a punchline or a reveal.
-5. **Keep bubbles to one or two sentences,** and end beats on a question or a
+5. **The page must not scroll — only the thread.** A `flex-1 overflow-y-auto`
+   column between a fixed header and footer. Page-level scrolling under sticky
+   bars made the screen jump at the bottom of the thread. Two traps that cost
+   real debugging: pin to `scrollHeight` **inside `requestAnimationFrame`** so
+   the new bubble has laid out first, and **give the footer a fixed height** —
+   ours grew 18px when a gate replaced the progress bar, which shrank the
+   thread and twitched the whole conversation every time a toy appeared.
+6. **Never yank a reader who scrolled up.** Only auto-follow when they are
+   parked within ~80px of the bottom.
+7. **Keep bubbles to one or two sentences,** and end beats on a question or a
    surprise so the reader wants to tap again.
-6. Give each character a consistent voice signature — punctuation habits,
+8. Give each character a consistent voice signature — punctuation habits,
    emoji, message length — so the reader knows who is speaking without labels.
 
 ## Writing principles
