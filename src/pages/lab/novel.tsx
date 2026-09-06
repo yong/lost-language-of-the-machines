@@ -73,18 +73,27 @@ const Novel: NextPage = () => {
 
   const done = at >= SCRIPT.length - 1;
 
+  /** How far one tap carries: past the next beat, plus any `rush` messages
+   *  riding along with it. A three-part joke is one beat, not three taps. */
+  const landing = (from: number) => {
+    let i = from + 1;
+    while (SCRIPT[i + 1]?.kind === 'msg' && (SCRIPT[i + 1] as { rush?: true }).rush) i += 1;
+    return i;
+  };
+
   const advance = () => {
     // `typing` must gate this too: during the pause `at` has not moved yet, so
     // a second tap would queue a second advance and skip a beat — sometimes a
-    // whole toy. An impatient reader taps faster than 420ms.
+    // whole toy. An impatient reader taps faster than the pause.
     if (gate || done || typing) return;
     const next = SCRIPT[at + 1];
-    // a message gets a typing pause; a toy appears at once
-    if (next?.kind === 'msg' && next.who !== 'starlax') {
+    // A typing indicator only where the script asks for one. Shown on every
+    // message it is just dead time; shown four times a chapter it is suspense.
+    if (next?.kind === 'msg' && next.typing) {
       setTyping(true);
-      setTimeout(() => { setTyping(false); setAt((v) => v + 1); }, 420);
+      setTimeout(() => { setTyping(false); setAt(landing(at)); }, 650);
     } else {
-      setAt((v) => v + 1);
+      setAt(landing(at));
     }
   };
 
@@ -96,7 +105,11 @@ const Novel: NextPage = () => {
   const hexRow = rows.find((r) => r !== 0) ?? row ?? 0b00111100;
 
   const renderToy = (b: Extract<Beat, { kind: 'toy' }>, live: boolean) => (
-    <div className="my-3 rounded-2xl border border-amber-500/30 bg-[#181528] p-3">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      role="presentation"
+      className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
+    >
       <div className="mb-2 text-center text-[10px] uppercase tracking-widest text-amber-400/80">{b.label}</div>
       {b.toy === 'switch' && <SwitchToy on={switchOn} onChange={live ? setSwitchOn : () => {}} />}
       {b.toy === 'row' && <RowToy value={row} onChange={live ? setRow : () => {}} />}
@@ -111,9 +124,21 @@ const Novel: NextPage = () => {
         <title>[lab] Chapter One, as a chat novel - Lost Language of the Machines</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      <main className="flex min-h-screen flex-col bg-[#12101f] text-gray-300">
+      {/* The whole page is the tap target — chat-fiction readers tap anywhere,
+          never a button they must aim at. Putting this on the thread div was
+          not enough: on a nearly-empty first screen most of the page is empty
+          space BELOW the messages, and taps there did nothing. */}
+      <main
+        onClick={advance}
+        role="presentation"
+        className="flex min-h-screen cursor-pointer select-none flex-col bg-[#12101f] text-gray-300"
+      >
         {/* thread header */}
-        <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-gray-800 bg-[#12101f]/95 px-4 py-3 backdrop-blur">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          role="presentation"
+          className="sticky top-0 z-20 flex cursor-auto items-center gap-3 border-b border-gray-800 bg-[#12101f]/95 px-4 py-3 backdrop-blur"
+        >
           <Link href="/lab" className="text-xs text-gray-600 hover:text-gray-400">←</Link>
           <div className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</div>
           <div>
@@ -125,7 +150,10 @@ const Novel: NextPage = () => {
           </span>
         </div>
 
-        {/* the thread */}
+        {/* The thread — and the tap target. Chat fiction readers tap ANYWHERE,
+            never a button they have to aim at; that is the whole difference
+            between "mindless" and "slow". The toys stop propagation so playing
+            with a switch doesn't also advance the story. */}
         <div className="mx-auto w-full max-w-lg flex-1 px-4 py-4">
           {shown.map((b, i) => {
             if (b.kind === 'beat') return <div key={i} className="h-5" />;
@@ -168,7 +196,8 @@ const Novel: NextPage = () => {
 
         {/* the only control: keep reading. It refuses while a toy is unplayed. */}
         <div className="sticky bottom-0 border-t border-gray-800 bg-[#12101f]/95 px-4 py-3 backdrop-blur">
-          <div className="mx-auto max-w-lg">
+          {/* only the end-of-chapter link needs to swallow the tap */}
+          <div className="mx-auto max-w-lg" onClick={(e) => done && e.stopPropagation()} role="presentation">
             {done ? (
               <div className="text-center">
                 <p className="mb-2 text-sm text-gray-500">
@@ -181,18 +210,16 @@ const Novel: NextPage = () => {
                   chapter two →
                 </Link>
               </div>
+            ) : gate ? (
+              // The one time the footer speaks up: the story is waiting on the
+              // reader's hands, and it should say so plainly.
+              <p className="py-3 text-center text-sm text-amber-300">{gate} ↑</p>
             ) : (
-              <button
-                onClick={advance}
-                disabled={!!gate}
-                className={`min-h-12 w-full rounded-full text-sm transition ${
-                  gate
-                    ? 'cursor-not-allowed bg-[#1c1930] text-gray-600'
-                    : 'bg-sky-600 text-white active:bg-sky-700'
-                }`}
-              >
-                {gate ?? 'next'}
-              </button>
+              // Not a button — the whole screen is the button. This is a hint,
+              // and it fades once the reader has obviously got it.
+              <p className={`py-3 text-center text-xs text-gray-600 transition-opacity ${at > 3 ? 'opacity-40' : ''}`}>
+                tap anywhere to keep reading
+              </p>
             )}
           </div>
         </div>

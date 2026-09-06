@@ -217,6 +217,31 @@ desktop window, but with a real mobile viewport (see Browser Automation below).
 Checking `document.documentElement.scrollWidth > clientWidth` catches overflow
 in one line.
 
+## 💬 Chat-novel pacing (learned from the genre)
+
+Chat fiction is a mature form — Hooked, Yarn, Wattpad Tap — and it has settled
+conventions worth copying rather than re-deriving. `/lab/novel` follows them.
+
+1. **One tap per message is correct.** It is the genre standard; Wattpad has
+   logged billions of taps. Do not replace it with auto-play — readers want to
+   control the pace.
+2. **The tap target is the WHOLE SCREEN, never a button.** This is the entire
+   difference between "mindless" and "slow". Our first version put a button in
+   the footer and it felt sluggish at exactly the same tap count. Note the trap:
+   putting the handler on the message list is not enough — on an early, nearly
+   empty screen most of the page is blank space *below* the messages, and taps
+   there must work too. Put it on the page container.
+3. **Rapid-fire lines arrive together.** A three-part joke is one beat, not
+   three taps (`rush: true` in the script). This cut Chapter 1 from 117 taps to
+   ~66 without cutting a single word.
+4. **Typing indicators are a narrative device, not a transition.** On every
+   message they are dead time; on four per chapter they are suspense. Reserve
+   them for the beat before a punchline or a reveal.
+5. **Keep bubbles to one or two sentences,** and end beats on a question or a
+   surprise so the reader wants to tap again.
+6. Give each character a consistent voice signature — punctuation habits,
+   emoji, message length — so the reader knows who is speaking without labels.
+
 ## Writing principles
 
 1. **The joke IS the lesson.** The best material teaches while it's being funny —
