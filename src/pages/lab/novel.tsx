@@ -90,7 +90,10 @@ const Novel: NextPage = () => {
         const d = JSON.parse(s);
         if (Array.isArray(d?.rows) && d.rows.length === 8) setRows(d.rows);
       }
-      const m = window.localStorage.getItem(MODE_KEY);
+      // ?reveal=dots|bubble|stream gives each experience its own shareable URL
+      // and wins over whatever was last used on this device.
+      const q = new URLSearchParams(window.location.search).get('reveal');
+      const m = q ?? window.localStorage.getItem(MODE_KEY);
       if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
     } catch { /* a bad save just means defaults */ }
   }, []);
