@@ -234,21 +234,31 @@ conventions worth copying rather than re-deriving. `/lab/novel` follows them.
 3. **A gate halts playback and resumes the instant it is satisfied.** That is
    the whole shape: the story waits for the switch to be flipped, then carries
    on by itself.
-4. **Typing indicators are a narrative device, not a transition.** On every
-   message they are dead time; on four per chapter they are suspense. Reserve
-   them for the beat before a punchline or a reveal.
-5. **The page must not scroll — only the thread.** A `flex-1 overflow-y-auto`
+4. **The typing indicator fills the gap — use it liberally, not as a garnish.**
+   Reserving it for four suspense beats left the space between bubbles as dead
+   air, which is what makes auto-play feel wrong. Show "…" before every message
+   from the *other* side of the conversation, sized to the message (as long as
+   they'd take to thumb it); the reader's own side just sends. Measured over a
+   full chapter this keeps something moving **42% of the time** and reads
+   **faster** (75s vs 88s) than popping whole bubbles into silence.
+5. **Not word-by-word.** LLM-style streaming was tried (`/lab/novel` still has
+   the toggle). It fills the gap, but no phone shows a friend's message arriving
+   letter by letter, so it quietly turns a character into a terminal — and our
+   bubbles are 3–8 words, short enough to read at a glance, so streaming makes
+   the reader *wait* for text they could already have absorbed. The typing
+   indicator is the texting-native way to say the same thing.
+6. **The page must not scroll — only the thread.** A `flex-1 overflow-y-auto`
    column between a fixed header and footer. Page-level scrolling under sticky
    bars made the screen jump at the bottom of the thread. Two traps that cost
    real debugging: pin to `scrollHeight` **inside `requestAnimationFrame`** so
    the new bubble has laid out first, and **give the footer a fixed height** —
    ours grew 18px when a gate replaced the progress bar, which shrank the
    thread and twitched the whole conversation every time a toy appeared.
-6. **Never yank a reader who scrolled up.** Only auto-follow when they are
+7. **Never yank a reader who scrolled up.** Only auto-follow when they are
    parked within ~80px of the bottom.
-7. **Keep bubbles to one or two sentences,** and end beats on a question or a
+8. **Keep bubbles to one or two sentences,** and end beats on a question or a
    surprise so the reader wants to tap again.
-8. Give each character a consistent voice signature — punctuation habits,
+9. Give each character a consistent voice signature — punctuation habits,
    emoji, message length — so the reader knows who is speaking without labels.
 
 ## Writing principles

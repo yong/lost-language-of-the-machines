@@ -6,10 +6,21 @@
 // nothing continues until the reader flips it.
 //
 // PACING: the conversation plays ITSELF at a reading rate and stops only where
-// the reader's hands are needed. The genre standard (Hooked, Yarn, Wattpad Tap)
-// is one tap per message, but tapping ~66 times to read a chapter tested badly
-// here — the toys already ask for the reader's hands, so the prose should not.
-// A tap still works: it skips the wait for anyone impatient.
+// the reader's hands are needed. A tap always skips the wait.
+//
+// REVEAL MODES — the open question, switchable in the header so it can be
+// judged by feel rather than argument:
+//
+//   dots    a typing indicator sized to the message, then the whole bubble.
+//           The texting-native answer: this is exactly what the "…" is FOR,
+//           it fills the gap with motion, and the bubble still lands whole so
+//           a 5-word line is read at a glance.
+//   bubble  bubble pops, then a reading dwell. Correct idiom, but the gap is
+//           dead air — which is the complaint that started this.
+//   stream  word by word, like an LLM. Fills the gap, but no phone has ever
+//           shown a friend's message arriving letter by letter, so it quietly
+//           makes Flamey feel like a terminal instead of a person. Kept
+//           because the instinct behind it is right even if the idiom isn't.
 //
 // LAYOUT: the page itself never scrolls. The thread is a flex-1 overflow
 // container between a fixed header and footer. Page-level scrolling fought the
@@ -26,6 +37,15 @@ import { SwitchToy, RowToy, GridToy, HexToy } from '@/components/lab/novel/toys'
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const STORAGE_KEY = 'gameforge.novel.v1';
+const MODE_KEY = 'gameforge.novel.reveal';
+
+type Reveal = 'dots' | 'bubble' | 'stream';
+const MODES: Reveal[] = ['dots', 'bubble', 'stream'];
+const MODE_LABEL: Record<Reveal, string> = {
+  dots: '••• typing',
+  bubble: 'whole bubble',
+  stream: 'word by word',
+};
 
 const WHO = {
   starlax: { name: 'Starlax', cls: 'bg-sky-600 text-white', side: 'right' as const },
@@ -33,15 +53,22 @@ const WHO = {
   nova: { name: 'Nova', cls: 'bg-[#26223a] text-amber-200', side: 'left' as const },
 };
 
-/** How long to sit on a beat before the next one arrives. Reading rate, not a
- *  fixed tick: a long bubble gets longer, a rapid-fire line comes straight in. */
-const delayFor = (b: Beat | undefined): number => {
+const WORD_MS = 55;
+
+/** Time to sit on a beat once it has fully arrived — reading rate, not a tick. */
+const dwellFor = (b: Beat | undefined, mode: Reveal): number => {
   if (!b) return 0;
   if (b.kind === 'toy') return 450;
   if (b.kind === 'beat') return 650;
-  if (b.rush) return 420;
-  return Math.min(2300, 620 + b.text.length * 34);
+  if (b.rush) return mode === 'bubble' ? 420 : 320;
+  if (mode === 'bubble') return Math.min(2300, 620 + b.text.length * 34);
+  // dots and stream both spend time *arriving*, so they need less time sitting
+  return Math.min(1400, 380 + b.text.length * 18);
 };
+
+/** How long "…" shows before a bubble lands — how long they'd take to thumb it. */
+const dotsFor = (b: Beat) =>
+  b.kind === 'msg' && b.typing ? 800 : Math.min(1100, 320 + (b.kind === 'msg' ? b.text.length : 0) * 13);
 
 const Novel: NextPage = () => {
   const [at, setAt] = useState(0);
@@ -50,6 +77,9 @@ const Novel: NextPage = () => {
   const [rows, setRows] = useState<number[]>(Array(8).fill(0));
   const [cut, setCut] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [mode, setMode] = useState<Reveal>('dots');
+  /** words of the newest bubble revealed so far; Infinity = fully arrived */
+  const [words, setWords] = useState(Infinity);
   const scroller = useRef<HTMLDivElement>(null);
   const stick = useRef(true); // is the reader parked at the bottom?
 
@@ -60,17 +90,20 @@ const Novel: NextPage = () => {
         const d = JSON.parse(s);
         if (Array.isArray(d?.rows) && d.rows.length === 8) setRows(d.rows);
       }
-    } catch { /* a bad save just means a blank grid */ }
+      const m = window.localStorage.getItem(MODE_KEY);
+      if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
+    } catch { /* a bad save just means defaults */ }
   }, []);
   useEffect(() => {
     try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows })); } catch { /* private mode */ }
   }, [rows]);
+  useEffect(() => {
+    try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
+  }, [mode]);
 
   const shown = SCRIPT.slice(0, at + 1);
-  const pending = useMemo(() => {
-    const b = SCRIPT[at];
-    return b?.kind === 'toy' ? b : null;
-  }, [at]);
+  const current = SCRIPT[at];
+  const pending = current?.kind === 'toy' ? current : null;
 
   const gate = useMemo(() => {
     if (!pending) return null;
@@ -85,38 +118,60 @@ const Novel: NextPage = () => {
 
   const done = at >= SCRIPT.length - 1;
 
+  /** total words in the newest bubble, or 0 if the newest beat isn't a message */
+  const wordCount = current?.kind === 'msg' ? current.text.split(' ').length : 0;
+  const streaming = mode === 'stream' && wordCount > 0 && words < wordCount;
+
   const step = useCallback(() => {
     setAt((v) => {
       const next = SCRIPT[v + 1];
       if (!next) return v;
-      if (next.kind === 'msg' && next.typing) {
-        // the four places a typing indicator earns its delay
+      // Dots before a bubble: always in `dots` mode for the other side of the
+      // conversation (your own messages just send), and always for the four
+      // scripted suspense beats regardless of mode.
+      const theirs = next.kind === 'msg' && next.who !== 'starlax';
+      const wantDots = next.kind === 'msg' && (next.typing || (mode === 'dots' && theirs));
+      if (wantDots) {
         setTyping(true);
-        window.setTimeout(() => { setTyping(false); setAt((x) => x + 1); }, 700);
+        window.setTimeout(() => { setTyping(false); setAt((x) => x + 1); }, dotsFor(next));
         return v;
       }
       return v + 1;
     });
-  }, []);
+  }, [mode]);
 
-  // The conversation plays itself. It halts on a gate and resumes the moment
-  // the reader satisfies it, because `gate` is a dependency.
+  // Reset the word counter whenever a new beat lands. This has to be its own
+  // effect: setting it from inside the setAt updater is a side effect in a
+  // reducer, which React is free to double-invoke or reorder — and did, so
+  // nothing ever streamed.
   useEffect(() => {
-    if (done || gate || typing) return;
-    const t = window.setTimeout(step, delayFor(SCRIPT[at + 1]));
+    const b = SCRIPT[at];
+    setWords(mode === 'stream' && b?.kind === 'msg' ? 0 : Infinity);
+  }, [at, mode]);
+
+  // word-by-word arrival
+  useEffect(() => {
+    if (!streaming) return;
+    const t = window.setTimeout(() => setWords((w) => w + 1), WORD_MS);
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, step]);
+  }, [streaming, words]);
+
+  // The conversation plays itself, halting on a gate and resuming the instant
+  // it is satisfied because `gate` is a dependency.
+  useEffect(() => {
+    if (done || gate || typing || streaming) return;
+    const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1], mode));
+    return () => window.clearTimeout(t);
+  }, [at, gate, typing, done, streaming, step, mode]);
 
   // Follow the conversation only while the reader is parked at the bottom —
-  // never yank them back down if they scrolled up to re-read something.
+  // never yank them back if they scrolled up to re-read.
   useEffect(() => {
     const el = scroller.current;
     if (!el || !stick.current) return;
-    // after paint, not during: pinning to scrollHeight before the new bubble has
-    // laid out lands slightly short and the thread twitches backwards.
     const id = requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
     return () => cancelAnimationFrame(id);
-  }, [at, typing]);
+  }, [at, typing, words]);
 
   const onScroll = () => {
     const el = scroller.current;
@@ -124,7 +179,15 @@ const Novel: NextPage = () => {
     stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
   };
 
-  const hurry = () => { if (!gate && !done && !typing) step(); };
+  /** A tap completes the arriving message, or skips the wait for the next. */
+  const hurry = () => {
+    if (gate || done) return;
+    if (streaming) { setWords(Infinity); return; }
+    if (typing) return;
+    step();
+  };
+
+  const cycleMode = () => setMode((m) => MODES[(MODES.indexOf(m) + 1) % MODES.length]);
 
   const renderToy = (b: Extract<Beat, { kind: 'toy' }>, live: boolean) => (
     <div
@@ -163,9 +226,13 @@ const Novel: NextPage = () => {
             <div className="text-sm text-gray-100">Flamey</div>
             <div className="text-[10px] text-gray-500">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
           </div>
-          <span className="ml-auto text-gray-600" style={{ fontFamily: PIXEL_FONT, fontSize: 14 }}>
-            CH 1 · A NUMBER IS A SWITCH
-          </span>
+          {/* the experiment, switchable mid-read */}
+          <button
+            onClick={cycleMode}
+            className="ml-auto min-h-11 rounded-full border border-gray-700 px-3 text-[11px] text-gray-400 active:bg-gray-800"
+          >
+            {MODE_LABEL[mode]}
+          </button>
         </div>
 
         {/* the only thing that scrolls */}
@@ -181,6 +248,8 @@ const Novel: NextPage = () => {
               if (b.kind === 'beat') return <div key={i} className="h-5" />;
               if (b.kind === 'toy') return <div key={i}>{renderToy(b, i === at)}</div>;
               const w = WHO[b.who];
+              const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
+              const text = partial ? b.text.split(' ').slice(0, words).join(' ') : b.text;
               return (
                 <motion.div
                   key={i}
@@ -189,7 +258,8 @@ const Novel: NextPage = () => {
                   className={`mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`}
                 >
                   <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
-                    {b.text}
+                    {text}
+                    {partial && <span className="ml-0.5 opacity-50">▍</span>}
                   </span>
                 </motion.div>
               );
