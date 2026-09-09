@@ -164,6 +164,8 @@ Full structure, per-chapter jokes and mini-game specs live in `raw/`:
 - `raw/joke-bank.md` — placed jokes plus spares, and what makes one land
 - `raw/drafts/` — full prose drafts for chapters 4–13 and the epilogue
 - `raw/open-world-design.md` — the campus map design and its roadmap
+- `raw/chat-novel-pacing-experiment.md` — how a chapter's conversation should
+  arrive on screen: four modes built, measured and judged
 
 Read these before proposing new chapter content. Cast, running gags and the
 finale's reveals are all tracked there.
@@ -217,49 +219,42 @@ desktop window, but with a real mobile viewport (see Browser Automation below).
 Checking `document.documentElement.scrollWidth > clientWidth` catches overflow
 in one line.
 
-## 💬 Chat-novel pacing (learned from the genre)
+## 💬 Chat-novel pacing — settled: static blocks
 
-Chat fiction is a mature form — Hooked, Yarn, Wattpad Tap — and it has settled
-conventions worth copying rather than re-deriving. `/lab/novel` follows them.
+**Full experiment log and measurements: `raw/chat-novel-pacing-experiment.md`.**
+Four reveal modes were built and read end to end; read that before proposing a
+different one.
 
-1. **The conversation plays itself, and stops only where the reader's hands are
-   needed.** The genre standard is one tap per message (Wattpad has logged
-   billions), and we tried it both ways: even with the whole screen as the tap
-   target and rapid-fire lines merged, ~66 taps to read one chapter tested
-   badly. **The toys already ask for the reader's hands; the prose should not.**
-   A tap still works — it skips the wait for anyone impatient.
-2. **Pace off reading speed, not a fixed tick.** `620ms + 34ms per character`,
-   capped at 2.3s, with `rush: true` lines at 420ms. Chapter 1 reads hands-free
-   in ~90 seconds plus however long the reader plays.
-3. **A gate halts playback and resumes the instant it is satisfied.** That is
-   the whole shape: the story waits for the switch to be flipped, then carries
-   on by itself.
-4. **The typing indicator fills the gap — use it liberally, not as a garnish.**
-   Reserving it for four suspense beats left the space between bubbles as dead
-   air, which is what makes auto-play feel wrong. Show "…" before every message
-   from the *other* side of the conversation, sized to the message (as long as
-   they'd take to thumb it); the reader's own side just sends. Measured over a
-   full chapter this keeps something moving **42% of the time** and reads
-   **faster** (75s vs 88s) than popping whole bubbles into silence.
-5. **Not word-by-word.** LLM-style streaming was tried (`/lab/novel` still has
-   the toggle). It fills the gap, but no phone shows a friend's message arriving
-   letter by letter, so it quietly turns a character into a terminal — and our
-   bubbles are 3–8 words, short enough to read at a glance, so streaming makes
-   the reader *wait* for text they could already have absorbed. The typing
-   indicator is the texting-native way to say the same thing.
-6. **The page must not scroll — only the thread.** A `flex-1 overflow-y-auto`
-   column between a fixed header and footer. Page-level scrolling under sticky
-   bars made the screen jump at the bottom of the thread. Two traps that cost
-   real debugging: pin to `scrollHeight` **inside `requestAnimationFrame`** so
-   the new bubble has laid out first, and **give the footer a fixed height** —
-   ours grew 18px when a gate replaced the progress bar, which shrank the
-   thread and twitched the whole conversation every time a toy appeared.
-7. **Never yank a reader who scrolled up.** Only auto-follow when they are
-   parked within ~80px of the bottom.
-8. **Keep bubbles to one or two sentences,** and end beats on a question or a
-   surprise so the reader wants to tap again.
-9. Give each character a consistent voice signature — punctuation habits,
-   emoji, message length — so the reader knows who is speaking without labels.
+**The finding that decided it: animation competes with the content.** Motion
+pulls the eye to the *arrival* of the words rather than to the words. For a book
+whose job is comprehension, that is the wrong trade however good it feels in a
+demo — even though the liveliest mode (typing dots) also measured the *fastest*
+(75s vs 88s for popping bubbles into silence).
+
+**What to build:**
+
+1. **Static blocks, gated by the toys.** Cut the script into segments at each
+   interactive beat. A segment renders **whole and still** — the reader reads at
+   their own speed, nothing moving — and ends at its toy. Playing the toy reveals
+   the next segment. Attention goes: words → hands → words. Never a contest.
+2. **Land the reader at the TOP of a new block,** not the bottom. You follow the
+   tail of a live conversation, but you read a block from its start.
+3. **One quick fade per block, never per message.** Staggered bubbles are the
+   distraction being removed.
+4. **A gate reveals the next block and nothing else moves.** No clock at all.
+5. **Keep bubbles to one or two sentences,** and end beats on a question or a
+   surprise.
+6. Give each character a consistent voice signature — punctuation habits, emoji,
+   message length — so the reader knows who is speaking without labels.
+
+Still worth stealing later: **typing dots** were much better than popping
+bubbles, and **word-by-word combined with dots** is unexplored. All four modes
+survive in `/lab/novel` behind `?reveal=static|dots|bubble|stream`.
+
+**Layout rules that cost real debugging** (details in the log): the page must
+not scroll — only the thread; pin to `scrollHeight` inside
+`requestAnimationFrame`; give the footer a fixed height; never `setState` inside
+another `setState` updater; never yank a reader who scrolled up.
 
 ## Writing principles
 

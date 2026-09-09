@@ -39,13 +39,23 @@ import { PIXEL_FONT } from '@/components/lab/world/theme';
 const STORAGE_KEY = 'gameforge.novel.v1';
 const MODE_KEY = 'gameforge.novel.reveal';
 
-type Reveal = 'dots' | 'bubble' | 'stream';
-const MODES: Reveal[] = ['dots', 'bubble', 'stream'];
+type Reveal = 'static' | 'dots' | 'bubble' | 'stream';
+const MODES: Reveal[] = ['static', 'dots', 'bubble', 'stream'];
 const MODE_LABEL: Record<Reveal, string> = {
+  static: 'static',
   dots: '••• typing',
   bubble: 'whole bubble',
   stream: 'word by word',
 };
+
+/** In static mode the script is cut into blocks at each toy. A block renders
+ *  whole and still; playing its toy reveals the next one. `blockEnd(i)` is the
+ *  index of the last beat to show when block `i` is the live one. */
+const BLOCK_ENDS: number[] = (() => {
+  const ends = SCRIPT.map((b, i) => (b.kind === 'toy' ? i : -1)).filter((i) => i >= 0);
+  ends.push(SCRIPT.length - 1); // the tail after the final toy
+  return ends;
+})();
 
 const WHO = {
   starlax: { name: 'Starlax', cls: 'bg-sky-600 text-white', side: 'right' as const },
@@ -77,7 +87,10 @@ const Novel: NextPage = () => {
   const [rows, setRows] = useState<number[]>(Array(8).fill(0));
   const [cut, setCut] = useState(false);
   const [typing, setTyping] = useState(false);
-  const [mode, setMode] = useState<Reveal>('dots');
+  const [mode, setMode] = useState<Reveal>('static');
+  /** static mode only: which block is live */
+  const [block, setBlock] = useState(0);
+  const blockTop = useRef<HTMLDivElement>(null);
   /** words of the newest bubble revealed so far; Infinity = fully arrived */
   const [words, setWords] = useState(Infinity);
   const scroller = useRef<HTMLDivElement>(null);
@@ -104,9 +117,14 @@ const Novel: NextPage = () => {
     try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
   }, [mode]);
 
-  const shown = SCRIPT.slice(0, at + 1);
-  const current = SCRIPT[at];
+  // In static mode the live position is the end of the current block, not a
+  // per-message cursor: everything up to the block's toy is already on screen.
+  const head = mode === 'static' ? BLOCK_ENDS[block] : at;
+  const shown = SCRIPT.slice(0, head + 1);
+  const current = SCRIPT[head];
   const pending = current?.kind === 'toy' ? current : null;
+  /** first beat of the live block — where the reader should start reading */
+  const blockStart = mode === 'static' ? (block === 0 ? 0 : BLOCK_ENDS[block - 1] + 1) : -1;
 
   const gate = useMemo(() => {
     if (!pending) return null;
@@ -119,7 +137,7 @@ const Novel: NextPage = () => {
     }
   }, [pending, switchOn, row, rows, cut]);
 
-  const done = at >= SCRIPT.length - 1;
+  const done = mode === 'static' ? block >= BLOCK_ENDS.length - 1 && !gate : at >= SCRIPT.length - 1;
 
   /** total words in the newest bubble, or 0 if the newest beat isn't a message */
   const wordCount = current?.kind === 'msg' ? current.text.split(' ').length : 0;
@@ -159,22 +177,39 @@ const Novel: NextPage = () => {
     return () => window.clearTimeout(t);
   }, [streaming, words]);
 
-  // The conversation plays itself, halting on a gate and resuming the instant
-  // it is satisfied because `gate` is a dependency.
+  // Static mode has no clock at all: a satisfied gate reveals the next block
+  // and nothing else moves. The animated modes play themselves, halting on a
+  // gate and resuming the instant it is satisfied.
   useEffect(() => {
+    if (mode === 'static') {
+      if (gate || done) return;
+      const t = window.setTimeout(() => setBlock((b) => Math.min(b + 1, BLOCK_ENDS.length - 1)), 500);
+      return () => window.clearTimeout(t);
+    }
     if (done || gate || typing || streaming) return;
     const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1], mode));
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, streaming, step, mode]);
+  }, [at, gate, typing, done, streaming, step, mode, block]);
 
-  // Follow the conversation only while the reader is parked at the bottom —
-  // never yank them back if they scrolled up to re-read.
+  // Static mode lands the reader at the TOP of the block that just appeared —
+  // you follow the tail of a live conversation, but you read a block from its
+  // start. The animated modes follow the tail instead, and only while the
+  // reader is parked at the bottom: never yank someone who scrolled up.
   useEffect(() => {
     const el = scroller.current;
-    if (!el || !stick.current) return;
+    if (!el) return;
+    if (mode === 'static') {
+      const id = requestAnimationFrame(() => {
+        const top = blockTop.current;
+        if (block === 0 || !top) { el.scrollTop = 0; return; }
+        el.scrollTop = Math.max(0, top.offsetTop - 12);
+      });
+      return () => cancelAnimationFrame(id);
+    }
+    if (!stick.current) return;
     const id = requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
     return () => cancelAnimationFrame(id);
-  }, [at, typing, words]);
+  }, [at, typing, words, mode, block]);
 
   const onScroll = () => {
     const el = scroller.current;
@@ -184,7 +219,8 @@ const Novel: NextPage = () => {
 
   /** A tap completes the arriving message, or skips the wait for the next. */
   const hurry = () => {
-    if (gate || done) return;
+    // nothing to hurry in static mode — the block is already all there
+    if (mode === 'static' || gate || done) return;
     if (streaming) { setWords(Infinity); return; }
     if (typing) return;
     step();
@@ -208,7 +244,36 @@ const Novel: NextPage = () => {
     </div>
   );
 
-  const progress = Math.round((at / (SCRIPT.length - 1)) * 100);
+  const renderBeat = (b: Beat, i: number, animated: boolean) => {
+    if (b.kind === 'beat') return <div key={i} className="h-5" />;
+    if (b.kind === 'toy') return <div key={i}>{renderToy(b, i === head)}</div>;
+    const w = WHO[b.who];
+    const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
+    const text = partial ? b.text.split(' ').slice(0, words).join(' ') : b.text;
+    const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
+    const bubble = (
+      <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
+        {text}
+        {partial && <span className="ml-0.5 opacity-50">▍</span>}
+      </span>
+    );
+    return animated ? (
+      <motion.div
+        key={i}
+        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.18 }}
+        className={row}
+      >
+        {bubble}
+      </motion.div>
+    ) : (
+      <div key={i} className={row}>{bubble}</div>
+    );
+  };
+
+  const progress = Math.round(
+    ((mode === 'static' ? head : at) / (SCRIPT.length - 1)) * 100
+  );
 
   return (
     <>
@@ -247,26 +312,21 @@ const Novel: NextPage = () => {
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
         >
           <div className="mx-auto max-w-lg">
-            {shown.map((b, i) => {
-              if (b.kind === 'beat') return <div key={i} className="h-5" />;
-              if (b.kind === 'toy') return <div key={i}>{renderToy(b, i === at)}</div>;
-              const w = WHO[b.who];
-              const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
-              const text = partial ? b.text.split(' ').slice(0, words).join(' ') : b.text;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.18 }}
-                  className={`mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
-                    {text}
-                    {partial && <span className="ml-0.5 opacity-50">▍</span>}
-                  </span>
+            {mode === 'static' ? (
+              <>
+                {/* everything already read: completely still */}
+                {SCRIPT.slice(0, blockStart).map((b, i) => renderBeat(b, i, false))}
+                {/* the block that just appeared: ONE fade for the whole block,
+                    never per message — staggered bubbles are exactly the
+                    distraction we are removing. */}
+                <motion.div key={block} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>
+                  <div ref={blockTop} />
+                  {SCRIPT.slice(blockStart, head + 1).map((b, i) => renderBeat(b, blockStart + i, false))}
                 </motion.div>
-              );
-            })}
+              </>
+            ) : (
+              shown.map((b, i) => renderBeat(b, i, true))
+            )}
 
             <AnimatePresence>
               {typing && (
