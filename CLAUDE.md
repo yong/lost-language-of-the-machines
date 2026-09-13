@@ -247,9 +247,17 @@ demo — even though the liveliest mode (typing dots) also measured the *fastest
 6. Give each character a consistent voice signature — punctuation habits, emoji,
    message length — so the reader knows who is speaking without labels.
 
-Still worth stealing later: **typing dots** were much better than popping
-bubbles, and **word-by-word combined with dots** is unexplored. All four modes
-survive in `/lab/novel` behind `?reveal=static|dots|bubble|stream`.
+**Never scroll the page for the reader.** A reader's speed and a playback clock
+cannot be kept in sync, so the machine must not try: when the newest message
+falls below the fold, playback **stops** and waits. Continuing is a page turn
+the reader asked for, not a conveyor belt. (Needs a bottom spacer of ~a
+viewport, or the newest message can only be brought to the bottom of the view
+rather than the top.) User experience matters as much as the content.
+
+Two modes ship — `?reveal=static|dots`; anything else falls back to static.
+"whole bubble" and "word by word" were **dropped**: dead air, and a character
+turned into a terminal. **Word-by-word combined with dots** stays unexplored and
+is the one idea still worth revisiting.
 
 **Layout rules that cost real debugging** (details in the log): the page must
 not scroll — only the thread; pin to `scrollHeight` inside

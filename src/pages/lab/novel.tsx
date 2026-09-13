@@ -5,28 +5,22 @@
 // Starlax says the cabinet has one switch, and the switch is right there, and
 // nothing continues until the reader flips it.
 //
-// PACING: the conversation plays ITSELF at a reading rate and stops only where
-// the reader's hands are needed. A tap always skips the wait.
+// TWO REVEAL MODES survive the pacing experiment (log:
+// raw/chat-novel-pacing-experiment.md). "whole bubble" and "word by word" were
+// dropped — the first was dead air, the second turned a character into a
+// terminal.
 //
-// REVEAL MODES — the open question, switchable in the header so it can be
-// judged by feel rather than argument:
-//
+//   static  the default. The script is cut into blocks at each toy; a block
+//           renders whole and still, ends at its toy, and playing the toy
+//           reveals the next. Nothing moves, so nothing competes with the words.
 //   dots    a typing indicator sized to the message, then the whole bubble.
-//           The texting-native answer: this is exactly what the "…" is FOR,
-//           it fills the gap with motion, and the bubble still lands whole so
-//           a 5-word line is read at a glance.
-//   bubble  bubble pops, then a reading dwell. Correct idiom, but the gap is
-//           dead air — which is the complaint that started this.
-//   stream  word by word, like an LLM. Fills the gap, but no phone has ever
-//           shown a friend's message arriving letter by letter, so it quietly
-//           makes Flamey feel like a terminal instead of a person. Kept
-//           because the instinct behind it is right even if the idiom isn't.
 //
-// LAYOUT: the page itself never scrolls. The thread is a flex-1 overflow
-// container between a fixed header and footer. Page-level scrolling fought the
-// sticky bars and every new message interrupted the previous smooth-scroll
-// animation, which is what made the screen jump around at the bottom.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+// THE PAGE IS NEVER SCROLLED FOR THE READER. A reader's speed and a playback
+// clock cannot be kept in sync, so the machine must not try: when the newest
+// message would fall below the fold, playback STOPS and waits. The reader
+// continues when they are ready, and only then does the view move — a page
+// turn they asked for, not an interruption.
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -39,18 +33,12 @@ import { PIXEL_FONT } from '@/components/lab/world/theme';
 const STORAGE_KEY = 'gameforge.novel.v1';
 const MODE_KEY = 'gameforge.novel.reveal';
 
-type Reveal = 'static' | 'dots' | 'bubble' | 'stream';
-const MODES: Reveal[] = ['static', 'dots', 'bubble', 'stream'];
-const MODE_LABEL: Record<Reveal, string> = {
-  static: 'static',
-  dots: '••• typing',
-  bubble: 'whole bubble',
-  stream: 'word by word',
-};
+type Reveal = 'static' | 'dots';
+const MODES: Reveal[] = ['static', 'dots'];
+const MODE_LABEL: Record<Reveal, string> = { static: 'static', dots: '••• typing' };
 
-/** In static mode the script is cut into blocks at each toy. A block renders
- *  whole and still; playing its toy reveals the next one. `blockEnd(i)` is the
- *  index of the last beat to show when block `i` is the live one. */
+/** In static mode the script is cut into blocks at each toy. `BLOCK_ENDS[i]` is
+ *  the index of the last beat to show while block `i` is the live one. */
 const BLOCK_ENDS: number[] = (() => {
   const ends = SCRIPT.map((b, i) => (b.kind === 'toy' ? i : -1)).filter((i) => i >= 0);
   ends.push(SCRIPT.length - 1); // the tail after the final toy
@@ -63,16 +51,12 @@ const WHO = {
   nova: { name: 'Nova', cls: 'bg-[#26223a] text-amber-200', side: 'left' as const },
 };
 
-const WORD_MS = 55;
-
-/** Time to sit on a beat once it has fully arrived — reading rate, not a tick. */
-const dwellFor = (b: Beat | undefined, mode: Reveal): number => {
+/** Time to sit on a beat once it has arrived — reading rate, not a fixed tick. */
+const dwellFor = (b: Beat | undefined): number => {
   if (!b) return 0;
   if (b.kind === 'toy') return 450;
   if (b.kind === 'beat') return 650;
-  if (b.rush) return mode === 'bubble' ? 420 : 320;
-  if (mode === 'bubble') return Math.min(2300, 620 + b.text.length * 34);
-  // dots and stream both spend time *arriving*, so they need less time sitting
+  if (b.rush) return 320;
   return Math.min(1400, 380 + b.text.length * 18);
 };
 
@@ -88,13 +72,12 @@ const Novel: NextPage = () => {
   const [cut, setCut] = useState(false);
   const [typing, setTyping] = useState(false);
   const [mode, setMode] = useState<Reveal>('static');
-  /** static mode only: which block is live */
   const [block, setBlock] = useState(0);
-  const blockTop = useRef<HTMLDivElement>(null);
-  /** words of the newest bubble revealed so far; Infinity = fully arrived */
-  const [words, setWords] = useState(Infinity);
+  /** dots mode: playback is parked because the newest message is below the fold */
+  const [waiting, setWaiting] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
-  const stick = useRef(true); // is the reader parked at the bottom?
+  const blockTop = useRef<HTMLDivElement>(null);
+  const newest = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -103,8 +86,8 @@ const Novel: NextPage = () => {
         const d = JSON.parse(s);
         if (Array.isArray(d?.rows) && d.rows.length === 8) setRows(d.rows);
       }
-      // ?reveal=dots|bubble|stream gives each experience its own shareable URL
-      // and wins over whatever was last used on this device.
+      // ?reveal=static|dots gives each experience its own shareable URL and
+      // wins over whatever was last used on this device.
       const q = new URLSearchParams(window.location.search).get('reveal');
       const m = q ?? window.localStorage.getItem(MODE_KEY);
       if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
@@ -117,16 +100,13 @@ const Novel: NextPage = () => {
     try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
   }, [mode]);
 
-  // In static mode the live position is the end of the current block, not a
-  // per-message cursor: everything up to the block's toy is already on screen.
   const head = mode === 'static' ? BLOCK_ENDS[block] : at;
   const shown = SCRIPT.slice(0, head + 1);
   const current = SCRIPT[head];
   const pending = current?.kind === 'toy' ? current : null;
-  /** first beat of the live block — where the reader should start reading */
   const blockStart = mode === 'static' ? (block === 0 ? 0 : BLOCK_ENDS[block - 1] + 1) : -1;
 
-  const gate = useMemo(() => {
+  const gate = (() => {
     if (!pending) return null;
     switch (pending.toy) {
       case 'switch': return switchOn ? null : 'flip the switch';
@@ -135,93 +115,80 @@ const Novel: NextPage = () => {
         ? null : 'draw something first';
       case 'hex': return cut ? null : 'cut it in half';
     }
-  }, [pending, switchOn, row, rows, cut]);
+  })();
 
-  const done = mode === 'static' ? block >= BLOCK_ENDS.length - 1 && !gate : at >= SCRIPT.length - 1;
-
-  /** total words in the newest bubble, or 0 if the newest beat isn't a message */
-  const wordCount = current?.kind === 'msg' ? current.text.split(' ').length : 0;
-  const streaming = mode === 'stream' && wordCount > 0 && words < wordCount;
+  const done = mode === 'static'
+    ? block >= BLOCK_ENDS.length - 1 && !gate
+    : at >= SCRIPT.length - 1;
 
   const step = useCallback(() => {
     setAt((v) => {
       const next = SCRIPT[v + 1];
       if (!next) return v;
-      // Dots before a bubble: always in `dots` mode for the other side of the
-      // conversation (your own messages just send), and always for the four
-      // scripted suspense beats regardless of mode.
       const theirs = next.kind === 'msg' && next.who !== 'starlax';
-      const wantDots = next.kind === 'msg' && (next.typing || (mode === 'dots' && theirs));
-      if (wantDots) {
+      if (next.kind === 'msg' && (next.typing || theirs)) {
         setTyping(true);
         window.setTimeout(() => { setTyping(false); setAt((x) => x + 1); }, dotsFor(next));
         return v;
       }
       return v + 1;
     });
-  }, [mode]);
+  }, []);
 
-  // Reset the word counter whenever a new beat lands. This has to be its own
-  // effect: setting it from inside the setAt updater is a side effect in a
-  // reducer, which React is free to double-invoke or reorder — and did, so
-  // nothing ever streamed.
+  /** Is the newest beat fully on screen from where the reader currently is? */
+  const newestVisible = () => {
+    const el = scroller.current, m = newest.current;
+    if (!el || !m) return true;
+    return m.offsetTop + m.offsetHeight <= el.scrollTop + el.clientHeight - 4;
+  };
+
+  // dots mode: the moment a message lands below the fold, park. This is the
+  // whole rule — the reader's eyes set the pace, never the clock.
   useEffect(() => {
-    const b = SCRIPT[at];
-    setWords(mode === 'stream' && b?.kind === 'msg' ? 0 : Infinity);
-  }, [at, mode]);
+    if (mode !== 'dots' || done) return;
+    const id = requestAnimationFrame(() => { if (!newestVisible()) setWaiting(true); });
+    return () => cancelAnimationFrame(id);
+  }, [at, typing, mode, done]);
 
-  // word-by-word arrival
-  useEffect(() => {
-    if (!streaming) return;
-    const t = window.setTimeout(() => setWords((w) => w + 1), WORD_MS);
-    return () => window.clearTimeout(t);
-  }, [streaming, words]);
-
-  // Static mode has no clock at all: a satisfied gate reveals the next block
-  // and nothing else moves. The animated modes play themselves, halting on a
-  // gate and resuming the instant it is satisfied.
+  // Playback. Static has no clock at all: a satisfied gate reveals the next
+  // block. Dots plays on until a gate, or until the fold parks it.
   useEffect(() => {
     if (mode === 'static') {
       if (gate || done) return;
       const t = window.setTimeout(() => setBlock((b) => Math.min(b + 1, BLOCK_ENDS.length - 1)), 500);
       return () => window.clearTimeout(t);
     }
-    if (done || gate || typing || streaming) return;
-    const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1], mode));
+    if (done || gate || typing || waiting) return;
+    const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1]));
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, streaming, step, mode, block]);
+  }, [at, gate, typing, done, waiting, step, mode, block]);
 
-  // Static mode lands the reader at the TOP of the block that just appeared —
-  // you follow the tail of a live conversation, but you read a block from its
-  // start. The animated modes follow the tail instead, and only while the
-  // reader is parked at the bottom: never yank someone who scrolled up.
+  // The ONLY two times the view moves, and both are answers to something the
+  // reader did: a block they unlocked, or a page they asked to turn.
   useEffect(() => {
     const el = scroller.current;
-    if (!el) return;
-    if (mode === 'static') {
-      const id = requestAnimationFrame(() => {
-        const top = blockTop.current;
-        if (block === 0 || !top) { el.scrollTop = 0; return; }
-        el.scrollTop = Math.max(0, top.offsetTop - 12);
-      });
-      return () => cancelAnimationFrame(id);
-    }
-    if (!stick.current) return;
-    const id = requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+    if (!el || mode !== 'static') return;
+    const id = requestAnimationFrame(() => {
+      const top = blockTop.current;
+      if (block === 0 || !top) { el.scrollTop = 0; return; }
+      el.scrollTop = Math.max(0, top.offsetTop - 12);
+    });
     return () => cancelAnimationFrame(id);
-  }, [at, typing, words, mode, block]);
+  }, [mode, block]);
 
-  const onScroll = () => {
-    const el = scroller.current;
-    if (!el) return;
-    stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  /** Reader scrolled far enough themselves — no need to make them tap as well. */
+  const onScroll = () => { if (waiting && newestVisible()) setWaiting(false); };
+
+  const turnPage = () => {
+    const el = scroller.current, m = newest.current;
+    if (el && m) el.scrollTop = Math.max(0, m.offsetTop - 12);
+    setWaiting(false);
   };
 
-  /** A tap completes the arriving message, or skips the wait for the next. */
-  const hurry = () => {
-    // nothing to hurry in static mode — the block is already all there
+  /** A tap means "more": turn the page if parked, else skip the current wait. */
+  const tap = () => {
     if (mode === 'static' || gate || done) return;
-    if (streaming) { setWords(Infinity); return; }
+    if (waiting) { turnPage(); return; }
     if (typing) return;
     step();
   };
@@ -245,21 +212,19 @@ const Novel: NextPage = () => {
   );
 
   const renderBeat = (b: Beat, i: number, animated: boolean) => {
-    if (b.kind === 'beat') return <div key={i} className="h-5" />;
-    if (b.kind === 'toy') return <div key={i}>{renderToy(b, i === head)}</div>;
+    const ref = i === head ? newest : undefined;
+    if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" />;
+    if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b, i === head)}</div>;
     const w = WHO[b.who];
-    const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
-    const text = partial ? b.text.split(' ').slice(0, words).join(' ') : b.text;
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
     const bubble = (
       <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
-        {text}
-        {partial && <span className="ml-0.5 opacity-50">▍</span>}
+        {b.text}
       </span>
     );
     return animated ? (
       <motion.div
-        key={i}
+        key={i} ref={ref}
         initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.18 }}
         className={row}
@@ -267,13 +232,11 @@ const Novel: NextPage = () => {
         {bubble}
       </motion.div>
     ) : (
-      <div key={i} className={row}>{bubble}</div>
+      <div key={i} ref={ref} className={row}>{bubble}</div>
     );
   };
 
-  const progress = Math.round(
-    ((mode === 'static' ? head : at) / (SCRIPT.length - 1)) * 100
-  );
+  const progress = Math.round((head / (SCRIPT.length - 1)) * 100);
 
   return (
     <>
@@ -294,7 +257,6 @@ const Novel: NextPage = () => {
             <div className="text-sm text-gray-100">Flamey</div>
             <div className="text-[10px] text-gray-500">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
           </div>
-          {/* the experiment, switchable mid-read */}
           <button
             onClick={cycleMode}
             className="ml-auto min-h-11 rounded-full border border-gray-700 px-3 text-[11px] text-gray-400 active:bg-gray-800"
@@ -303,22 +265,21 @@ const Novel: NextPage = () => {
           </button>
         </div>
 
-        {/* the only thing that scrolls */}
+        {/* the only thing that scrolls, and only the reader moves it */}
         <div
           ref={scroller}
           onScroll={onScroll}
-          onClick={hurry}
+          onClick={tap}
           role="presentation"
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
         >
           <div className="mx-auto max-w-lg">
             {mode === 'static' ? (
               <>
-                {/* everything already read: completely still */}
                 {SCRIPT.slice(0, blockStart).map((b, i) => renderBeat(b, i, false))}
                 {/* the block that just appeared: ONE fade for the whole block,
                     never per message — staggered bubbles are exactly the
-                    distraction we are removing. */}
+                    distraction we removed. */}
                 <motion.div key={block} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>
                   <div ref={blockTop} />
                   {SCRIPT.slice(blockStart, head + 1).map((b, i) => renderBeat(b, blockStart + i, false))}
@@ -347,6 +308,10 @@ const Novel: NextPage = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* room to turn a page: without it the newest message cannot be
+                brought to the top of the viewport, only to the bottom. */}
+            {mode === 'dots' && !done && <div style={{ height: '62vh' }} />}
           </div>
         </div>
 
@@ -366,12 +331,14 @@ const Novel: NextPage = () => {
               </div>
             ) : (
               // Fixed height on purpose: when this swapped between a progress
-              // bar and a line of gate text it changed the footer's height,
-              // which shrank the thread and clamped its scroll — the whole
-              // conversation twitched 18px every time a toy appeared.
+              // bar and a line of text it changed the footer's height, which
+              // shrank the thread and clamped its scroll — the whole
+              // conversation twitched every time a toy appeared.
               <div className="flex h-10 items-center justify-center">
                 {gate ? (
                   <p className="text-center text-sm text-amber-300">{gate} ↑</p>
+                ) : waiting ? (
+                  <button onClick={turnPage} className="text-sm text-sky-300">keep reading ↓</button>
                 ) : (
                   <div className="h-0.5 w-full overflow-hidden rounded bg-gray-800">
                     <motion.div className="h-full bg-sky-600" animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />

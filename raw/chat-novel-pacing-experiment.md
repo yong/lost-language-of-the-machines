@@ -10,12 +10,16 @@
 
 ## The four
 
-| | Mode | How a message arrives | URL |
+| | Mode | How a message arrives | Verdict |
 |---|---|---|---|
-| **0** | **static** ⭐ **chosen** | the whole block appears at once; nothing moves | `?reveal=static` |
-| 1 | dots | "…" sized to the message, then the whole bubble | `?reveal=dots` |
-| 2 | bubble | bubble pops, then a silent reading pause | `?reveal=bubble` |
-| 3 | stream | word by word with a caret, like an LLM | `?reveal=stream` |
+| **0** | **static** | the whole block appears at once; nothing moves | ⭐ **kept, default** — `?reveal=static` |
+| 1 | dots | "…" sized to the message, then the whole bubble | ⭐ **kept** — `?reveal=dots` |
+| 2 | bubble | bubble pops, then a silent reading pause | ❌ **dropped** — dead air |
+| 3 | stream | word by word with a caret, like an LLM | ❌ **dropped** — turns a character into a terminal |
+
+Only `static` and `dots` ship. The two dropped modes were deleted from the page
+in a later pass; their findings are kept below so they are not re-proposed.
+An unknown `?reveal=` value falls back to `static`.
 
 ## Measured
 
@@ -61,6 +65,35 @@ Two details that matter:
   begin reading at the start of what just appeared.
 - **A single quick fade on the block, never per-message.** Enough to signal
   "this is new", not enough to animate the reading.
+
+## Never scroll the page for the reader
+
+The rule that came out of reading `dots` on a real phone, and the most
+important one on this page:
+
+> **A reader's speed and a playback clock cannot be kept in sync, so the machine
+> must not try.** When the newest message falls below the fold, playback
+> **stops** and waits. The reader continues when they are ready — and only then
+> does the view move.
+
+Auto-scrolling to follow the tail feels helpful and is not: it moves text the
+reader is still reading. The correct shape is a **page turn the reader asked
+for**, not a conveyor belt.
+
+Implementation notes:
+
+- Park the moment the newest beat is not fully visible from the reader's current
+  scroll position; show a plain "keep reading ↓".
+- Continuing scrolls the newest message to the **top**, giving a fresh screenful
+  to fill. This needs a **bottom spacer of roughly a viewport** — without it the
+  newest message can only be brought to the bottom of the view, not the top.
+- If the reader scrolls down far enough themselves, resume without making them
+  tap as well.
+- Static mode does move the view once per block, but only in answer to a gate
+  the reader just satisfied — the same "you asked for it" test.
+
+Measured: 25 seconds of hands-free watching, **scrollTop never left 0**, and a
+full chapter took 7 reader-initiated page turns.
 
 ## Why word-by-word is the wrong idiom here regardless
 
