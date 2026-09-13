@@ -254,10 +254,10 @@ the reader asked for, not a conveyor belt. (Needs a bottom spacer of ~a
 viewport, or the newest message can only be brought to the bottom of the view
 rather than the top.) User experience matters as much as the content.
 
-Two modes ship — `?reveal=static|dots`; anything else falls back to static.
-"whole bubble" and "word by word" were **dropped**: dead air, and a character
-turned into a terminal. **Word-by-word combined with dots** stays unexplored and
-is the one idea still worth revisiting.
+Three modes ship — `?reveal=static|dots|stream`; anything else falls back to
+static. Only **"whole bubble" was dropped**: a bubble popping into silence is
+dead air, and it measured slowest. `stream` is kept because **combining it with
+the dots** is the one unexplored idea still worth trying.
 
 **Layout rules that cost real debugging** (details in the log): the page must
 not scroll — only the thread; pin to `scrollHeight` inside

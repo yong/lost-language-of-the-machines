@@ -15,11 +15,12 @@
 | **0** | **static** | the whole block appears at once; nothing moves | ⭐ **kept, default** — `?reveal=static` |
 | 1 | dots | "…" sized to the message, then the whole bubble | ⭐ **kept** — `?reveal=dots` |
 | 2 | bubble | bubble pops, then a silent reading pause | ❌ **dropped** — dead air |
-| 3 | stream | word by word with a caret, like an LLM | ❌ **dropped** — turns a character into a terminal |
+| 3 | stream | word by word with a caret, like an LLM | ⭐ **kept** — `?reveal=stream` |
 
-Only `static` and `dots` ship. The two dropped modes were deleted from the page
-in a later pass; their findings are kept below so they are not re-proposed.
-An unknown `?reveal=` value falls back to `static`.
+`static`, `dots` and `stream` all ship. **Only `bubble` was deleted** — a bubble
+popping into silence is dead air, and it measured slowest. `stream` is kept
+despite the objections below because **combining it with the dots** is the one
+unexplored idea worth trying. An unknown `?reveal=` value falls back to `static`.
 
 ## Measured
 

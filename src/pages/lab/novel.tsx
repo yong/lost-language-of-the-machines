@@ -5,15 +5,17 @@
 // Starlax says the cabinet has one switch, and the switch is right there, and
 // nothing continues until the reader flips it.
 //
-// TWO REVEAL MODES survive the pacing experiment (log:
-// raw/chat-novel-pacing-experiment.md). "whole bubble" and "word by word" were
-// dropped — the first was dead air, the second turned a character into a
-// terminal.
+// THREE REVEAL MODES survive the pacing experiment (log:
+// raw/chat-novel-pacing-experiment.md). Only "whole bubble" was dropped: a
+// bubble popping into silence is dead air, and it measured slowest.
 //
 //   static  the default. The script is cut into blocks at each toy; a block
 //           renders whole and still, ends at its toy, and playing the toy
 //           reveals the next. Nothing moves, so nothing competes with the words.
 //   dots    a typing indicator sized to the message, then the whole bubble.
+//   stream  word by word with a caret. Kept because combining it WITH the dots
+//           is the one unexplored idea worth trying; a tap completes the
+//           message instantly.
 //
 // THE PAGE IS NEVER SCROLLED FOR THE READER. A reader's speed and a playback
 // clock cannot be kept in sync, so the machine must not try: when the newest
@@ -33,9 +35,15 @@ import { PIXEL_FONT } from '@/components/lab/world/theme';
 const STORAGE_KEY = 'gameforge.novel.v1';
 const MODE_KEY = 'gameforge.novel.reveal';
 
-type Reveal = 'static' | 'dots';
-const MODES: Reveal[] = ['static', 'dots'];
-const MODE_LABEL: Record<Reveal, string> = { static: 'static', dots: '••• typing' };
+type Reveal = 'static' | 'dots' | 'stream';
+const MODES: Reveal[] = ['static', 'dots', 'stream'];
+const MODE_LABEL: Record<Reveal, string> = {
+  static: 'static',
+  dots: '••• typing',
+  stream: 'word by word',
+};
+
+const WORD_MS = 55;
 
 /** In static mode the script is cut into blocks at each toy. `BLOCK_ENDS[i]` is
  *  the index of the last beat to show while block `i` is the live one. */
@@ -75,6 +83,8 @@ const Novel: NextPage = () => {
   const [block, setBlock] = useState(0);
   /** dots mode: playback is parked because the newest message is below the fold */
   const [waiting, setWaiting] = useState(false);
+  /** stream mode: words of the newest bubble revealed so far; Infinity = done */
+  const [words, setWords] = useState(Infinity);
   const scroller = useRef<HTMLDivElement>(null);
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
@@ -135,6 +145,24 @@ const Novel: NextPage = () => {
     });
   }, []);
 
+  const wordCount = current?.kind === 'msg' ? current.text.split(' ').length : 0;
+  const streaming = mode === 'stream' && wordCount > 0 && words < wordCount;
+
+  // Reset the word counter whenever a new beat lands. This has to be its own
+  // effect: setting it from inside the setAt updater is a side effect in a
+  // reducer, which React is free to double-invoke or reorder — and did, so
+  // nothing ever streamed.
+  useEffect(() => {
+    const b = SCRIPT[at];
+    setWords(mode === 'stream' && b?.kind === 'msg' ? 0 : Infinity);
+  }, [at, mode]);
+
+  useEffect(() => {
+    if (!streaming) return;
+    const t = window.setTimeout(() => setWords((w) => w + 1), WORD_MS);
+    return () => window.clearTimeout(t);
+  }, [streaming, words]);
+
   /** Is the newest beat fully on screen from where the reader currently is? */
   const newestVisible = () => {
     const el = scroller.current, m = newest.current;
@@ -142,13 +170,13 @@ const Novel: NextPage = () => {
     return m.offsetTop + m.offsetHeight <= el.scrollTop + el.clientHeight - 4;
   };
 
-  // dots mode: the moment a message lands below the fold, park. This is the
-  // whole rule — the reader's eyes set the pace, never the clock.
+  // Any timed mode: the moment a message lands below the fold, park. This is
+  // the whole rule — the reader's eyes set the pace, never the clock.
   useEffect(() => {
-    if (mode !== 'dots' || done) return;
+    if (mode === 'static' || done) return;
     const id = requestAnimationFrame(() => { if (!newestVisible()) setWaiting(true); });
     return () => cancelAnimationFrame(id);
-  }, [at, typing, mode, done]);
+  }, [at, typing, words, mode, done]);
 
   // Playback. Static has no clock at all: a satisfied gate reveals the next
   // block. Dots plays on until a gate, or until the fold parks it.
@@ -158,10 +186,10 @@ const Novel: NextPage = () => {
       const t = window.setTimeout(() => setBlock((b) => Math.min(b + 1, BLOCK_ENDS.length - 1)), 500);
       return () => window.clearTimeout(t);
     }
-    if (done || gate || typing || waiting) return;
+    if (done || gate || typing || waiting || streaming) return;
     const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1]));
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, waiting, step, mode, block]);
+  }, [at, gate, typing, done, waiting, streaming, step, mode, block]);
 
   // The ONLY two times the view moves, and both are answers to something the
   // reader did: a block they unlocked, or a page they asked to turn.
@@ -185,10 +213,12 @@ const Novel: NextPage = () => {
     setWaiting(false);
   };
 
-  /** A tap means "more": turn the page if parked, else skip the current wait. */
+  /** A tap means "more": turn the page if parked, finish the message if it is
+   *  still arriving, else skip the current wait. */
   const tap = () => {
     if (mode === 'static' || gate || done) return;
     if (waiting) { turnPage(); return; }
+    if (streaming) { setWords(Infinity); return; }
     if (typing) return;
     step();
   };
@@ -217,9 +247,11 @@ const Novel: NextPage = () => {
     if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b, i === head)}</div>;
     const w = WHO[b.who];
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
+    const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
     const bubble = (
       <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
-        {b.text}
+        {partial ? b.text.split(' ').slice(0, words).join(' ') : b.text}
+        {partial && <span className="ml-0.5 opacity-50">▍</span>}
       </span>
     );
     return animated ? (
@@ -311,7 +343,7 @@ const Novel: NextPage = () => {
 
             {/* room to turn a page: without it the newest message cannot be
                 brought to the top of the viewport, only to the bottom. */}
-            {mode === 'dots' && !done && <div style={{ height: '62vh' }} />}
+            {mode !== 'static' && !done && <div style={{ height: '62vh' }} />}
           </div>
         </div>
 
