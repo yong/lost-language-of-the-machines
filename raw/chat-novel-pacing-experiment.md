@@ -4,9 +4,9 @@
 > built and read end to end on a 390×844 phone. This is what we learned and what
 > we settled on, so it does not get re-litigated.
 >
-> All four survive in `/lab/novel`, switchable from the header button or by URL
-> (`?reveal=static|dots|bubble|stream`), because two of them are still worth
-> stealing from later.
+> Three of the four ship in `/lab/novel`, switchable from the header button or
+> by URL (`?reveal=static|dots|stream`). Only `bubble` was deleted; its finding
+> is kept below so it is not re-proposed.
 
 ## The four
 
