@@ -163,6 +163,13 @@ Cost real debugging; all fixed, all worth remembering:
   those, and did — nothing ever streamed until it moved to its own effect.
 - **Never yank a reader who scrolled up** to re-read. Only auto-follow when they
   are parked within ~80px of the bottom.
+- **The footer is a control, not a message — space it like one.** At `py-2`
+  with the toy card's border ending 16px above the rule, the blue pill read as
+  the next thing Starlax said. Same bar, same button: `pb-7` on the thread and
+  `py-3` on the footer (27px above the rule, 28px below) plus a slightly darker
+  ground on both chrome bars, and it reads as a control. Nothing about it was
+  measurable — every width and text-size check passed before and after.
+
 - **A fixed footer height and a fixed *text* size are different promises.** The
   footer must not CHANGE height between states, but freezing it at `h-10` clips
   the button as soon as a reader raises their font size — measured at a 320px

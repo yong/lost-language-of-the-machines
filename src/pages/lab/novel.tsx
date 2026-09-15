@@ -307,7 +307,7 @@ const Novel: NextPage = () => {
         className="flex h-screen flex-col overflow-hidden bg-[#12101f] text-gray-300"
         style={{ height: '100dvh' }}
       >
-        <div className="flex shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-3">
+        <div className="flex shrink-0 items-center gap-3 border-b border-gray-800 bg-[#0d0b17] px-4 py-3">
           <Link href="/lab" className="text-xs text-gray-600 hover:text-gray-400">←</Link>
           <div className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</div>
           <div>
@@ -328,7 +328,7 @@ const Novel: NextPage = () => {
           onScroll={onScroll}
           onClick={tap}
           role="presentation"
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
         >
           {/* Anchored to the BOTTOM, like every chat app. Top-aligned content
               that is shorter than the thread left the toy stranded at the top
@@ -383,7 +383,11 @@ const Novel: NextPage = () => {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-gray-800 px-4 py-2">
+        {/* The footer is a CONTROL, not part of the conversation, so it needs
+            air on both sides of its rule: the thread's pb-7 above it and py-3
+            here below. At py-2 with the toy card's border ending 16px away,
+            the button read as the next thing Starlax said. */}
+        <div className="shrink-0 border-t border-gray-800 bg-[#0d0b17] px-4 py-3">
           <div className="mx-auto max-w-lg">
             {done ? (
               <div className="py-1 text-center">
