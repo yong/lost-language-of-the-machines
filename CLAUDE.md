@@ -209,7 +209,17 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    passes. On a phone, pin the stage (`sticky top-0`) and let the controls
    scroll under it. Measure it: with a byte selected, the console and its slider
    must both return `onScreen`.
-8. **Size text inside a scalable stage off the stage, not the viewport.** The
+8. **px for thumbs, rem for text.** A 44px tap target is a *physical* size and
+   must not move with the reader's font setting; a 15px bubble is *text* and
+   must. So tap floors stay px (with a comment saying why) and every font size
+   is `rem` — `text-[15px]` ignores a reader who has bumped their type size.
+9. **Reserve a height, never freeze one.** A bar that must not change height
+   between states gets `min-h-[Nrem]` sized to its *tallest* state, not a fixed
+   `h-10`. A frozen height clips as soon as text scales; a rem reservation keeps
+   every state identical at every text size. Sweep the **root font size**
+   (16/20/24px) as well as the viewport — a width sweep passes clean while a
+   footer is clipping.
+10. **Size text inside a scalable stage off the stage, not the viewport.** The
    same console renders 200px wide on a phone and 340px on desktop, so `vw`
    units make the small one cramped. Use `container-type: inline-size` plus
    `cqw`.

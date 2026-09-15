@@ -8,6 +8,11 @@ import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
+// NOTE: the raw px below (minHeight 34/44, minWidth 22) are deliberate. They are
+// thumb sizes, not text sizes -- a tap target is a physical dimension and must
+// NOT grow or shrink with the reader's font setting. Everything that carries
+// text is sized in rem, cqw or % instead.
+
 export const bin8 = (n: number) => n.toString(2).padStart(8, '0');
 export const nib = (n: number) => n.toString(16).toUpperCase();
 
@@ -24,11 +29,11 @@ export const SwitchToy: React.FC<{ on: boolean; onChange: (v: boolean) => void }
       <span className="text-3xl" style={{ fontFamily: MONO, color: on ? '#fbbf24' : '#4b5563' }}>
         {on ? '1' : '0'}
       </span>
-      <span className="mt-0.5 text-[9px] uppercase tracking-wider text-gray-500">{on ? 'on' : 'off'}</span>
+      <span className="mt-0.5 text-[0.5625rem] uppercase tracking-wider text-gray-500">{on ? 'on' : 'off'}</span>
     </button>
 
     <div
-      className="flex w-[150px] items-center justify-center rounded-lg border-4 border-gray-800"
+      className="flex w-[150px] max-w-full shrink items-center justify-center rounded-lg border-4 border-gray-800"
       style={{ aspectRatio: '4/3', background: on ? '#2B2158' : '#08070f', containerType: 'inline-size' }}
     >
       {on ? (
@@ -88,7 +93,7 @@ export const GridToy: React.FC<{ rows: number[]; onChange: (rows: number[]) => v
             />
           );
         })}
-        <span className="w-[70px] shrink-0 pl-1 text-right text-[10px] text-gray-500" style={{ fontFamily: MONO }}>
+        <span className="w-[4.5rem] shrink-0 pl-1 text-right text-[0.625rem] text-gray-500" style={{ fontFamily: MONO }}>
           {bin8(row)}
         </span>
       </div>

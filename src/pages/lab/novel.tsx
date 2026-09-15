@@ -256,7 +256,7 @@ const Novel: NextPage = () => {
       role="presentation"
       className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
     >
-      <div className="mb-2 text-center text-[10px] uppercase tracking-widest text-amber-400/80">{b.label}</div>
+      <div className="mb-2 text-center text-[0.625rem] uppercase tracking-widest text-amber-400/80">{b.label}</div>
       {b.toy === 'switch' && <SwitchToy on={switchOn} onChange={live ? setSwitchOn : () => {}} />}
       {b.toy === 'row' && <RowToy value={row} onChange={live ? setRow : () => {}} />}
       {b.toy === 'grid' && <GridToy rows={rows} onChange={live ? setRows : () => {}} />}
@@ -274,7 +274,7 @@ const Novel: NextPage = () => {
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
     const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
     const bubble = (
-      <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[15px] leading-snug ${w.cls}`}>
+      <span className={`max-w-[82%] rounded-2xl px-3 py-1.5 text-[0.9375rem] leading-snug ${w.cls}`}>
         {partial ? b.text.split(' ').slice(0, words).join(' ') : b.text}
         {partial && <span className="ml-0.5 opacity-50">▍</span>}
       </span>
@@ -312,11 +312,11 @@ const Novel: NextPage = () => {
           <div className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</div>
           <div>
             <div className="text-sm text-gray-100">Flamey</div>
-            <div className="text-[10px] text-gray-500">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
+            <div className="text-[0.625rem] text-gray-500">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
           </div>
           <button
             onClick={cycleMode}
-            className="ml-auto min-h-11 rounded-full border border-gray-700 px-3 text-[11px] text-gray-400 active:bg-gray-800"
+            className="ml-auto min-h-11 rounded-full border border-gray-700 px-3 text-[0.6875rem] text-gray-400 active:bg-gray-800"
           >
             {MODE_LABEL[mode]}
           </button>
@@ -379,7 +379,7 @@ const Novel: NextPage = () => {
                 scroll into: scrolling into dead space while nothing happens
                 reads as broken. With the spacer gone the thread ends at the
                 toy, so down is locked and only re-reading upward is left. */}
-            {mode !== 'static' && !done && !gate && !held && <div style={{ height: '62vh' }} />}
+            {mode !== 'static' && !done && !gate && !held && <div style={{ height: '62dvh' }} />}
           </div>
         </div>
 
@@ -398,11 +398,16 @@ const Novel: NextPage = () => {
                 </Link>
               </div>
             ) : (
-              // Fixed height on purpose: when this swapped between a progress
-              // bar and a line of text it changed the footer's height, which
-              // shrank the thread and clamped its scroll — the whole
-              // conversation twitched every time a toy appeared.
-              <div className="flex h-10 items-center justify-center">
+              // Every measurement here is in rem, never px, so the whole
+              // footer scales with the reader's font size instead of clipping.
+              // The height is RESERVED at the tallest state (a button whose
+              // label has wrapped to two lines) rather than frozen at one
+              // value: the footer must not CHANGE height between states --
+              // that shrank the thread, clamped its scroll and twitched the
+              // conversation every time a toy appeared -- but a hard height
+              // clips the text as soon as a reader bumps their font size.
+              // 2 lines (2.5rem) + button padding (0.75rem) + py-1 (0.5rem).
+              <div className="flex min-h-[3.75rem] items-center justify-center py-1">
                 {/* The one place motion belongs: the story has STOPPED and is
                     waiting on the reader, so nothing is competing with reading.
                     A still line of small text here got missed. */}
@@ -419,7 +424,7 @@ const Novel: NextPage = () => {
                   // like; the story waits.
                   <motion.button
                     onClick={() => setHeld(false)}
-                    className="rounded-full bg-sky-600 px-5 py-1.5 text-sm text-white"
+                    className="rounded-full bg-sky-600 px-5 py-1.5 text-center text-sm leading-tight text-white"
                     animate={{ scale: [1, 1.045, 1] }}
                     // A few pulses to catch the eye, then still. Motion that
                     // never stops is both a moving tap target and the exact
@@ -431,7 +436,7 @@ const Novel: NextPage = () => {
                 ) : waiting ? (
                   <motion.button
                     onClick={turnPage}
-                    className="rounded-full bg-sky-600 px-5 py-1.5 text-sm text-white"
+                    className="rounded-full bg-sky-600 px-5 py-1.5 text-center text-sm leading-tight text-white"
                     animate={{ scale: [1, 1.045, 1] }}
                     // A few pulses to catch the eye, then still. Motion that
                     // never stops is both a moving tap target and the exact

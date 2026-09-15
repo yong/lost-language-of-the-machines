@@ -163,6 +163,22 @@ Cost real debugging; all fixed, all worth remembering:
   those, and did — nothing ever streamed until it moved to its own effect.
 - **Never yank a reader who scrolled up** to re-read. Only auto-follow when they
   are parked within ~80px of the bottom.
+- **A fixed footer height and a fixed *text* size are different promises.** The
+  footer must not CHANGE height between states, but freezing it at `h-10` clips
+  the button as soon as a reader raises their font size — measured at a 320px
+  viewport, a 40px footer held a 68px button at a 20px root and an 81px one at
+  24px. The fix is not shorter copy: RESERVE the height of the tallest state in
+  **rem** (`min-h-[3.75rem]` = two wrapped lines + padding) so every state is
+  identical at every text size. Verified constant across 16/20/24px roots.
+- **px is right for thumbs and wrong for text.** A 44px tap target is a physical
+  dimension and must not grow with the font setting; a 15px bubble is text and
+  must. Every `text-[Npx]` on the page became rem; the `minHeight: 34/44` and
+  `minWidth: 22` tap floors in the toys stayed px, with a comment saying why so
+  they don't get "fixed" later.
+- **Width sweeps do not catch this.** 320/360/390/430/768 all passed clean
+  while the footer was clipping at larger text. Sweep the **root font size**
+  as well as the viewport.
+
 - **A mode switch is not a satisfied gate.** Changing reveal mode moves the
   live cursor between a block's toy and a per-message index, so the gate can go
   from set to null with nobody touching anything. Detecting "gate just
