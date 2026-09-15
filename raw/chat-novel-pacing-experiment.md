@@ -81,6 +81,13 @@ Auto-scrolling to follow the tail feels helpful and is not: it moves text the
 reader is still reading. The correct shape is a **page turn the reader asked
 for**, not a conveyor belt.
 
+**The same rule covers finishing a toy.** Satisfying a gate must NOT launch the
+next thing. The reader has just got their hands on something — they may want to
+keep flipping switches or redraw the cat — and having the story barge in half a
+second later is the identical violation: the machine moving on its own clock.
+So the story **holds**, the toy stays live, and the footer offers "continue when
+you're ready →". Nothing advances until the reader says so.
+
 Implementation notes:
 
 - Park the moment the newest beat is not fully visible from the reader's current
@@ -139,3 +146,8 @@ Cost real debugging; all fixed, all worth remembering:
   those, and did — nothing ever streamed until it moved to its own effect.
 - **Never yank a reader who scrolled up** to re-read. Only auto-follow when they
   are parked within ~80px of the bottom.
+- **A mode switch is not a satisfied gate.** Changing reveal mode moves the
+  live cursor between a block's toy and a per-message index, so the gate can go
+  from set to null with nobody touching anything. Detecting "gate just
+  satisfied" without excluding that fired a hold on the very first render,
+  because the page defaults to `static` for one frame before `?reveal=` is read.

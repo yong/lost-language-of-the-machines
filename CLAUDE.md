@@ -247,6 +247,12 @@ demo — even though the liveliest mode (typing dots) also measured the *fastest
 6. Give each character a consistent voice signature — punctuation habits, emoji,
    message length — so the reader knows who is speaking without labels.
 
+**Never start the next thing for the reader.** Satisfying a gate does not
+launch the next block — the toy stays live and the footer offers "continue when
+you're ready →". A reader who just flipped a switch may want to keep flipping
+it; the story barging in half a second later is the same violation as scrolling
+for them.
+
 **Never scroll the page for the reader.** A reader's speed and a playback clock
 cannot be kept in sync, so the machine must not try: when the newest message
 falls below the fold, playback **stops** and waits. Continuing is a page turn

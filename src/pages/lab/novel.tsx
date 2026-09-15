@@ -85,6 +85,8 @@ const Novel: NextPage = () => {
   const [waiting, setWaiting] = useState(false);
   /** stream mode: words of the newest bubble revealed so far; Infinity = done */
   const [words, setWords] = useState(Infinity);
+  /** a gate was just satisfied and the story is HELD until the reader says go */
+  const [held, setHeld] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
@@ -178,18 +180,39 @@ const Novel: NextPage = () => {
     return () => cancelAnimationFrame(id);
   }, [at, typing, words, mode, done]);
 
-  // Playback. Static has no clock at all: a satisfied gate reveals the next
-  // block. Dots plays on until a gate, or until the fold parks it.
+  // Satisfying a gate must NOT launch the next thing. The reader has just got
+  // their hands on a toy; they may want to keep flipping switches or redraw the
+  // cat, and having the story barge in 500ms later is the same violation as
+  // scrolling the page for them — the machine moving on its own clock.
+  // So: hold, and wait to be told.
+  const prevGate = useRef<string | null>(null);
+  const prevMode = useRef<Reveal>(mode);
   useEffect(() => {
+    // Changing mode moves `head` between a block's toy and a per-message
+    // cursor, so `gate` can go from set to null without the reader touching
+    // anything. That is not a satisfied gate and must not hold the story —
+    // it fired on the very first render, because the page defaults to `static`
+    // for one frame before ?reveal= is read.
+    const modeChanged = prevMode.current !== mode;
+    if (modeChanged) setHeld(false);
+    else if (prevGate.current && !gate) setHeld(true);
+    prevGate.current = gate ?? null;
+    prevMode.current = mode;
+  }, [gate, mode]);
+
+  // Playback. Static has no clock at all. Dots and stream play on until a gate,
+  // until a hold, or until the fold parks them.
+  useEffect(() => {
+    if (held) return;
     if (mode === 'static') {
       if (gate || done) return;
-      const t = window.setTimeout(() => setBlock((b) => Math.min(b + 1, BLOCK_ENDS.length - 1)), 500);
+      const t = window.setTimeout(() => setBlock((b) => Math.min(b + 1, BLOCK_ENDS.length - 1)), 260);
       return () => window.clearTimeout(t);
     }
     if (done || gate || typing || waiting || streaming) return;
     const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1]));
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, waiting, streaming, step, mode, block]);
+  }, [at, gate, typing, done, waiting, streaming, held, step, mode, block]);
 
   // The ONLY two times the view moves, and both are answers to something the
   // reader did: a block they unlocked, or a page they asked to turn.
@@ -216,7 +239,9 @@ const Novel: NextPage = () => {
   /** A tap means "more": turn the page if parked, finish the message if it is
    *  still arriving, else skip the current wait. */
   const tap = () => {
-    if (mode === 'static' || gate || done) return;
+    if (gate || done) return;
+    if (held) { setHeld(false); return; }
+    if (mode === 'static') return;
     if (waiting) { turnPage(); return; }
     if (streaming) { setWords(Infinity); return; }
     if (typing) return;
@@ -369,6 +394,12 @@ const Novel: NextPage = () => {
               <div className="flex h-10 items-center justify-center">
                 {gate ? (
                   <p className="text-center text-sm text-amber-300">{gate} ↑</p>
+                ) : held ? (
+                  // The toy above is still live. Play with it as long as you
+                  // like; the story waits.
+                  <button onClick={() => setHeld(false)} className="text-sm text-sky-300">
+                    continue when you&rsquo;re ready →
+                  </button>
                 ) : waiting ? (
                   <button onClick={turnPage} className="text-sm text-sky-300">keep reading ↓</button>
                 ) : (
