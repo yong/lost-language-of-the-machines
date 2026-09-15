@@ -330,7 +330,12 @@ const Novel: NextPage = () => {
           role="presentation"
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4"
         >
-          <div className="mx-auto max-w-lg">
+          {/* Anchored to the BOTTOM, like every chat app. Top-aligned content
+              that is shorter than the thread left the toy stranded at the top
+              with a screenful of blank beneath it — unscrollable, but it reads
+              as broken all the same. Short conversations now sit just above the
+              footer and the empty space goes above, where it belongs. */}
+          <div className="mx-auto flex min-h-full max-w-lg flex-col justify-end">
             {mode === 'static' ? (
               <>
                 {SCRIPT.slice(0, blockStart).map((b, i) => renderBeat(b, i, false))}

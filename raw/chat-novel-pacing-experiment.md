@@ -102,6 +102,12 @@ Implementation notes:
   dead space while nothing happens reads as broken. With it gone the thread ends
   at the toy, so downward scrolling is bounded and only re-reading upward is
   left — which is the "lock" without taking re-reading away.
+- **Anchor the thread to the BOTTOM, like every chat app** (`flex min-h-full
+  flex-col justify-end`). Top-aligned content that is shorter than the thread
+  leaves the toy stranded at the top under a screenful of blank. It is not
+  scrollable — so a "can you scroll into dead space?" check passes — but it
+  still reads as broken, and the taller the phone the worse it looks. Measured
+  at the first hold: a 241px empty gap became 28px.
 - **The waiting affordance is the one place motion belongs,** because the story
   has stopped and nothing is competing with reading. Make it a real pill, not a
   line of small text — a still line got missed. Pulse it a couple of times and

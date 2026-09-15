@@ -253,6 +253,12 @@ you're ready →". A reader who just flipped a switch may want to keep flipping
 it; the story barging in half a second later is the same violation as scrolling
 for them.
 
+**Anchor the thread to the bottom** (`flex min-h-full flex-col justify-end`).
+A conversation shorter than the screen must sit just above the footer, not at
+the top under a screenful of blank — unscrollable emptiness still reads as
+broken, and "can you scroll into it?" is not the same question as "does it look
+stranded?".
+
 **When the story waits, leave nowhere pointless to scroll.** No page-turn
 spacer during a gate or a hold, so the thread ends at the toy and downward
 scrolling is bounded. Make the waiting affordance a pill that pulses twice and
