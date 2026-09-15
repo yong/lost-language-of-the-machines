@@ -197,6 +197,12 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    **percentages**, not `px`. A hard-coded `CELL = 52` overflows a phone.
 3. **Tap targets are at least 44px.** Fine for a mouse is not fine for a thumb.
    Colour swatches, steppers and rule toggles all need real hit area.
+   **The one exception is a row that must stay a row.** Eight switches at 44px
+   needs 380px; a card on a 390px phone gives 334px, so a byte laid out as one
+   row lands at 38px and an 8×8 grid at 29px. Splitting it into two rows of
+   four would fit the rule and destroy the lesson — *a byte is one row* is the
+   whole point. Take the smaller target there, and nowhere else: a back arrow
+   at 10×16px has no such excuse.
 4. **Text inputs use ≥16px font.** Below that, iOS Safari zooms the whole page
    on focus and the reader loses the layout.
 5. **No hover-only affordances.** Anything revealed by `:hover` or a `title`
@@ -223,6 +229,22 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    same console renders 200px wide on a phone and 340px on desktop, so `vw`
    units make the small one cramped. Use `container-type: inline-size` plus
    `cqw`.
+
+**Then look at it as a reader, not as a test.** Every automated check passed
+on a footer whose button read as the next chat bubble, because "does it clip?"
+and "does this look right?" are different questions and only one of them was
+being asked. So after the measurements, screenshot it and go through this list —
+it is where the real bugs were hiding:
+
+- **contrast**, computed against the *rendered* background (Tailwind v4 emits
+  `oklch()`, so a naive `rgb()` parser silently returns garbage — resolve colours
+  through a canvas). White on `sky-600` is 4.10:1 and fails AA.
+- **dead controls.** Anything at full opacity with pointer events on had better
+  do something. A silent no-op is the worst answer a control can give a kid.
+- **what a reload costs.** Persist the reader's *place*, not just their artwork —
+  a phone call four blocks in must not restart the chapter. Restore HELD, or the
+  restored toy state satisfies the gate and the story plays itself on load.
+- **spacing as meaning.** A control 16px from a message reads as a message.
 
 **Verify at 390px before calling any visual work done** — not by resizing a
 desktop window, but with a real mobile viewport (see Browser Automation below).

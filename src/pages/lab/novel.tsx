@@ -54,7 +54,7 @@ const BLOCK_ENDS: number[] = (() => {
 })();
 
 const WHO = {
-  starlax: { name: 'Starlax', cls: 'bg-sky-600 text-white', side: 'right' as const },
+  starlax: { name: 'Starlax', cls: 'bg-sky-700 text-white', side: 'right' as const },
   flamey: { name: 'Flamey', cls: 'bg-[#26223a] text-gray-100', side: 'left' as const },
   nova: { name: 'Nova', cls: 'bg-[#26223a] text-amber-200', side: 'left' as const },
 };
@@ -96,7 +96,21 @@ const Novel: NextPage = () => {
       const s = window.localStorage.getItem(STORAGE_KEY);
       if (s) {
         const d = JSON.parse(s);
+        // Everything the reader did, not just the drawing. A kid who takes a
+        // phone call four blocks in was being dropped back at "flip the
+        // switch" — the chapter restarted and their cat was gone.
         if (Array.isArray(d?.rows) && d.rows.length === 8) setRows(d.rows);
+        if (typeof d?.switchOn === 'boolean') setSwitchOn(d.switchOn);
+        if (typeof d?.row === 'number') setRow(d.row);
+        if (typeof d?.cut === 'boolean') setCut(d.cut);
+        if (typeof d?.block === 'number') setBlock(Math.min(Math.max(d.block, 0), BLOCK_ENDS.length - 1));
+        if (typeof d?.at === 'number') setAt(Math.min(Math.max(d.at, 0), SCRIPT.length - 1));
+        // Come back HELD. Restoring the toys can satisfy the block's gate, and
+        // without this the story would notice and race off on its own the
+        // instant the page loaded — the reader would watch their chapter play
+        // itself. Held renders only when there is no gate outstanding, so this
+        // is invisible to a reader who left mid-toy.
+        if (d?.block > 0 || d?.at > 0) setHeld(true);
       }
       // ?reveal=static|dots gives each experience its own shareable URL and
       // wins over whatever was last used on this device.
@@ -106,8 +120,10 @@ const Novel: NextPage = () => {
     } catch { /* a bad save just means defaults */ }
   }, []);
   useEffect(() => {
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows })); } catch { /* private mode */ }
-  }, [rows]);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows, switchOn, row, cut, block, at }));
+    } catch { /* private mode */ }
+  }, [rows, switchOn, row, cut, block, at]);
   useEffect(() => {
     try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
   }, [mode]);
@@ -250,16 +266,22 @@ const Novel: NextPage = () => {
 
   const cycleMode = () => setMode((m) => MODES[(MODES.indexOf(m) + 1) % MODES.length]);
 
-  const renderToy = (b: Extract<Beat, { kind: 'toy' }>, live: boolean) => (
+  // Every toy stays LIVE for the rest of the chapter. They used to go read-only
+  // the moment their block was done, while still rendering at full opacity with
+  // pointer events on — so a kid tapping the switch again got a silent no-op,
+  // which is the worst answer a control can give. It is also the same rule we
+  // already keep during a hold ("the toy stays live, the story waits"); having
+  // it die one beat later was that rule with an expiry date.
+  const renderToy = (b: Extract<Beat, { kind: 'toy' }>) => (
     <div
       onClick={(e) => e.stopPropagation()}
       role="presentation"
       className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
     >
       <div className="mb-2 text-center text-[0.625rem] uppercase tracking-widest text-amber-400/80">{b.label}</div>
-      {b.toy === 'switch' && <SwitchToy on={switchOn} onChange={live ? setSwitchOn : () => {}} />}
-      {b.toy === 'row' && <RowToy value={row} onChange={live ? setRow : () => {}} />}
-      {b.toy === 'grid' && <GridToy rows={rows} onChange={live ? setRows : () => {}} />}
+      {b.toy === 'switch' && <SwitchToy on={switchOn} onChange={setSwitchOn} />}
+      {b.toy === 'row' && <RowToy value={row} onChange={setRow} />}
+      {b.toy === 'grid' && <GridToy rows={rows} onChange={setRows} />}
       {b.toy === 'hex' && (
         <HexToy value={rows.find((r) => r !== 0) ?? row ?? 0b00111100} cut={cut} onCut={() => setCut(true)} />
       )}
@@ -269,7 +291,7 @@ const Novel: NextPage = () => {
   const renderBeat = (b: Beat, i: number, animated: boolean) => {
     const ref = i === head ? newest : undefined;
     if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" />;
-    if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b, i === head)}</div>;
+    if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b)}</div>;
     const w = WHO[b.who];
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
     const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
@@ -308,11 +330,17 @@ const Novel: NextPage = () => {
         style={{ height: '100dvh' }}
       >
         <div className="flex shrink-0 items-center gap-3 border-b border-gray-800 bg-[#0d0b17] px-4 py-3">
-          <Link href="/lab" className="text-xs text-gray-600 hover:text-gray-400">←</Link>
+          {/* was 10x16px at 2.58:1 — a rule the page states and broke. The
+              negative margin keeps the 44px target from padding the header. */}
+          <Link
+            href="/lab"
+            aria-label="back to the lab"
+            className="-m-2 flex min-h-11 min-w-11 items-center justify-center text-gray-400"
+          >←</Link>
           <div className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</div>
           <div>
             <div className="text-sm text-gray-100">Flamey</div>
-            <div className="text-[0.625rem] text-gray-500">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
+            <div className="text-[0.625rem] text-gray-400">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
           </div>
           <button
             onClick={cycleMode}
@@ -428,7 +456,7 @@ const Novel: NextPage = () => {
                   // like; the story waits.
                   <motion.button
                     onClick={() => setHeld(false)}
-                    className="rounded-full bg-sky-600 px-5 py-1.5 text-center text-sm leading-tight text-white"
+                    className="min-h-11 rounded-full bg-sky-700 px-5 py-1.5 text-center text-sm leading-tight text-white"
                     animate={{ scale: [1, 1.045, 1] }}
                     // A few pulses to catch the eye, then still. Motion that
                     // never stops is both a moving tap target and the exact
@@ -440,7 +468,7 @@ const Novel: NextPage = () => {
                 ) : waiting ? (
                   <motion.button
                     onClick={turnPage}
-                    className="rounded-full bg-sky-600 px-5 py-1.5 text-center text-sm leading-tight text-white"
+                    className="min-h-11 rounded-full bg-sky-700 px-5 py-1.5 text-center text-sm leading-tight text-white"
                     animate={{ scale: [1, 1.045, 1] }}
                     // A few pulses to catch the eye, then still. Motion that
                     // never stops is both a moving tap target and the exact

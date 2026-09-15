@@ -163,6 +163,19 @@ Cost real debugging; all fixed, all worth remembering:
   those, and did — nothing ever streamed until it moved to its own effect.
 - **Never yank a reader who scrolled up** to re-read. Only auto-follow when they
   are parked within ~80px of the bottom.
+- **A block cannot always land at the top, and that is the spacer rule
+  winning.** Measured 138px down instead of 12px. Both rules are ours: "land at
+  the TOP of a new block" needs roughly a viewport of slack beneath it, and
+  "leave nowhere pointless to scroll during a gate" deletes exactly that slack.
+  When a block is shorter than the screen the scroll simply runs out. The
+  block is fully visible either way, so the spacer rule wins — this is a
+  resolved conflict, not an outstanding bug.
+- **Restoring a reader's place must restore them HELD.** Persisting the toy
+  state means the restored block's gate is already satisfied, so playback sees
+  a clear road and runs — the reader opens the page and watches their chapter
+  play itself. `held` renders only when no gate is outstanding, so setting it on
+  every restore is invisible to someone who left mid-toy.
+
 - **The footer is a control, not a message — space it like one.** At `py-2`
   with the toy card's border ending 16px above the rule, the blue pill read as
   the next thing Starlax said. Same bar, same button: `pb-7` on the thread and
