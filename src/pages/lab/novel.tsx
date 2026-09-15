@@ -368,7 +368,13 @@ const Novel: NextPage = () => {
 
             {/* room to turn a page: without it the newest message cannot be
                 brought to the top of the viewport, only to the bottom. */}
-            {mode !== 'static' && !done && <div style={{ height: '62vh' }} />}
+            {/* Room to turn a page — but ONLY while the story is actually
+                running. While it waits on the reader (a gate to play, or a
+                hold to release) there must be nothing below the content to
+                scroll into: scrolling into dead space while nothing happens
+                reads as broken. With the spacer gone the thread ends at the
+                toy, so down is locked and only re-reading upward is left. */}
+            {mode !== 'static' && !done && !gate && !held && <div style={{ height: '62vh' }} />}
           </div>
         </div>
 
@@ -392,16 +398,43 @@ const Novel: NextPage = () => {
               // shrank the thread and clamped its scroll — the whole
               // conversation twitched every time a toy appeared.
               <div className="flex h-10 items-center justify-center">
+                {/* The one place motion belongs: the story has STOPPED and is
+                    waiting on the reader, so nothing is competing with reading.
+                    A still line of small text here got missed. */}
                 {gate ? (
-                  <p className="text-center text-sm text-amber-300">{gate} ↑</p>
+                  <p className="flex items-center gap-1.5 text-center text-sm text-amber-300">
+                    {gate}
+                    <motion.span
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{ duration: 1.1, repeat: 3, ease: 'easeInOut' }}
+                    >↑</motion.span>
+                  </p>
                 ) : held ? (
                   // The toy above is still live. Play with it as long as you
                   // like; the story waits.
-                  <button onClick={() => setHeld(false)} className="text-sm text-sky-300">
+                  <motion.button
+                    onClick={() => setHeld(false)}
+                    className="rounded-full bg-sky-600 px-5 py-1.5 text-sm text-white"
+                    animate={{ scale: [1, 1.045, 1] }}
+                    // A few pulses to catch the eye, then still. Motion that
+                    // never stops is both a moving tap target and the exact
+                    // distraction the static decision removed.
+                    transition={{ duration: 1.4, repeat: 2, ease: 'easeInOut' }}
+                  >
                     continue when you&rsquo;re ready →
-                  </button>
+                  </motion.button>
                 ) : waiting ? (
-                  <button onClick={turnPage} className="text-sm text-sky-300">keep reading ↓</button>
+                  <motion.button
+                    onClick={turnPage}
+                    className="rounded-full bg-sky-600 px-5 py-1.5 text-sm text-white"
+                    animate={{ scale: [1, 1.045, 1] }}
+                    // A few pulses to catch the eye, then still. Motion that
+                    // never stops is both a moving tap target and the exact
+                    // distraction the static decision removed.
+                    transition={{ duration: 1.4, repeat: 2, ease: 'easeInOut' }}
+                  >
+                    keep reading ↓
+                  </motion.button>
                 ) : (
                   <div className="h-0.5 w-full overflow-hidden rounded bg-gray-800">
                     <motion.div className="h-full bg-sky-600" animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />

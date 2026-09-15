@@ -253,6 +253,12 @@ you're ready →". A reader who just flipped a switch may want to keep flipping
 it; the story barging in half a second later is the same violation as scrolling
 for them.
 
+**When the story waits, leave nowhere pointless to scroll.** No page-turn
+spacer during a gate or a hold, so the thread ends at the toy and downward
+scrolling is bounded. Make the waiting affordance a pill that pulses twice and
+then stops — motion belongs here (nothing is competing with reading) but never
+perpetually, or it becomes a moving tap target.
+
 **Never scroll the page for the reader.** A reader's speed and a playback clock
 cannot be kept in sync, so the machine must not try: when the newest message
 falls below the fold, playback **stops** and waits. Continuing is a page turn

@@ -97,6 +97,17 @@ Implementation notes:
   newest message can only be brought to the bottom of the view, not the top.
 - If the reader scrolls down far enough themselves, resume without making them
   tap as well.
+- **While the story waits, leave nothing below the content to scroll into.**
+  The page-turn spacer must not render during a gate or a hold: scrolling into
+  dead space while nothing happens reads as broken. With it gone the thread ends
+  at the toy, so downward scrolling is bounded and only re-reading upward is
+  left — which is the "lock" without taking re-reading away.
+- **The waiting affordance is the one place motion belongs,** because the story
+  has stopped and nothing is competing with reading. Make it a real pill, not a
+  line of small text — a still line got missed. Pulse it a couple of times and
+  then **stop**: animation that never ends is both a moving tap target
+  (Playwright refuses to click one, and a thumb has the same problem) and a
+  return of the distraction the static decision removed.
 - Static mode does move the view once per block, but only in answer to a gate
   the reader just satisfied — the same "you asked for it" test.
 
