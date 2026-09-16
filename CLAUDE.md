@@ -314,6 +314,53 @@ not scroll — only the thread; pin to `scrollHeight` inside
 `requestAnimationFrame`; give the footer a fixed height; never `setState` inside
 another `setState` updater; never yank a reader who scrolled up.
 
+## 📖 Getting into a chat chapter: cover → paragraph → phone
+
+**`src/components/lab/novel/ChapterOpening.tsx`; live at `/lab/novel`.**
+
+Some scenes cannot be established in dialogue. *"The museum basement smelled of
+dust and old electricity"* is not a text message, and faking it as one (*"omg
+this basement smells insane"*) buys atmosphere by making a character stupid. So
+prose keeps the establishing beat — and the problem becomes the handoff, which
+must not read as a format change.
+
+**The answer was already in the palette.** `theme.ts` calls `PAGE` *"the warm
+page you read on"*; the chat is a lit screen in a dark room. So the transition is
+literal and needs no explaining: **the paper darkens, a phone lights up on it,
+and the conversation is already on the phone.** Three taps, no typing, and the
+reader ends up holding what Starlax is holding.
+
+- **Cover** — art, chapter, title, one `begin →`.
+- **Paper** — the paragraph, drop cap, warm ground. Keep it *short*: anything
+  stated here is something the toys no longer get to reveal. It ends on the line
+  that puts the phone in her hand.
+- **Phone** — the ground goes to `#08070f` (darker than the chat's own
+  background) with a blue glow, so the phone is the only lit thing. Tapping it
+  runs the morph.
+
+**The morph is a real shared element, and the header is the right one to share.**
+The phone card's header and the chat's own header have the same `layoutId`, so
+one *becomes* the other. Not the first bubble — the reader **is** Starlax, so a
+notification of her own message would be a lie.
+
+Rules this establishes:
+
+1. **Warm is the story, blue is the machine.** The cover and paper pills are
+   amber and ink; blue arrives only when the phone does.
+2. **A returning reader never sees the opening.** Mid-chapter means coming back,
+   not arriving — making them tap through the cover again would undo the restore.
+3. **`?reveal=` skips it too.** That URL is a direct link to one thread mode: a
+   lab entry point, not a reader's first arrival.
+4. **Let the morph land before the thread paints,** or there is nothing to see it
+   against. ~430ms. Use a **CSS transition driven by state, not framer's
+   `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
+   animation on the same subtree gets overridden and the thread stays invisible
+   for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
+5. **Scene transitions are exempt from "animation competes with content."** That
+   rule is about messages arriving *while you read*. Nothing is being read here —
+   this motion carries meaning rather than competing with it. Every movement
+   still waits for a tap.
+
 ## Writing principles
 
 1. **The joke IS the lesson.** The best material teaches while it's being funny —

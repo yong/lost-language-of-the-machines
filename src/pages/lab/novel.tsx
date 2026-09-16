@@ -26,10 +26,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
 import { SCRIPT, Beat } from '@/components/lab/novel/script';
 import { SwitchToy, RowToy, GridToy, HexToy } from '@/components/lab/novel/toys';
+import ChapterOpening, { OpeningPhase } from '@/components/lab/novel/ChapterOpening';
+import { OPENING } from '@/components/lab/novel/opening';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const STORAGE_KEY = 'gameforge.novel.v1';
@@ -87,6 +89,17 @@ const Novel: NextPage = () => {
   const [words, setWords] = useState(Infinity);
   /** a gate was just satisfied and the story is HELD until the reader says go */
   const [held, setHeld] = useState(false);
+  /** cover -> paragraph -> phone -> the thread. A returning reader skips it. */
+  const [phase, setPhase] = useState<OpeningPhase | 'chat'>('cover');
+  /** Arriving through the opening, the header MORPHS into place. If the thread
+   *  paints at full opacity in the same frame there is nothing to see it
+   *  against and the morph is wasted, so the thread waits for it to land.
+   *  Driven from `phase`, not from framer's `initial`: `main` is hidden, not
+   *  unmounted, so the scroller is already mounted and `initial` never runs.
+   *  A returning reader gets no delay — they are not watching a transition. */
+  const viaOpening = useRef(false);
+  /** false only for the half-second the header is morphing into place */
+  const [threadIn, setThreadIn] = useState(true);
   const scroller = useRef<HTMLDivElement>(null);
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
@@ -110,13 +123,25 @@ const Novel: NextPage = () => {
         // instant the page loaded — the reader would watch their chapter play
         // itself. Held renders only when there is no gate outstanding, so this
         // is invisible to a reader who left mid-toy.
-        if (d?.block > 0 || d?.at > 0) setHeld(true);
+        if (d?.block > 0 || d?.at > 0) {
+          setHeld(true);
+          // Someone who is mid-chapter is coming BACK, not arriving. Making
+          // them tap through the cover and the paragraph again to reach the
+          // message they were reading would undo the restore it took to get
+          // them here.
+          setPhase('chat');
+        }
       }
       // ?reveal=static|dots gives each experience its own shareable URL and
       // wins over whatever was last used on this device.
       const q = new URLSearchParams(window.location.search).get('reveal');
       const m = q ?? window.localStorage.getItem(MODE_KEY);
       if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
+      // An explicit ?reveal= is a direct link to one thread mode — a lab entry
+      // point for comparing them, not a reader arriving at the chapter. Skip
+      // the cover: you asked for the thread, so you get the thread. A reader
+      // opening /lab/novel plainly still gets the whole opening.
+      if (q) setPhase('chat');
     } catch { /* a bad save just means defaults */ }
   }, []);
   useEffect(() => {
@@ -127,6 +152,16 @@ const Novel: NextPage = () => {
   useEffect(() => {
     try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
   }, [mode]);
+
+  // Let the header finish travelling before the conversation paints behind it.
+  // Plain CSS, not a framer `animate`: inside the LayoutGroup that drives the
+  // morph, an opacity animation on the same subtree got overridden and the
+  // thread stayed invisible for good.
+  useEffect(() => {
+    if (phase !== 'chat' || threadIn) return;
+    const t = window.setTimeout(() => setThreadIn(true), 430);
+    return () => window.clearTimeout(t);
+  }, [phase, threadIn]);
 
   const head = mode === 'static' ? BLOCK_ENDS[block] : at;
   const shown = SCRIPT.slice(0, head + 1);
@@ -318,37 +353,57 @@ const Novel: NextPage = () => {
   const progress = Math.round((head / (SCRIPT.length - 1)) * 100);
 
   return (
-    <>
+    <LayoutGroup>
       <Head>
         <title>[lab] Chapter One, as a chat novel - Lost Language of the Machines</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      {phase !== 'chat' && (
+        <ChapterOpening
+          {...OPENING}
+          phase={phase}
+          onAdvance={setPhase}
+          onEnter={() => { viaOpening.current = true; setThreadIn(false); setPhase('chat'); }}
+        />
+      )}
       {/* h-dvh, not h-screen: on a phone the browser chrome changes the visual
           viewport, and vh units leave the footer under it. */}
       <main
+        hidden={phase !== 'chat'}
         className="flex h-screen flex-col overflow-hidden bg-[#12101f] text-gray-300"
         style={{ height: '100dvh' }}
       >
-        <div className="flex shrink-0 items-center gap-3 border-b border-gray-800 bg-[#0d0b17] px-4 py-3">
+        {/* The header is the handoff object: the card on the phone in the
+            opening and this bar are ONE element sharing a layoutId, so it
+            grows into place instead of the two cross-fading. The back arrow
+            and mode button fade in after the morph has landed, or they fly in
+            from wherever the card was. */}
+        <motion.div
+          layoutId="novel-chat-header"
+          className="flex shrink-0 items-center gap-3 border-b border-gray-800 bg-[#0d0b17] px-4 py-3"
+        >
           {/* was 10x16px at 2.58:1 — a rule the page states and broke. The
               negative margin keeps the 44px target from padding the header. */}
-          <Link
-            href="/lab"
-            aria-label="back to the lab"
-            className="-m-2 flex min-h-11 min-w-11 items-center justify-center text-gray-400"
-          >←</Link>
-          <div className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</div>
-          <div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
+            <Link
+              href="/lab"
+              aria-label="back to the lab"
+              className="-m-2 flex min-h-11 min-w-11 items-center justify-center text-gray-400"
+            >←</Link>
+          </motion.div>
+          <motion.div layoutId="novel-chat-avatar" className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</motion.div>
+          <motion.div layout>
             <div className="text-sm text-gray-100">Flamey</div>
             <div className="text-[0.625rem] text-gray-400">{done ? 'read' : typing ? 'typing…' : 'online'}</div>
-          </div>
-          <button
+          </motion.div>
+          <motion.button
             onClick={cycleMode}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
             className="ml-auto min-h-11 rounded-full border border-gray-700 px-3 text-[0.6875rem] text-gray-400 active:bg-gray-800"
           >
             {MODE_LABEL[mode]}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
         {/* the only thing that scrolls, and only the reader moves it */}
         <div
@@ -356,6 +411,7 @@ const Novel: NextPage = () => {
           onScroll={onScroll}
           onClick={tap}
           role="presentation"
+          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .4s ease' }}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
         >
           {/* Anchored to the BOTTOM, like every chat app. Top-aligned content
@@ -415,7 +471,10 @@ const Novel: NextPage = () => {
             air on both sides of its rule: the thread's pb-7 above it and py-3
             here below. At py-2 with the toy card's border ending 16px away,
             the button read as the next thing Starlax said. */}
-        <div className="shrink-0 border-t border-gray-800 bg-[#0d0b17] px-4 py-3">
+        <div
+          className="shrink-0 border-t border-gray-800 bg-[#0d0b17] px-4 py-3"
+          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .4s ease' }}
+        >
           <div className="mx-auto max-w-lg">
             {done ? (
               <div className="py-1 text-center">
@@ -487,7 +546,7 @@ const Novel: NextPage = () => {
           </div>
         </div>
       </main>
-    </>
+    </LayoutGroup>
   );
 };
 
