@@ -159,7 +159,7 @@ const Novel: NextPage = () => {
   // thread stayed invisible for good.
   useEffect(() => {
     if (phase !== 'chat' || threadIn) return;
-    const t = window.setTimeout(() => setThreadIn(true), 430);
+    const t = window.setTimeout(() => setThreadIn(true), 370);
     return () => window.clearTimeout(t);
   }, [phase, threadIn]);
 
@@ -411,7 +411,7 @@ const Novel: NextPage = () => {
           onScroll={onScroll}
           onClick={tap}
           role="presentation"
-          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .4s ease' }}
+          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
         >
           {/* Anchored to the BOTTOM, like every chat app. Top-aligned content
@@ -473,7 +473,7 @@ const Novel: NextPage = () => {
             the button read as the next thing Starlax said. */}
         <div
           className="shrink-0 border-t border-gray-800 bg-[#0d0b17] px-4 py-3"
-          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .4s ease' }}
+          style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
         >
           <div className="mx-auto max-w-lg">
             {done ? (

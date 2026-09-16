@@ -19,13 +19,26 @@
 // say, the first bubble: the reader IS Starlax (her messages sit right), so a
 // notification of her own message would be a lie.
 //
-// EVERY MOVEMENT WAITS FOR A TAP. Nothing here plays on a clock — same rule as
-// the thread. And a reader who is returning mid-chapter never sees any of it;
-// novel.tsx skips straight to the thread.
+// THE PHONE IS A TRANSITION, NOT A SCREEN. It used to end in an "open it →"
+// button, which made two taps in a row — the reader had already said continue,
+// and the second tap bought nothing but a stop in the middle of the handoff.
+// The darkening, the phone lighting up and the morph are now one answer to one
+// tap. A tap anywhere during it skips to the end, so it never traps anyone.
+//
+// The cover and the paragraph still wait for a tap, because those are places a
+// reader is READING. Nothing is being read here. And a reader returning
+// mid-chapter never sees any of it; novel.tsx skips straight to the thread.
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PIXEL_FONT, PAGE } from '@/components/lab/world/theme';
 
 export type OpeningPhase = 'cover' | 'page' | 'phone';
+
+/** How long the phone gets before it opens itself. The card lands at ~0.9s, so
+ *  this is that plus a short hold — long enough to register as "her phone lit
+ *  up", short enough that nobody is waiting on it. Measured end to end: tap to
+ *  a readable conversation, hands off. */
+const PHONE_MS = 1200;
 
 const NIGHT = '#12101f';
 /** Darker than the chat's own ground, so the phone reads as the lit thing in
@@ -87,9 +100,26 @@ export interface OpeningProps {
   handoffLine: string;
 }
 
+/** The phone beat. Its own component so that MOUNTING it starts the clock —
+ *  AnimatePresence mode="wait" holds the mount back until the paper has
+ *  finished leaving, and a timer started at the tap instead fired while the
+ *  card was still sliding in, so the phone opened before anyone had seen it.
+ *  onEnter is held in a ref: callers pass an inline arrow, and a fresh identity
+ *  every render would re-run the effect and restart the timer forever. */
+const PhoneBeat: React.FC<{ onEnter: () => void; children: React.ReactNode }> = ({ onEnter, children }) => {
+  const enter = useRef(onEnter);
+  enter.current = onEnter;
+  useEffect(() => {
+    const t = window.setTimeout(() => enter.current(), PHONE_MS);
+    return () => window.clearTimeout(t);
+  }, []);
+  return <>{children}</>;
+};
+
 const ChapterOpening: React.FC<OpeningProps> = ({
   phase, onAdvance, onEnter, image, eyebrow, title, paragraphs, handoffLine,
-}) => (
+}) => {
+  return (
   // The ground animates paper -> night. That single colour carries the whole
   // transition: it is the room's lights going down, and the phone is the only
   // thing left lit.
@@ -97,7 +127,7 @@ const ChapterOpening: React.FC<OpeningProps> = ({
     className="flex flex-col overflow-hidden"
     style={{ height: '100dvh' }}
     animate={{ backgroundColor: phase === 'page' ? PAGE.paper : phase === 'phone' ? DARKROOM : NIGHT }}
-    transition={{ duration: phase === 'phone' ? 1.1 : 0.5, ease: 'easeInOut' }}
+    transition={{ duration: phase === 'phone' ? 0.8 : 0.5, ease: 'easeInOut' }}
   >
     <AnimatePresence mode="wait">
       {/* ── the cover ─────────────────────────────────────────────────── */}
@@ -132,7 +162,7 @@ const ChapterOpening: React.FC<OpeningProps> = ({
         <motion.div
           key="page"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.3 }}
           className="flex h-full flex-col justify-center overflow-y-auto px-6 py-10"
         >
           <div className="mx-auto w-full max-w-prose" style={{ color: PAGE.text }}>
@@ -168,14 +198,20 @@ const ChapterOpening: React.FC<OpeningProps> = ({
 
       {/* ── the phone, lit, in the dark ───────────────────────────────── */}
       {phase === 'phone' && (
-        <motion.div key="phone" className="relative flex h-full flex-col items-center justify-center px-8">
+        <motion.div
+          key="phone"
+          onClick={onEnter}
+          role="presentation"
+          className="relative flex h-full flex-col items-center justify-center px-8"
+        >
+        <PhoneBeat onEnter={onEnter}>
           {/* the light it is throwing into the room */}
           <motion.div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 h-[min(120vw,520px)] w-[min(120vw,520px)] -translate-x-1/2 -translate-y-[58%] rounded-full"
             style={{ background: 'radial-gradient(circle, rgba(56,134,196,.22) 0%, rgba(56,134,196,.07) 42%, transparent 70%)' }}
             initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.45, ease: 'easeOut' }}
+            transition={{ duration: 1.2, delay: 0.2, ease: 'easeOut' }}
           />
           <motion.button
             onClick={onEnter}
@@ -184,7 +220,7 @@ const ChapterOpening: React.FC<OpeningProps> = ({
             style={{ backgroundColor: NIGHT, boxShadow: '0 0 60px rgba(56,134,196,.28), 0 18px 50px rgba(0,0,0,.6)' }}
             initial={{ opacity: 0, y: 34, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.75, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* the element that becomes the real header */}
             <HandoffHeader compact />
@@ -196,22 +232,17 @@ const ChapterOpening: React.FC<OpeningProps> = ({
                   className="h-2.5 rounded-full bg-[#26223a]"
                   style={{ width: `${w}%` }}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4, delay: 1.0 + i * 0.1 }}
+                  transition={{ duration: 0.35, delay: 0.7 + i * 0.09 }}
                 />
               ))}
             </div>
           </motion.button>
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.5 }}
-            className="mt-8"
-          >
-            <Pill onClick={onEnter}>open it →</Pill>
-          </motion.div>
+        </PhoneBeat>
         </motion.div>
       )}
     </AnimatePresence>
   </motion.div>
-);
+  );
+};
 
 export default ChapterOpening;

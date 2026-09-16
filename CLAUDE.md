@@ -334,9 +334,10 @@ reader ends up holding what Starlax is holding.
 - **Paper** — the paragraph, drop cap, warm ground. Keep it *short*: anything
   stated here is something the toys no longer get to reveal. It ends on the line
   that puts the phone in her hand.
-- **Phone** — the ground goes to `#08070f` (darker than the chat's own
-  background) with a blue glow, so the phone is the only lit thing. Tapping it
-  runs the morph.
+- **Phone** — **not a screen, a transition.** It plays through on its own: the
+  ground goes to `#08070f` (darker than the chat's own background) with a blue
+  glow so the phone is the only lit thing, and ~1.2s later it opens itself. A
+  tap anywhere skips ahead, so it never traps anyone.
 
 **The morph is a real shared element, and the header is the right one to share.**
 The phone card's header and the chat's own header have the same `layoutId`, so
@@ -345,18 +346,31 @@ notification of her own message would be a lie.
 
 Rules this establishes:
 
-1. **Warm is the story, blue is the machine.** The cover and paper pills are
+1. **A tap is for reading, never for transitions.** The cover and the paragraph
+   wait, because those are places a reader is *reading*. The phone beat is not —
+   it used to end in an "open it →" button, which meant two taps in a row and
+   bought nothing but a stop in the middle of the handoff. One tap now buys the
+   whole sequence: darken, light up, morph, ~1.9s hands-off to a readable
+   conversation.
+2. **Start a timed beat on MOUNT, not on the state change.** `AnimatePresence
+   mode="wait"` holds the mount back until the previous phase has exited, so a
+   timer started at the tap fired while the card was still sliding in and the
+   phone opened before anyone had seen it. Give the beat its own component and
+   let its mount start the clock. Hold the callback in a ref, too: callers pass
+   an inline arrow, and a fresh identity every render restarts the timer for
+   ever.
+3. **Warm is the story, blue is the machine.** The cover and paper pills are
    amber and ink; blue arrives only when the phone does.
-2. **A returning reader never sees the opening.** Mid-chapter means coming back,
+4. **A returning reader never sees the opening.** Mid-chapter means coming back,
    not arriving — making them tap through the cover again would undo the restore.
-3. **`?reveal=` skips it too.** That URL is a direct link to one thread mode: a
+5. **`?reveal=` skips it too.** That URL is a direct link to one thread mode: a
    lab entry point, not a reader's first arrival.
-4. **Let the morph land before the thread paints,** or there is nothing to see it
+6. **Let the morph land before the thread paints,** or there is nothing to see it
    against. ~430ms. Use a **CSS transition driven by state, not framer's
    `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
    animation on the same subtree gets overridden and the thread stays invisible
    for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
-5. **Scene transitions are exempt from "animation competes with content."** That
+7. **Scene transitions are exempt from "animation competes with content."** That
    rule is about messages arriving *while you read*. Nothing is being read here —
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.
