@@ -384,10 +384,15 @@ Rules this establishes:
    ever.
 3. **Warm is the story, blue is the machine.** The cover and paper pills are
    amber and ink; blue arrives only when the phone does.
-4. **A returning reader never sees the opening.** Mid-chapter means coming back,
-   not arriving — making them tap through the cover again would undo the restore.
-5. **`?reveal=` skips it too.** That URL is a direct link to one thread mode: a
-   lab entry point, not a reader's first arrival.
+4. **A returning reader never sees the opening** — but `?opening=1` replays it.
+   Mid-chapter means coming back, not arriving, so the restore skips the cover;
+   without a door back that is a **one-way trapdoor**, and once anyone has read
+   a line of the chapter the opening becomes impossible to see again — to
+   review, to show someone, or to re-read from the top. `?opening=1` forces the
+   whole sequence and does **not** wipe progress: you replay the way in and land
+   back where you were. It beats `?reveal=` too.
+5. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
+   entry point, not a reader's first arrival.
 6. **Let the morph land before the thread paints,** or there is nothing to see it
    against. ~430ms. Use a **CSS transition driven by state, not framer's
    `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
@@ -473,10 +478,12 @@ be surfaced elsewhere, not just play locally.
   the link, and the link goes last so a thumb finds it without scrolling back.
   - **Deep link to the page that changed** (`…/lab/novel`), never the site root.
     Nobody should have to navigate to the thing they were just told about.
-  - **Say how to open it above the link** when it matters — plain versus
-    `?reveal=dots`, or "clear site data first" when a fresh reader's path is
-    what needs checking. `/lab/novel` opened plain is the whole experience; with
-    `?reveal=` it skips the cover.
+  - **Say how to open it above the link** when it matters — and remember the
+    person checking has read the page before, so a plain link lands them on
+    their **saved place**, not on the thing that changed. To review the opening
+    the link must carry **`?opening=1`**; `?reveal=` picks a thread mode and
+    skips the opening. Handing over a plain `/lab/novel` to review the cover is
+    a broken hand-off: it worked once, on a device that had never seen it.
   - **Never claim the deploy succeeded.** Pushing to `main` only *triggers* the
     Amplify build, and this environment cannot reach `amplifyapp.com` — the
     egress proxy answers 403 to CONNECT, so the live page cannot be fetched from

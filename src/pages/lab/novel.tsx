@@ -106,6 +106,14 @@ const Novel: NextPage = () => {
 
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      // ?opening=1 forces the whole cover -> paragraph -> phone sequence even
+      // for a reader with saved progress. Without it the opening is one-way:
+      // once you have read any of the chapter the restore sends you straight
+      // to your place, so there is no way to see it again — to review it, to
+      // show someone, or to re-read the chapter from the top. Progress is NOT
+      // wiped; you replay the way in and land back where you were.
+      const replay = params.get('opening') === '1';
       const s = window.localStorage.getItem(STORAGE_KEY);
       if (s) {
         const d = JSON.parse(s);
@@ -128,20 +136,20 @@ const Novel: NextPage = () => {
           // Someone who is mid-chapter is coming BACK, not arriving. Making
           // them tap through the cover and the paragraph again to reach the
           // message they were reading would undo the restore it took to get
-          // them here.
-          setPhase('chat');
+          // them here. Unless they asked for the opening on purpose.
+          if (!replay) setPhase('chat');
         }
       }
       // ?reveal=static|dots gives each experience its own shareable URL and
       // wins over whatever was last used on this device.
-      const q = new URLSearchParams(window.location.search).get('reveal');
+      const q = params.get('reveal');
       const m = q ?? window.localStorage.getItem(MODE_KEY);
       if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
       // An explicit ?reveal= is a direct link to one thread mode — a lab entry
       // point for comparing them, not a reader arriving at the chapter. Skip
       // the cover: you asked for the thread, so you get the thread. A reader
       // opening /lab/novel plainly still gets the whole opening.
-      if (q) setPhase('chat');
+      if (q && !replay) setPhase('chat');
     } catch { /* a bad save just means defaults */ }
   }, []);
   useEffect(() => {
