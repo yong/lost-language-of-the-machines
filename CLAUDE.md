@@ -74,14 +74,14 @@ touch. `/lab/proto-bit` is the prototype:
 
 1. **One switch.** The machine is dead; one bit turns it on. A whole number
    system, one button, no notation at all.
-4. **Eight switches in a row.** The number underneath is a *read-out of what you
+2. **Eight switches in a row.** The number underneath is a *read-out of what you
    just did*, not a lesson. "Byte" gets discovered as one row, never defined.
-5. **Eight rows is a picture.** The reader draws, and the eight numbers beside
+3. **Eight rows is a picture.** The reader draws, and the eight numbers beside
    their drawing are binary **they produced**. Real, too: this is how Game Boy
    tiles, early Mac icons and every bitmap font actually worked.
-6. **Hex arrives as relief** — once eight digits per row is genuinely annoying.
+4. **Hex arrives as relief** — once eight digits per row is genuinely annoying.
    Cut the byte in half; each half gets one symbol. That is the entire idea.
-7. **Colour** — three bytes, and now hex is worth having. The cartridge hack
+5. **Colour** — three bytes, and now hex is worth having. The cartridge hack
    begins.
 
 Nothing is explained before it has been felt.
