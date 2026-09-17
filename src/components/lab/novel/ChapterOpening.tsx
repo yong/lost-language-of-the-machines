@@ -19,6 +19,18 @@
 // say, the first bubble: the reader IS Starlax (her messages sit right), so a
 // notification of her own message would be a lie.
 //
+// THE WHOLE SCREEN IS THE TAP TARGET, on every phase. The pill is the SIGN —
+// it says what happens next, which a gesture never can — but nobody has to aim
+// at it. That is the chat-fiction standard (logged in the pacing experiment)
+// and the thread already worked this way; the cover and the paragraph did not,
+// so a reader learned "aim at the button" and then had it change under them.
+//
+// Deliberately NOT swipe. A swipe is invisible, so a young reader has to be
+// told it exists; horizontal swipe collides with iOS Safari's edge-swipe-back
+// and would throw the reader out of the book; and vertical swipe is scroll,
+// which is the reader's own instrument here. The one gesture in the chapter is
+// drag-to-paint on the grid, because that one is drawing, not navigating.
+//
 // THE PHONE IS A TRANSITION, NOT A SCREEN. It used to end in an "open it →"
 // button, which made two taps in a row — the reader had already said continue,
 // and the second tap bought nothing but a stop in the middle of the handoff.
@@ -134,6 +146,8 @@ const ChapterOpening: React.FC<OpeningProps> = ({
       {phase === 'cover' && (
         <motion.div
           key="cover"
+          onClick={() => onAdvance('page')}
+          role="presentation"
           exit={{ opacity: 0 }} transition={{ duration: 0.45 }}
           className="relative flex h-full flex-col justify-end overflow-hidden"
         >
@@ -161,6 +175,8 @@ const ChapterOpening: React.FC<OpeningProps> = ({
       {phase === 'page' && (
         <motion.div
           key="page"
+          onClick={() => onAdvance('phone')}
+          role="presentation"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="flex h-full flex-col justify-center overflow-y-auto px-6 py-10"

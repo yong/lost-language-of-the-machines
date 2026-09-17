@@ -3,6 +3,7 @@
 // Each one is gated: the conversation cannot continue until the reader has
 // actually done the thing. Failing is impossible — only stalling — which is how
 // "the story never quizzes" and "failure should always be funny" coexist.
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
@@ -77,29 +78,92 @@ export const RowToy: React.FC<{ value: number; onChange: (v: number) => void }> 
 
 // ── eight rows ──────────────────────────────────────────────────────────────
 
-export const GridToy: React.FC<{ rows: number[]; onChange: (rows: number[]) => void }> = ({ rows, onChange }) => (
-  <div className="flex flex-col gap-1">
-    {rows.map((row, r) => (
-      <div key={r} className="flex items-center gap-1">
-        {[7, 6, 5, 4, 3, 2, 1, 0].map((bit) => {
-          const on = ((row >> bit) & 1) === 1;
-          return (
-            <button
-              key={bit}
-              onClick={() => onChange(rows.map((v, i) => (i === r ? v ^ (1 << bit) : v)))}
-              aria-label={`row ${r} pixel ${7 - bit}`}
-              className="aspect-square flex-1 rounded-sm border touch-manipulation transition-colors"
-              style={{ minWidth: 22, background: on ? '#fbbf24' : '#0f0d1c', borderColor: on ? '#fbbf24' : '#2c2a3d' }}
-            />
-          );
-        })}
-        <span className="w-[4.5rem] shrink-0 pl-1 text-right text-[0.625rem] text-gray-500" style={{ fontFamily: MONO }}>
-          {bin8(row)}
-        </span>
-      </div>
-    ))}
-  </div>
-);
+// The ONE gesture in the chapter, and it earns its place because it is drawing
+// rather than navigating: dragging paints a stroke instead of costing eight
+// separate taps on 29px cells. Tapping single cells still works exactly as
+// before, so nothing has to be discovered.
+//
+// touch-action is `pan-y`, not `none`: a horizontal drag is a brush stroke and
+// a vertical one still scrolls the thread. The grid is 305px tall on a 390px
+// phone, so taking scrolling away over it would strand the reader. Cat shapes
+// are mostly horizontal strokes anyway.
+//
+// It PAINTS A VALUE rather than toggling — the value is decided by the cell you
+// start on, the way every paint tool works. Toggling per cell would flicker
+// cells on and off as a wobbling finger crossed them twice.
+export const GridToy: React.FC<{ rows: number[]; onChange: (rows: number[]) => void }> = ({ rows, onChange }) => {
+  const paint = useRef<0 | 1 | null>(null);
+  // pointerdown always precedes click, so a plain tap would paint the cell and
+  // then the click would toggle it straight back — a tap would do nothing at
+  // all. This swallows exactly one click per pointer press. Keyboard activation
+  // fires click with NO pointerdown, so Enter/Space still works: the drag is an
+  // accelerator, never the only way in.
+  const handled = useRef(false);
+  const live = useRef(rows);
+  live.current = rows;
+
+  const set = (r: number, bit: number, v: 0 | 1) => {
+    const cur = (live.current[r] >> bit) & 1;
+    if (cur === v) return;
+    onChange(live.current.map((row, i) => (i === r ? row ^ (1 << bit) : row)));
+  };
+
+  const cellUnder = (x: number, y: number) => {
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const r = el?.dataset?.r, bit = el?.dataset?.bit;
+    return r === undefined || bit === undefined ? null : { r: +r, bit: +bit };
+  };
+
+  return (
+    <div
+      className="flex flex-col gap-1"
+      style={{ touchAction: 'pan-y' }}
+      onPointerDown={(e) => {
+        const c = cellUnder(e.clientX, e.clientY);
+        if (!c) return;
+        handled.current = true;
+        paint.current = ((live.current[c.r] >> c.bit) & 1) === 1 ? 0 : 1;
+        set(c.r, c.bit, paint.current);
+      }}
+      onPointerMove={(e) => {
+        if (paint.current === null) return;
+        const c = cellUnder(e.clientX, e.clientY);
+        if (c) set(c.r, c.bit, paint.current);
+      }}
+      onPointerUp={() => { paint.current = null; }}
+      onPointerCancel={() => { paint.current = null; }}
+      onPointerLeave={() => { paint.current = null; }}
+    >
+      {rows.map((row, r) => (
+        <div key={r} className="flex items-center gap-1">
+          {[7, 6, 5, 4, 3, 2, 1, 0].map((bit) => {
+            const on = ((row >> bit) & 1) === 1;
+            return (
+              <button
+                key={bit}
+                data-r={r}
+                data-bit={bit}
+                // Keyboard and screen-reader users get a real button each; the
+                // drag above is an accelerator, never the only way in.
+                onClick={() => {
+                  if (handled.current) { handled.current = false; return; }
+                  set(r, bit, on ? 0 : 1);
+                }}
+                aria-label={`row ${r} pixel ${7 - bit}`}
+                aria-pressed={on}
+                className="aspect-square flex-1 rounded-sm border touch-manipulation transition-colors"
+                style={{ minWidth: 22, background: on ? '#fbbf24' : '#0f0d1c', borderColor: on ? '#fbbf24' : '#2c2a3d' }}
+              />
+            );
+          })}
+          <span className="w-[4.5rem] shrink-0 pl-1 text-right text-[0.625rem] text-gray-500" style={{ fontFamily: MONO }}>
+            {bin8(row)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 // ── cutting a byte in half ──────────────────────────────────────────────────
 
