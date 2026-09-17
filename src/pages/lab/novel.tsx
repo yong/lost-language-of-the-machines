@@ -23,6 +23,7 @@
 // continues when they are ready, and only then does the view move — a page
 // turn they asked for, not an interruption.
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -100,6 +101,45 @@ const Novel: NextPage = () => {
   const viaOpening = useRef(false);
   /** false only for the half-second the header is morphing into place */
   const [threadIn, setThreadIn] = useState(true);
+  const router = useRouter();
+
+  // READING IS NOT ONE-WAY. The chapter used to run cover -> paragraph ->
+  // phone -> chat with no way back at any point, and the header's ← did not go
+  // back at all: it LEFT THE BOOK for /lab. So the prose you had just read was
+  // unreachable the moment the thread opened, and the only way to see the
+  // opening again was a URL nobody would guess.
+  //
+  // Back costs no extra space, because the arrow was already there — it was
+  // just pointing at the wrong thing. It now steps back one beat at a time and
+  // only leaves the book from the cover, which is where leaving belongs.
+  // Progress is untouched: step back into the prose, come forward, and the
+  // thread is exactly where you left it.
+  const goBack = useCallback(() => {
+    setPhase((v) => {
+      if (v === 'chat' || v === 'phone') return 'page';
+      if (v === 'page') return 'cover';
+      router.push('/lab');
+      return v;
+    });
+  }, [router]);
+
+  // The gesture is an ACCELERATOR for that arrow, never the only way back
+  // (rule 1: a swipe is invisible, so it can accelerate but not carry a core
+  // action alone). Rightward, because that is what back means on a phone.
+  // Started from the very left edge it is Safari's own back gesture and we
+  // leave it alone; started on the pixel grid it is a brush stroke.
+  const swipe = useRef<{ x: number; y: number; ok: boolean } | null>(null);
+  const swipeDown = (e: React.PointerEvent) => {
+    const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
+    swipe.current = { x: e.clientX, y: e.clientY, ok: !onGrid && e.clientX > 24 };
+  };
+  const swipeUp = (e: React.PointerEvent) => {
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s?.ok) return;
+    const dx = e.clientX - s.x, dy = e.clientY - s.y;
+    if (dx > 70 && Math.abs(dx) > Math.abs(dy) * 2) goBack();
+  };
   const scroller = useRef<HTMLDivElement>(null);
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
@@ -371,6 +411,9 @@ const Novel: NextPage = () => {
           {...OPENING}
           phase={phase}
           onAdvance={setPhase}
+          onBack={goBack}
+          swipeDown={swipeDown}
+          swipeUp={swipeUp}
           onEnter={() => { viaOpening.current = true; setThreadIn(false); setPhase('chat'); }}
         />
       )}
@@ -393,11 +436,11 @@ const Novel: NextPage = () => {
           {/* was 10x16px at 2.58:1 — a rule the page states and broke. The
               negative margin keeps the 44px target from padding the header. */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
-            <Link
-              href="/lab"
-              aria-label="back to the lab"
+            <button
+              onClick={goBack}
+              aria-label="back to the page before"
               className="-m-2 flex min-h-11 min-w-11 items-center justify-center text-gray-400"
-            >←</Link>
+            >←</button>
           </motion.div>
           <motion.div layoutId="novel-chat-avatar" className="h-8 w-8 rounded-full bg-sky-900/60 text-center text-lg leading-8">🤖</motion.div>
           <motion.div layout>
@@ -418,6 +461,8 @@ const Novel: NextPage = () => {
           ref={scroller}
           onScroll={onScroll}
           onClick={tap}
+          onPointerDown={swipeDown}
+          onPointerUp={swipeUp}
           role="presentation"
           style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"

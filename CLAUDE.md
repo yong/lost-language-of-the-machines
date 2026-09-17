@@ -193,17 +193,29 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    world. If a page says "arrow keys to move", it is unplayable on the device
    most readers hold. **The same goes for a gesture:** a swipe is invisible, so
    it can accelerate but never carry a core action on its own.
-2. **Big taps, not swipes — and the whole screen is the target.** The pill is
-   the *sign* (it says what happens next, which a gesture never can) but nobody
-   should have to aim at it, so the phase behind it takes the tap too. That is
-   the chat-fiction standard, and getting it wrong is worse than either choice
-   alone: the thread accepted taps anywhere while the cover and paragraph
-   demanded the pill, so a young reader learned one rule and had it change.
-   Swipe was considered and rejected for **page turns** specifically:
-   horizontal swipe collides with iOS Safari's edge-swipe-back and would throw
-   the reader out of the book, and vertical swipe is scroll, which is the
-   reader's own instrument here.
-3. **One gesture earns its place: dragging to draw.** Painting the 8×8 grid
+2. **Reading is never one-way.** Every forward step needs a step back, and the
+   back has to be *in the reading*, not an exit from it. This was wrong for a
+   long time and did not look wrong: the chapter ran cover → paragraph → phone
+   → chat with no way back at any point, and the header's ← did not go back at
+   all, it **left the book** for `/lab`. So the prose a reader had just read
+   became unreachable the moment the thread opened. **Back costs no extra
+   space** — the arrow was already there, pointing at the wrong thing. It now
+   steps back one beat at a time and only leaves the book from the cover, which
+   is where leaving belongs. Stepping back must never cost progress: go back
+   into the prose, come forward, and the thread is where you left it.
+3. **Taps carry it; a swipe accelerates it.** The pill is the *sign* (it says
+   what happens next, which a gesture never can) but nobody should have to aim
+   at it, so the phase behind it takes the tap too — that is the chat-fiction
+   standard, and the thread accepting taps anywhere while the cover demanded
+   the pill was worse than either choice alone. **Swipe right = back**, as a
+   second way to do what the arrow does, never the only way. Two exemptions,
+   both load-bearing: a swipe starting within 24px of the left edge is
+   **Safari's own back gesture** and is left alone, and one starting on the
+   pixel grid is a **brush stroke** (verified: a 163px rightward drag across
+   the grid paints six cells and does not navigate). Swipe is still **not** used
+   for page turns forward — forward is where the sign matters most, and vertical
+   swipe is scroll, which is the reader's own instrument here.
+4. **The other gesture that earns its place: dragging to draw.** Painting the 8×8 grid
    cost eight separate taps on 29px cells; one stroke now does it. That is
    *drawing*, not navigating — the test for a gesture is whether the motion
    itself means something. Notes that cost debugging: use `touch-action: pan-y`
@@ -215,10 +227,10 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    click that follows would toggle it straight back — making a plain tap do
    nothing. Keyboard activation fires `click` with no `pointerdown`, so that
    check is also what keeps Enter/Space working.
-4. **Boards and stages scale; they are never fixed pixels.** Size a world with
+5. **Boards and stages scale; they are never fixed pixels.** Size a world with
    `width: min(100%, …)` plus `aspect-ratio`, and position things inside it in
    **percentages**, not `px`. A hard-coded `CELL = 52` overflows a phone.
-5. **Tap targets are at least 44px.** Fine for a mouse is not fine for a thumb.
+6. **Tap targets are at least 44px.** Fine for a mouse is not fine for a thumb.
    Colour swatches, steppers and rule toggles all need real hit area.
    **The one exception is a row that must stay a row.** Eight switches at 44px
    needs 380px; a card on a 390px phone gives 334px, so a byte laid out as one
@@ -226,29 +238,29 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    four would fit the rule and destroy the lesson — *a byte is one row* is the
    whole point. Take the smaller target there, and nowhere else: a back arrow
    at 10×16px has no such excuse.
-6. **Text inputs use ≥16px font.** Below that, iOS Safari zooms the whole page
+7. **Text inputs use ≥16px font.** Below that, iOS Safari zooms the whole page
    on focus and the reader loses the layout.
-7. **No hover-only affordances.** Anything revealed by `:hover` or a `title`
+8. **No hover-only affordances.** Anything revealed by `:hover` or a `title`
    attribute does not exist on a touch screen.
-8. **The page never scrolls sideways.** Wide things (code, grids, tables) get
+9. **The page never scrolls sideways.** Wide things (code, grids, tables) get
    their own `overflow-x: auto` container.
-9. **The thing you change and the thing that changes must be visible together.**
+10. **The thing you change and the thing that changes must be visible together.**
    No horizontal overflow is not enough — if a control is 2000px of scroll away
    from the effect it produces, the mechanic is broken even though every metric
    passes. On a phone, pin the stage (`sticky top-0`) and let the controls
    scroll under it. Measure it: with a byte selected, the console and its slider
    must both return `onScreen`.
-10. **px for thumbs, rem for text.** A 44px tap target is a *physical* size and
+11. **px for thumbs, rem for text.** A 44px tap target is a *physical* size and
    must not move with the reader's font setting; a 15px bubble is *text* and
    must. So tap floors stay px (with a comment saying why) and every font size
    is `rem` — `text-[15px]` ignores a reader who has bumped their type size.
-11. **Reserve a height, never freeze one.** A bar that must not change height
+12. **Reserve a height, never freeze one.** A bar that must not change height
    between states gets `min-h-[Nrem]` sized to its *tallest* state, not a fixed
    `h-10`. A frozen height clips as soon as text scales; a rem reservation keeps
    every state identical at every text size. Sweep the **root font size**
    (16/20/24px) as well as the viewport — a width sweep passes clean while a
    footer is clipping.
-12. **Size text inside a scalable stage off the stage, not the viewport.** The
+13. **Size text inside a scalable stage off the stage, not the viewport.** The
    same console renders 200px wide on a phone and 340px on desktop, so `vw`
    units make the small one cramped. Use `container-type: inline-size` plus
    `cqw`.

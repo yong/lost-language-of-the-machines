@@ -110,6 +110,10 @@ export interface OpeningProps {
   paragraphs: string[];
   /** The last line, set apart — it is what puts the phone in her hand. */
   handoffLine: string;
+  /** One beat back. Reading is never one-way. */
+  onBack: () => void;
+  swipeDown: (e: React.PointerEvent) => void;
+  swipeUp: (e: React.PointerEvent) => void;
 }
 
 /** The phone beat. Its own component so that MOUNTING it starts the clock —
@@ -128,15 +132,29 @@ const PhoneBeat: React.FC<{ onEnter: () => void; children: React.ReactNode }> = 
   return <>{children}</>;
 };
 
+/** The way back out of a phase, in the corner, 44px, and above the
+ *  whole-screen tap so it never advances by accident. */
+const Back: React.FC<{ onBack: () => void; tone: 'light' | 'dark' }> = ({ onBack, tone }) => (
+  <button
+    onClick={(e) => { e.stopPropagation(); onBack(); }}
+    aria-label="back to the page before"
+    className={`absolute left-2 top-2 z-20 flex min-h-11 min-w-11 items-center justify-center rounded-full text-lg ${
+      tone === 'light' ? 'text-[#2c2416]/55' : 'text-gray-400/80'
+    }`}
+  >←</button>
+);
+
 const ChapterOpening: React.FC<OpeningProps> = ({
-  phase, onAdvance, onEnter, image, eyebrow, title, paragraphs, handoffLine,
+  phase, onAdvance, onEnter, image, eyebrow, title, paragraphs, handoffLine, onBack, swipeDown, swipeUp,
 }) => {
   return (
   // The ground animates paper -> night. That single colour carries the whole
   // transition: it is the room's lights going down, and the phone is the only
   // thing left lit.
   <motion.div
-    className="flex flex-col overflow-hidden"
+    onPointerDown={swipeDown}
+    onPointerUp={swipeUp}
+    className="relative flex flex-col overflow-hidden"
     style={{ height: '100dvh' }}
     animate={{ backgroundColor: phase === 'page' ? PAGE.paper : phase === 'phone' ? DARKROOM : NIGHT }}
     transition={{ duration: phase === 'phone' ? 0.8 : 0.5, ease: 'easeInOut' }}
@@ -151,6 +169,7 @@ const ChapterOpening: React.FC<OpeningProps> = ({
           exit={{ opacity: 0 }} transition={{ duration: 0.45 }}
           className="relative flex h-full flex-col justify-end overflow-hidden"
         >
+          <Back onBack={onBack} tone="dark" />
           <motion.div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${image})` }}
@@ -179,8 +198,9 @@ const ChapterOpening: React.FC<OpeningProps> = ({
           role="presentation"
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex h-full flex-col justify-center overflow-y-auto px-6 py-10"
+          className="relative flex h-full flex-col justify-center overflow-y-auto px-6 py-10"
         >
+          <Back onBack={onBack} tone="light" />
           <div className="mx-auto w-full max-w-prose" style={{ color: PAGE.text }}>
             {paragraphs.map((t, i) => (
               <motion.p
