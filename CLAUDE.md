@@ -465,22 +465,23 @@ be surfaced elsewhere, not just play locally.
 - Use relative paths in bash commands — absolute paths trigger permission prompts
   via the iMessage bridge.
 - Verify visual work in a real browser (`agent-browser`) before calling it done.
-- **Hand back with the link.** Any reply that finishes a piece of work and waits
-  for it to be looked at **ends with the URL**, as the last thing in the reply.
-  Rules for it:
+- **Hand back with the link, and nothing after it.** Any reply that finishes a
+  piece of work and waits for it to be looked at **ends with the URL** —
+  literally the last thing, with **no trailing sentence, caveat or sign-off
+  after it**. Putting the link first in a closing paragraph and then explaining
+  it still breaks this rule: everything the reader needs to know goes *above*
+  the link, and the link goes last so a thumb finds it without scrolling back.
   - **Deep link to the page that changed** (`…/lab/novel`), never the site root.
     Nobody should have to navigate to the thing they were just told about.
-  - **Say how to open it** when it matters — plain versus `?reveal=dots`, or
-    "clear site data first" when a fresh reader's path is what needs checking.
-    `/lab/novel` opened plain is the whole experience; with `?reveal=` it skips
-    the cover.
+  - **Say how to open it above the link** when it matters — plain versus
+    `?reveal=dots`, or "clear site data first" when a fresh reader's path is
+    what needs checking. `/lab/novel` opened plain is the whole experience; with
+    `?reveal=` it skips the cover.
   - **Never claim the deploy succeeded.** Pushing to `main` only *triggers* the
     Amplify build, and this environment cannot reach `amplifyapp.com` — the
     egress proxy answers 403 to CONNECT, so the live page cannot be fetched from
-    here to check. Say what was verified locally, then hand over the link and a
-    way to tell the new build apart from the old one.
-  - It is read on a phone. One tappable link at the end beats a link buried
-    mid-paragraph.
+    here to check. Say what was verified locally, and how to tell the new build
+    apart from the old — above the link.
 
 ## Deployment
 
