@@ -123,26 +123,27 @@ const Novel: NextPage = () => {
     });
   }, [router]);
 
-  // The gesture is an ACCELERATOR for that arrow, never the only way back
-  // (rule 1: a swipe is invisible, so it can accelerate but not carry a core
-  // action alone). Rightward, because that is what back means on a phone.
-  // Started from the very left edge it is Safari's own back gesture and we
-  // leave it alone; started on the pixel grid it is a brush stroke.
-  const swipe = useRef<{ x: number; y: number; ok: boolean } | null>(null);
-  const swipeDown = (e: React.PointerEvent) => {
-    const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
-    swipe.current = { x: e.clientX, y: e.clientY, ok: !onGrid && e.clientX > 24 };
-  };
-  const swipeUp = (e: React.PointerEvent) => {
-    const s = swipe.current;
-    swipe.current = null;
-    if (!s?.ok) return;
-    const dx = e.clientX - s.x, dy = e.clientY - s.y;
-    if (dx > 70 && Math.abs(dx) > Math.abs(dy) * 2) goBack();
-  };
+  // VERTICAL PAGING, the same idiom as the opening: at the very top of the
+  // thread, pulling DOWN turns back to the paper. Everywhere else a vertical
+  // drag is the thread scrolling, which belongs to the reader — so this only
+  // arms at scrollTop 0, and only for a deliberate pull. overscroll-contain
+  // keeps the browser's own pull-to-refresh out of it.
   const scroller = useRef<HTMLDivElement>(null);
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
+
+  const pull = useRef<{ y: number; armed: boolean } | null>(null);
+  const pullDown = (e: React.PointerEvent) => {
+    const el = scroller.current;
+    const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
+    pull.current = { y: e.clientY, armed: !onGrid && !!el && el.scrollTop <= 0 };
+  };
+  const pullUp = (e: React.PointerEvent) => {
+    const s = pull.current;
+    pull.current = null;
+    if (!s?.armed) return;
+    if (e.clientY - s.y > 90 && (scroller.current?.scrollTop ?? 1) <= 0) goBack();
+  };
 
   useEffect(() => {
     try {
@@ -201,6 +202,10 @@ const Novel: NextPage = () => {
     try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
   }, [mode]);
 
+  // Let the header finish travelling before the conversation paints behind it.
+  // Plain CSS, not a framer `animate`: inside the LayoutGroup that drives the
+  // morph, an opacity animation on the same subtree got overridden and the
+  // thread stayed invisible for good.
   // Let the header finish travelling before the conversation paints behind it.
   // Plain CSS, not a framer `animate`: inside the LayoutGroup that drives the
   // morph, an opacity animation on the same subtree got overridden and the
@@ -412,8 +417,6 @@ const Novel: NextPage = () => {
           phase={phase}
           onAdvance={setPhase}
           onBack={goBack}
-          swipeDown={swipeDown}
-          swipeUp={swipeUp}
           onEnter={() => { viaOpening.current = true; setThreadIn(false); setPhase('chat'); }}
         />
       )}
@@ -461,8 +464,8 @@ const Novel: NextPage = () => {
           ref={scroller}
           onScroll={onScroll}
           onClick={tap}
-          onPointerDown={swipeDown}
-          onPointerUp={swipeUp}
+          onPointerDown={pullDown}
+          onPointerUp={pullUp}
           role="presentation"
           style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"

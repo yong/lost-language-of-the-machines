@@ -203,18 +203,40 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
    steps back one beat at a time and only leaves the book from the cover, which
    is where leaving belongs. Stepping back must never cost progress: go back
    into the prose, come forward, and the thread is where you left it.
-3. **Taps carry it; a swipe accelerates it.** The pill is the *sign* (it says
-   what happens next, which a gesture never can) but nobody should have to aim
-   at it, so the phase behind it takes the tap too — that is the chat-fiction
-   standard, and the thread accepting taps anywhere while the cover demanded
-   the pill was worse than either choice alone. **Swipe right = back**, as a
-   second way to do what the arrow does, never the only way. Two exemptions,
-   both load-bearing: a swipe starting within 24px of the left edge is
-   **Safari's own back gesture** and is left alone, and one starting on the
-   pixel grid is a **brush stroke** (verified: a 163px rightward drag across
-   the grid paints six cells and does not navigate). Swipe is still **not** used
-   for page turns forward — forward is where the sign matters most, and vertical
-   swipe is scroll, which is the reader's own instrument here.
+3. **The opening is a VERTICAL PAGER: swipe up for the next page.** This is
+   the idiom every phone-native reader already knows (Reels, Shorts, Stories),
+   and **a tap target is not a substitute** — an invisible full-screen button
+   is still a button, and making it bigger does not make it a swipe. Getting
+   here took three rounds of arguing the wrong question: "should we use swipe?"
+   was never about *horizontal* swipe, it was about vertical paging.
+   - **Drag, don't detect, and show what is coming.** Both pages live on one
+     track that moves with the thumb, so the next page is already rising from
+     below before the reader commits. An `AnimatePresence` slide looks the same
+     in a screenshot and feels nothing like it: the outgoing page moves but the
+     space it leaves is *empty*, because the next page does not mount until you
+     commit. Release past ~18% of the screen or with real velocity commits;
+     less springs back.
+   - **Swallow the click that trails a drag.** A swipe fires a click on release,
+     so every swipe down also fired the tap fallback and went straight forward
+     again. Same shape as the grid's `pointerdown`/`click` collision.
+   - **A scroll box inside a drag surface is a dead zone.** The prose was
+     permanently `overflow-y-auto`, so on a 390×844 screen — where it fits — a
+     swipe starting on the words scrolled nothing and the page did not turn,
+     right where a thumb lands. Make it scrollable **only when it actually
+     overflows**, measured, not assumed.
+   - **The page cannot scroll, so nothing may fall off it.** Removing the
+     page's own scrolling to get the drag put the phone — the way out — off
+     screen entirely at 320×568 (1293px of content in a 568px page at 24px
+     root). Anything load-bearing gets its own non-shrinking slot.
+   - Back is **swipe down**: to the page before, and out of the thread by
+     pulling down at the top (armed only at `scrollTop 0`, so scrolling still
+     belongs to the reader). A swipe starting within 24px of the left edge is
+     **Safari's own back gesture** and is left alone; one starting on the pixel
+     grid is a **brush stroke** (verified: a 163px drag across the grid paints
+     six cells and does not navigate).
+   - Tap and the arrow keys still work as unadvertised fallbacks, so a
+     keyboard, a screen reader, or a reader who does not think to swipe is
+     never stuck — but nothing on screen is a pill.
 4. **The other gesture that earns its place: dragging to draw.** Painting the 8×8 grid
    cost eight separate taps on 29px cells; one stroke now does it. That is
    *drawing*, not navigating — the test for a gesture is whether the motion
