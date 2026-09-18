@@ -365,14 +365,27 @@ literal and needs no explaining: **the paper darkens, a phone lights up on it,
 and the conversation is already on the phone.** Three taps, no typing, and the
 reader ends up holding what Starlax is holding.
 
-- **Cover** — art, chapter, title, one `begin →`.
+**Two pages, one tap each, and no buttons anywhere.**
+
+- **Cover** — art, chapter, title, and `tap to begin` as a *hint*, not a pill.
 - **Paper** — the paragraph, drop cap, warm ground. Keep it *short*: anything
   stated here is something the toys no longer get to reveal. It ends on the line
-  that puts the phone in her hand.
-- **Phone** — **not a screen, a transition.** It plays through on its own: the
-  ground goes to `#08070f` (darker than the chat's own background) with a blue
-  glow so the phone is the only lit thing, and ~1.2s later it opens itself. A
-  tap anywhere skips ahead, so it never traps anyone.
+  that puts the phone in her hand — **and then the phone is lying there on the
+  page.** Tapping it takes the room to `#08070f`, leaves the phone the only lit
+  thing, and morphs it open, all in one motion (~1.2s).
+
+**The phone was a whole page of its own and should not have been.** It appeared,
+sat for 1.2s and left again without the reader doing anything — 2.3 seconds of
+watching on every single read. The morph already carries the meaning, so the
+dwell bought nothing but a wait. Defending it as "a transition, not a screen"
+was the tell: if it is a transition it has no business being a page.
+
+**Putting it on the paper is what gives it a job — it is the SIGN.** A sign says
+what happens next, which a gesture never can, and an *object* says it better
+than a pill does: a phone under "Starlax got out her phone" needs no label. The
+whole screen is still the tap target, so nobody has to aim at it, and both the
+cover's hint and the phone are real `<button>`s underneath so a keyboard or
+screen reader has something to press. **No pills in the opening.**
 
 **The morph is a real shared element, and the header is the right one to share.**
 The phone card's header and the chat's own header have the same `layoutId`, so
@@ -381,19 +394,14 @@ notification of her own message would be a lie.
 
 Rules this establishes:
 
-1. **A tap is for reading, never for transitions.** The cover and the paragraph
-   wait, because those are places a reader is *reading*. The phone beat is not —
-   it used to end in an "open it →" button, which meant two taps in a row and
-   bought nothing but a stop in the middle of the handoff. One tap now buys the
-   whole sequence: darken, light up, morph, ~1.9s hands-off to a readable
-   conversation.
-2. **Start a timed beat on MOUNT, not on the state change.** `AnimatePresence
-   mode="wait"` holds the mount back until the previous phase has exited, so a
-   timer started at the tap fired while the card was still sliding in and the
-   phone opened before anyone had seen it. Give the beat its own component and
-   let its mount start the clock. Hold the callback in a ref, too: callers pass
-   an inline arrow, and a fresh identity every render restarts the timer for
-   ever.
+1. **A screen the reader does not act on should not be a screen.** Ask it of
+   anything that appears and leaves on its own: what is it *for*? If the answer
+   is "it looks nice on the way past", fold it into the transition it is
+   decorating. Two taps of reading now cost 1.2s of animation instead of 2.3s,
+   and nothing was lost — the morph was always the part that meant something.
+2. **Prefer an object to a label.** A phone drawn on the page says "open this"
+   better than a pill saying *open it →*, and it belongs to the story rather
+   than to the interface.
 3. **Warm is the story, blue is the machine.** The cover and paper pills are
    amber and ink; blue arrives only when the phone does.
 4. **A returning reader never sees the opening** — but `?opening=1` replays it.

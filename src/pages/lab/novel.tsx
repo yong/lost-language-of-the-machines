@@ -116,7 +116,7 @@ const Novel: NextPage = () => {
   // thread is exactly where you left it.
   const goBack = useCallback(() => {
     setPhase((v) => {
-      if (v === 'chat' || v === 'phone') return 'page';
+      if (v === 'chat') return 'page';
       if (v === 'page') return 'cover';
       router.push('/lab');
       return v;
