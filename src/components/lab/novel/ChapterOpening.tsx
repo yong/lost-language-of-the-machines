@@ -64,6 +64,8 @@ const ChapterOpening: React.FC<OpeningProps> = (props) => {
     try { window.localStorage.setItem(OPENING_KEY, id); } catch { /* private mode */ }
   };
 
+  // A cut variant can still be sitting in someone's localStorage (or in a URL
+  // they bookmarked), so fall back rather than render nothing.
   const entry = OPENINGS.find((o) => o.id === variant) ?? OPENINGS[0];
   const Variant = entry.Component;
 

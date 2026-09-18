@@ -1,6 +1,6 @@
 # The way into a chapter — transition experiment
 
-> Cover → paragraph → chat. Four transitions, built to be compared rather than
+> Cover → paragraph → chat. Transitions built to be compared rather than
 > argued about, because describing them settled nothing. Same method that
 > settled the reveal modes (`raw/chat-novel-pacing-experiment.md`).
 >
@@ -18,18 +18,33 @@ transition: the same art, the same two paragraphs, the same phone lying on the
 page, and the same morph into the thread (the phone's header and the chat's
 header share one `layoutId`, so one becomes the other).
 
-## The four
+## The three that survive
 
 | | Variant | Borrowed from | What it is actually testing |
 |---|---|---|---|
 | A | **Track** | Reels, Shorts | Pages on one rail that moves with the thumb. Does a feed-native pager make a book feel modern, or make the prose feel like something to flick past? |
 | B | **Stories** | Instagram, Snapchat | Three segments across the top say how many beats there are and which one you are on. **Is "how much is left" the thing the opening was missing?** |
-| C | **Depth** | App Store, Apple Books | Nothing slides; everything is z-axis. You go *through* the cover and the phone grows until it is the screen. Going IN rather than going DOWN. |
-| D | **Cinema** | film titles | No pages at all. The art never leaves: the title lifts, the prose rises over it, the scene dims, the phone comes up out of the dark. **Was the page boundary the problem?** |
+| C | **Cinema** | film titles | No pages at all. The art never leaves: the title lifts, the prose rises over it, the scene dims, the phone comes up out of the dark. **Was the page boundary the problem?** |
 
-Each is a different *idea*, not a different easing curve. B is the only one that
-answers "where am I"; C is the only one that says a book is a place you enter;
-D is the only one where the cover art earns more than four seconds.
+Each is a different *idea*, not a different easing curve. Stories is the only
+one that answers "where am I"; Cinema the only one where the cover art earns
+more than four seconds.
+
+### ❌ Cut: Depth (App Store / Apple Books zoom-through)
+
+Nothing slid; every move was along the z-axis — you went *through* the cover,
+and the phone grew until it was the screen. The idea it was testing was a real
+one: **a book is a place you enter, not a feed you advance.**
+
+**Read on a phone and judged bad, so it is gone** rather than left in the list
+to be re-pitched. My own read of why, for whoever considers it again: scaling a
+page of *prose* makes the text swim on the way in and out, and zoom-through is
+the idiom phones use for **modals** — a thing you open and dismiss — not for
+pages you travel between. It promised depth and delivered a dialog.
+
+A cut variant can still be in someone's `localStorage` or a bookmarked URL, so
+an unknown `?open=` falls back to the first variant rather than rendering
+nothing.
 
 ## What to judge them on
 
@@ -44,6 +59,12 @@ D is the only one where the cover art earns more than four seconds.
 Cover → paragraph → thread on a 390×844 phone: **~1.35s** hands-off into the
 thread, 6 bubbles, no sideways scroll, no page errors. They are within 15ms of
 each other, so **speed is not the tiebreaker** — feel is.
+
+**Back works the same in all of them, and it is not the arrow.** Verified per
+variant: swipe DOWN on the paper returns to the cover, and pulling down at the
+top of the thread returns to the paper. The arrow is a *visible fallback*, kept
+because a gesture is invisible and rule 1 says one can accelerate a core action
+but never carry it alone — not because back needs a button.
 
 ## Notes that cost something
 

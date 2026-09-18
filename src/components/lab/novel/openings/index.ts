@@ -7,11 +7,10 @@
 // same phone, same morph into the thread. Only the way in differs.
 import Track from './Track';
 import Stories from './Stories';
-import Depth from './Depth';
 import Cinema from './Cinema';
 import type { VariantProps } from './shared';
 
-export type OpeningId = 'track' | 'stories' | 'depth' | 'cinema';
+export type OpeningId = 'track' | 'stories' | 'cinema';
 
 export const OPENINGS: Array<{
   id: OpeningId;
@@ -29,11 +28,6 @@ export const OPENINGS: Array<{
     id: 'stories', name: 'Stories', from: 'Instagram · Snapchat',
     asks: 'Three segments across the top say how many beats there are and which one you are on. Is "how much is left" what the opening was actually missing?',
     Component: Stories,
-  },
-  {
-    id: 'depth', name: 'Depth', from: 'App Store · Apple Books',
-    asks: 'Nothing slides; everything is z-axis. You go through the cover, and the phone grows until it is the screen. Going IN rather than going DOWN.',
-    Component: Depth,
   },
   {
     id: 'cinema', name: 'Cinema', from: 'film titles',

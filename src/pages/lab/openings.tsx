@@ -1,4 +1,4 @@
-// /lab/openings — the four ways into a chat chapter, side by side.
+// /lab/openings — the ways into a chat chapter, side by side.
 //
 // Built because the argument could not be settled by describing them. Same
 // method as the reveal-mode experiment: build them all, read them end to end
@@ -13,14 +13,14 @@ import { PIXEL_FONT } from '@/components/lab/world/theme';
 const Openings: NextPage = () => (
   <>
     <Head>
-      <title>[lab] Four ways into a chapter - Lost Language of the Machines</title>
+      <title>[lab] Ways into a chapter - Lost Language of the Machines</title>
       <meta name="robots" content="noindex, nofollow" />
     </Head>
     <main className="min-h-dvh bg-[#12101f] px-5 py-8 text-gray-300">
       <div className="mx-auto max-w-lg">
         <Link href="/lab" className="-ml-2 inline-flex min-h-11 min-w-11 items-center text-gray-500">←</Link>
         <h1 className="mt-2 text-4xl leading-none text-amber-100" style={{ fontFamily: PIXEL_FONT }}>
-          Four ways in
+          Ways in
         </h1>
         <p className="mt-3 text-[0.9375rem] leading-relaxed text-gray-400">
           The same cover, the same paragraph, the same phone, the same morph into the

@@ -375,12 +375,15 @@ another `setState` updater; never yank a reader who scrolled up.
 
 **`src/components/lab/novel/ChapterOpening.tsx`; live at `/lab/novel`.**
 
-> ⚖️ **The transition is an OPEN EXPERIMENT with four variants** — see
+> ⚖️ **The transition is an OPEN EXPERIMENT** — see
 > `raw/opening-transition-experiment.md` and **`/lab/openings`**. Describing
-> them settled nothing, so all four are built: `?open=track|stories|depth|cinema`,
-> or cycle from the chip on the cover. Everything below still describes what is
-> held constant across all four; only the transition differs. **The chat UI is
-> not in scope and is staying as it is.**
+> them settled nothing, so they are built: `?open=track|stories|cinema`
+> (`depth` was built, read and **cut**), or cycle from the chip on the cover.
+> Everything below still describes what is held constant across them; only the
+> transition differs. **The chat UI is not in scope and is staying as it is.**
+> Back is **swipe down** in every variant — on the paper to the cover, and by
+> pulling down at the top of the thread to the paper. The arrow is a visible
+> fallback, not the mechanism.
 
 Some scenes cannot be established in dialogue. *"The museum basement smelled of
 dust and old electricity"* is not a text message, and faking it as one (*"omg
