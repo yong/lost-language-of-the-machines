@@ -60,6 +60,34 @@ Cover → paragraph → thread on a 390×844 phone: **~1.35s** hands-off into th
 thread, 6 bubbles, no sideways scroll, no page errors. They are within 15ms of
 each other, so **speed is not the tiebreaker** — feel is.
 
+### The one back question still open
+
+Swipe down goes to **the previous page**, one step at a time — verified
+`chat → page → cover` in all three, with the reader's place kept. It does not
+jump to the cover.
+
+But **pulling down out of the THREAD is the risky one**, and it is a different
+action from the other two:
+
+- `scrollTop 0` is exactly where a **re-reading** reader lives. They scroll up
+  to look at the start of the conversation, flick out of habit, and get ejected
+  from the chat.
+- In almost every app a pull-down at the top means **refresh**, not *leave*.
+  The gesture already has a learned meaning and it is not this one.
+- The chat is a **destination, not page 3 of a pager.** The morph told the
+  reader they went *inside* something; "up a level" is not the same action as
+  "previous page", which is why phones use an edge-swipe or a nav bar for it
+  rather than a pull.
+
+Paper → cover is unambiguous and should stay. For the thread, the choices are:
+
+| | |
+|---|---|
+| **A** | Keep the pull, but **reveal it** — show a "release to go back" affordance as it stretches, the way pull-to-refresh does, so it can never be accidental. The best-practice answer, and more build. |
+| **B** | **Drop it.** The arrow is the way out of the chat, and it already sits top-left where "out of this" lives on a phone. |
+
+*Undecided — author's call.*
+
 **Back works the same in all of them, and it is not the arrow.** Verified per
 variant: swipe DOWN on the paper returns to the cover, and pulling down at the
 top of the thread returns to the paper. The arrow is a *visible fallback*, kept
@@ -67,6 +95,11 @@ because a gesture is invisible and rule 1 says one can accelerate a core action
 but never carry it alone — not because back needs a button.
 
 ## Notes that cost something
+
+- **A long pull did LESS than a short one.** `onPointerUp` was on the thread's
+  scroller, but a 500px pull ends with the finger over the footer, so the event
+  never reached the handler: 150px went back, 500px did nothing. Listen on the
+  **window** for the release, not on the element the gesture started in.
 
 - **Cinema needs a scrim it can rely on.** Prose over artwork is a contrast bet
   you lose somewhere, and here it is the moon. The band behind the text is ~72%

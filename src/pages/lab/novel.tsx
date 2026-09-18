@@ -137,12 +137,20 @@ const Novel: NextPage = () => {
     const el = scroller.current;
     const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
     pull.current = { y: e.clientY, armed: !onGrid && !!el && el.scrollTop <= 0 };
-  };
-  const pullUp = (e: React.PointerEvent) => {
-    const s = pull.current;
-    pull.current = null;
-    if (!s?.armed) return;
-    if (e.clientY - s.y > 90 && (scroller.current?.scrollTop ?? 1) <= 0) goBack();
+    // Listen on the WINDOW, not the scroller. A long pull ends with the finger
+    // over the footer, so `onPointerUp` on the scroller never fired and the
+    // BIGGER gesture did LESS than a small one — 150px went back, 500px did
+    // nothing at all.
+    const done = (up: PointerEvent) => {
+      window.removeEventListener('pointerup', done);
+      window.removeEventListener('pointercancel', done);
+      const st = pull.current;
+      pull.current = null;
+      if (!st?.armed) return;
+      if (up.clientY - st.y > 90 && (scroller.current?.scrollTop ?? 1) <= 0) goBack();
+    };
+    window.addEventListener('pointerup', done);
+    window.addEventListener('pointercancel', done);
   };
 
   useEffect(() => {
@@ -465,7 +473,6 @@ const Novel: NextPage = () => {
           onScroll={onScroll}
           onClick={tap}
           onPointerDown={pullDown}
-          onPointerUp={pullUp}
           role="presentation"
           style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
