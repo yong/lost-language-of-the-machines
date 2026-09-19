@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PIXEL_FONT, PAGE } from '@/components/lab/world/theme';
+import BinarySnow from './BinarySnow';
 
 export const NIGHT = '#12101f';
 /** Darker than the chat's own ground, so the phone is plainly the lit thing. */
@@ -37,7 +38,9 @@ export interface VariantProps extends Content {
 
 /** The chapter's cover art, with the scrim that keeps the title legible over
  *  whatever the art happens to be doing. */
-export const CoverArt: React.FC<{ image: string; kenBurns?: boolean }> = ({ image, kenBurns = true }) => (
+export const CoverArt: React.FC<{ image: string; kenBurns?: boolean; snow?: boolean }> = ({
+  image, kenBurns = true, snow = true,
+}) => (
   <>
     <motion.div
       className="absolute inset-0 bg-cover bg-center"
@@ -46,6 +49,8 @@ export const CoverArt: React.FC<{ image: string; kenBurns?: boolean }> = ({ imag
       animate={kenBurns ? { scale: 1 } : undefined}
       transition={{ duration: 6, ease: 'easeOut' }}
     />
+    {/* under the scrim, so the title stays the brightest thing on the cover */}
+    {snow && <BinarySnow />}
     <div
       className="absolute inset-0"
       style={{ background: 'linear-gradient(to top, rgba(8,7,15,.95) 18%, rgba(8,7,15,.35) 55%, rgba(8,7,15,.55))' }}

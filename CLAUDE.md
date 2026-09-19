@@ -402,15 +402,22 @@ another `setState` updater; never yank a reader who scrolled up.
 
 **`src/components/lab/novel/ChapterOpening.tsx`; live at `/lab/novel`.**
 
-> ⚖️ **The transition is an OPEN EXPERIMENT** — see
-> `raw/opening-transition-experiment.md` and **`/lab/openings`**. Describing
-> them settled nothing, so they are built: `?open=track|stories|cinema`
-> (`depth` was built, read and **cut**), or cycle from the chip on the cover.
-> Everything below still describes what is held constant across them; only the
-> transition differs. **The chat UI is not in scope and is staying as it is.**
-> Back is **swipe down** in every variant — on the paper to the cover, and by
-> pulling down at the top of the thread to the paper. The arrow is a visible
-> fallback, not the mechanism.
+> ⭐ **SETTLED.** The official Chapter One is **`/chapter1`**: the **Track** way
+> in, the conversation in **typing** (`dots`), and **binary snow** on the
+> cover. Log and the case for each: `raw/opening-transition-experiment.md`.
+> Stories and Cinema stay switchable in the lab (`depth` was built, read and
+> **cut**).
+>
+> **One implementation, two doors.** `/chapter1` and `/lab/novel` render the
+> same `@/components/novel/Chapter` with a `lab` flag — a forked "official"
+> copy would drift from the thing that was actually tested. `lab` turns on the
+> variant chip, the reveal-mode toggle, `?open=`, `?reveal=` and `noindex`; a
+> reader should never be handed a different experience because of something
+> poked at in an experiment.
+>
+> The chat UI is unchanged and is staying. Back is **swipe down** — on the
+> paper to the cover, and by pulling down at the top of the thread to the
+> paper. The arrow is a visible fallback, not the mechanism.
 
 Some scenes cannot be established in dialogue. *"The museum basement smelled of
 dust and old electricity"* is not a text message, and faking it as one (*"omg

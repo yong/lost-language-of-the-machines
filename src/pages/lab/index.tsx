@@ -27,7 +27,8 @@ const WORLD: Entry[] = [
 ];
 
 const EXPERIMENTS: Entry[] = [
-  { href: '/lab/novel', name: '⭐ Chapter One · chat novel', note: 'the story, with the toys inside the thread' },
+  { href: '/chapter1', name: '⭐ Chapter One — THE OFFICIAL READ', note: 'track + typing + binary snow; no switches' },
+  { href: '/lab/novel', name: 'Chapter One · with the switches on', note: 'same component, experiment harness enabled' },
   { href: '/lab/openings', name: '★ Ways into a chapter', note: 'cover → paragraph → chat — transitions to pick between' },
   { href: '/lab/proto-bit', name: 'The opening · A bit is a light', note: 'binary you draw with — no hex needed' },
   { href: '/lab/proto-rom', name: '⭐ F · No source, just bytes', note: 'THE DIRECTION — hack the cartridge' },

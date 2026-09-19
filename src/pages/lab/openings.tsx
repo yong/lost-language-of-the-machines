@@ -7,7 +7,7 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { OPENINGS } from '@/components/lab/novel/openings';
+import { OPENINGS } from '@/components/novel/openings';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const Openings: NextPage = () => (

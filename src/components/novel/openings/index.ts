@@ -36,6 +36,8 @@ export const OPENINGS: Array<{
   },
 ];
 
+/** ⭐ THE WINNER. Chosen after reading all of them on a phone; the official
+ *  chapter uses this and nothing else. The lab can still switch. */
 export const DEFAULT_OPENING: OpeningId = 'track';
 export const isOpeningId = (v: string | null): v is OpeningId =>
   !!v && OPENINGS.some((o) => o.id === v);

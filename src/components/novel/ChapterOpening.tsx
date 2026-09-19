@@ -25,6 +25,8 @@ export type OpeningPhase = 'cover' | 'page';
 export const OPENING_KEY = 'gameforge.novel.opening';
 
 export interface OpeningProps extends Content {
+  /** lab only: offer the variant chip and honour ?open= */
+  lab?: boolean;
   phase: OpeningPhase;
   onAdvance: (next: OpeningPhase) => void;
   onEnter: () => void;
@@ -51,13 +53,18 @@ const ChapterOpening: React.FC<OpeningProps> = (props) => {
   const [variant, setVariant] = useState<OpeningId>(DEFAULT_OPENING);
 
   useEffect(() => {
+    // SETTLED: the official chapter is always Track. Only the lab reads a
+    // variant out of the URL or off the device — a reader should never be
+    // handed a different way in because of something poked at in an
+    // experiment, and DEFAULT_OPENING is the winner, so it needs no lookup.
+    if (!props.lab) return;
     try {
       const q = new URLSearchParams(window.location.search).get('open');
       const stored = window.localStorage.getItem(OPENING_KEY);
       const pick = isOpeningId(q) ? q : isOpeningId(stored) ? stored : DEFAULT_OPENING;
       setVariant(pick);
     } catch { /* a bad save just means the default */ }
-  }, []);
+  }, [props.lab]);
 
   const pick = (id: OpeningId) => {
     setVariant(id);
@@ -71,8 +78,9 @@ const ChapterOpening: React.FC<OpeningProps> = (props) => {
 
   return (
     <div data-opening={entry.id}>
-      {/* only on the cover: mid-read is no place to change the rules */}
-      {props.phase === 'cover' && <VariantChip id={entry.id} onPick={pick} />}
+      {/* lab only, and only on the cover: mid-read is no place to change the
+          rules, and a reader should never meet the experiment at all */}
+      {props.lab && props.phase === 'cover' && <VariantChip id={entry.id} onPick={pick} />}
       <Variant {...props} />
     </div>
   );

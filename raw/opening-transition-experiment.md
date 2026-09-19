@@ -134,6 +134,37 @@ but never carry it alone — not because back needs a button.
   swallow the click that trails a drag, measure prose overflow rather than
   assuming it, and never let the phone fall off the page — it is the way out.
 
-## Verdict
+## Verdict — ⭐ TRACK
 
-*Unfilled — waiting on a read-through of all four on a real phone.*
+Read on a phone and picked. The official chapter is **Track**, with the
+conversation in **typing** mode and **binary snow** on the cover. Live at
+**`/chapter1`**; Stories and Cinema stay switchable in the lab.
+
+- **Track** won on feel. Pages that move with the thumb are the idiom a
+  phone-native reader already has, and it is the only one where the reader is
+  clearly *moving through* something rather than watching it change.
+- **Stories** keeps its one good idea on the table: the segmented bar answers
+  "how much is left", which nothing in the chapter does yet. Worth stealing
+  into the thread later — it was the progress indicator that was liked, not
+  the cross-dissolve.
+- **Cinema** is the most beautiful and the least legible. Keeping the art for
+  the whole way in costs the prose a scrim, and a scrim over art is always
+  worse to read than paper.
+- **Depth** was cut outright (see above).
+
+**One implementation, two doors.** `/chapter1` and `/lab/novel` render the same
+component with a `lab` flag; a forked "official" copy would drift from the
+thing that was actually tested. The flag turns off the variant chip, the
+reveal-mode toggle, `?open=`, `?reveal=` and `noindex` — a reader should never
+be handed a different experience because of something poked at in an
+experiment.
+
+### Binary snow
+
+Ones and zeroes drift down over the cover art: decoration that happens to be
+the premise — the lost language is still falling on the city and nobody can
+read it, and by the end of the chapter the reader can. 34 glyphs on CSS
+transforms, seeded from a fixed PRNG at module load so the server and client
+generate the identical array (`Math.random()` at render is a hydration
+mismatch). Verified identical across two independent loads, no hydration
+warnings, and `prefers-reduced-motion` holds them still.
