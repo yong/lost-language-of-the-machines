@@ -230,7 +230,15 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
      root). Anything load-bearing gets its own non-shrinking slot.
    - Back is **swipe down**: to the page before, and out of the thread by
      pulling down at the top (armed only at `scrollTop 0`, so scrolling still
-     belongs to the reader). A swipe starting within 24px of the left edge is
+     belongs to the reader). **A gesture that leaves somewhere must be
+     revealed, not detected** — leaving the thread is the riskiest back in the
+     chapter, because `scrollTop 0` is exactly where a *re-reading* reader sits
+     and a pull at the top means "refresh" in most apps. So it works like
+     pull-to-refresh: the thread follows the finger (damped, capped), a pill
+     reads *"pull to go back"* and only flips to *"release to go back"* once
+     the gesture has committed. Nothing happens by surprise.
+   - **A drag selects the text it crosses.** Any drag surface needs
+     `select-none`, or the gesture leaves the page smeared in highlight. A swipe starting within 24px of the left edge is
      **Safari's own back gesture** and is left alone; one starting on the pixel
      grid is a **brush stroke** (verified: a 163px drag across the grid paints
      six cells and does not navigate).

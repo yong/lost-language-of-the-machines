@@ -46,7 +46,7 @@ const Cinema: React.FC<VariantProps> = ({
       onDragStart={() => { dragging.current = true; }}
       onDragEnd={onDragEnd}
       onClick={tap}
-      className="relative overflow-hidden bg-[#08070f]"
+      className="relative select-none overflow-hidden bg-[#08070f]"
       style={{ height: '100dvh', touchAction: 'none' }}
     >
       {/* ONE scene, never replaced — only lit differently */}

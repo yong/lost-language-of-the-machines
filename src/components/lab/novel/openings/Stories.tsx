@@ -74,7 +74,7 @@ const Stories: React.FC<VariantProps> = ({
   return (
     <motion.div
       data-phase={leaving ? 'leaving' : phase}
-      className="relative overflow-hidden"
+      className="relative select-none overflow-hidden"
       style={{ height: '100dvh', touchAction: 'none' }}
       animate={{ backgroundColor: phase === 'page' ? (leaving ? DARKROOM : PAGE.paper) : NIGHT }}
       transition={{ duration: leaving ? DARKEN_MS / 1000 : 0.4, ease: 'easeInOut' }}

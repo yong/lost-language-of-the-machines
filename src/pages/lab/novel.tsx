@@ -48,6 +48,12 @@ const MODE_LABEL: Record<Reveal, string> = {
 
 const WORD_MS = 55;
 
+/** Pull-to-go-back, out of the thread. Damped so the finger travels further
+ *  than the thread does — the gesture has to be meant. */
+const PULL_DAMP = 0.55;
+const PULL_MAX = 132;
+const PULL_COMMIT = 84;
+
 /** In static mode the script is cut into blocks at each toy. `BLOCK_ENDS[i]` is
  *  the index of the last beat to show while block `i` is the live one. */
 const BLOCK_ENDS: number[] = (() => {
@@ -132,26 +138,52 @@ const Novel: NextPage = () => {
   const blockTop = useRef<HTMLDivElement>(null);
   const newest = useRef<HTMLDivElement>(null);
 
+  // A REVEALED PULL, not a detected one. Leaving the thread is the riskiest
+  // back in the chapter: `scrollTop 0` is exactly where a RE-READING reader
+  // sits, and a pull at the top means "refresh" in most apps, so a gesture
+  // that simply fires on release would eject people who never asked. So it
+  // behaves like pull-to-refresh instead — the thread follows the finger, an
+  // affordance says what will happen, and the wording only changes to "release"
+  // once the gesture has actually committed. Nothing happens by surprise.
   const pull = useRef<{ y: number; armed: boolean } | null>(null);
+  const [pullY, setPullY] = useState(0);
+  const [pulling, setPulling] = useState(false);
   const pullDown = (e: React.PointerEvent) => {
     const el = scroller.current;
     const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
-    pull.current = { y: e.clientY, armed: !onGrid && !!el && el.scrollTop <= 0 };
+    if (onGrid || !el || el.scrollTop > 0) { pull.current = null; return; }
+    pull.current = { y: e.clientY, armed: true };
+    setPulling(true);
+
+    const move = (mv: PointerEvent) => {
+      if (!pull.current) return;
+      const dy = mv.clientY - pull.current.y;
+      // Pulling UP is just scrolling; only downward drags belong to us, and
+      // only while the thread is still at its top.
+      if (dy <= 0 || (scroller.current?.scrollTop ?? 1) > 0) { setPullY(0); return; }
+      setPullY(Math.min(dy * PULL_DAMP, PULL_MAX));
+    };
     // Listen on the WINDOW, not the scroller. A long pull ends with the finger
     // over the footer, so `onPointerUp` on the scroller never fired and the
     // BIGGER gesture did LESS than a small one — 150px went back, 500px did
     // nothing at all.
     const done = (up: PointerEvent) => {
+      window.removeEventListener('pointermove', move);
       window.removeEventListener('pointerup', done);
       window.removeEventListener('pointercancel', done);
       const st = pull.current;
       pull.current = null;
+      setPulling(false);
+      setPullY(0);
       if (!st?.armed) return;
-      if (up.clientY - st.y > 90 && (scroller.current?.scrollTop ?? 1) <= 0) goBack();
+      const travelled = (up.clientY - st.y) * PULL_DAMP;
+      if (travelled >= PULL_COMMIT && (scroller.current?.scrollTop ?? 1) <= 0) goBack();
     };
+    window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', done);
     window.addEventListener('pointercancel', done);
   };
+  const pullArmed = pullY >= PULL_COMMIT;
 
   useEffect(() => {
     try {
@@ -467,6 +499,38 @@ const Novel: NextPage = () => {
           </motion.button>
         </motion.div>
 
+        <div className="relative flex min-h-0 flex-1 flex-col" data-pull={Math.round(pullY)}>
+          {/* What the pull is going to do, said before it does it. It rides
+              down with the thread and only reads "release" once the gesture
+              has committed, so a reader who drifts a little never leaves. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-center"
+            style={{
+              transform: `translateY(${Math.max(pullY - 34, 0)}px)`,
+              opacity: Math.min(pullY / PULL_COMMIT, 1),
+              transition: pulling ? 'none' : 'transform .25s ease, opacity .2s ease',
+            }}
+          >
+            <span
+              className="mt-1 flex items-center gap-2 rounded-full border px-3 py-1 text-[0.625rem] uppercase tracking-[0.2em]"
+              style={{
+                borderColor: pullArmed ? 'rgba(253,230,138,.5)' : 'rgba(148,163,184,.25)',
+                color: pullArmed ? '#fde68a' : '#94a3b8',
+                background: 'rgba(13,11,23,.85)',
+              }}
+            >
+              <span
+                style={{
+                  transform: `rotate(${pullArmed ? 180 : 0}deg)`,
+                  transition: 'transform .2s ease',
+                  display: 'inline-block',
+                }}
+              >↓</span>
+              {pullArmed ? 'release to go back' : 'pull to go back'}
+            </span>
+          </div>
+
         {/* the only thing that scrolls, and only the reader moves it */}
         <div
           ref={scroller}
@@ -475,14 +539,22 @@ const Novel: NextPage = () => {
           onPointerDown={pullDown}
           role="presentation"
           style={{ opacity: threadIn ? 1 : 0, transition: 'opacity .32s ease' }}
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
+          // select-none: dragging to go back was highlighting the bubbles it
+          // passed over, so the gesture left the conversation smeared in blue.
+          className="min-h-0 flex-1 select-none overflow-y-auto overscroll-contain px-4 pt-4 pb-7"
         >
           {/* Anchored to the BOTTOM, like every chat app. Top-aligned content
               that is shorter than the thread left the toy stranded at the top
               with a screenful of blank beneath it — unscrollable, but it reads
               as broken all the same. Short conversations now sit just above the
               footer and the empty space goes above, where it belongs. */}
-          <div className="mx-auto flex min-h-full max-w-lg flex-col justify-end">
+          <div
+            className="mx-auto flex min-h-full max-w-lg flex-col justify-end"
+            style={{
+              transform: pullY ? `translateY(${pullY}px)` : undefined,
+              transition: pulling ? 'none' : 'transform .25s ease',
+            }}
+          >
             {mode === 'static' ? (
               <>
                 {SCRIPT.slice(0, blockStart).map((b, i) => renderBeat(b, i, false))}
@@ -528,6 +600,7 @@ const Novel: NextPage = () => {
                 toy, so down is locked and only re-reading upward is left. */}
             {mode !== 'static' && !done && !gate && !held && <div style={{ height: '62dvh' }} />}
           </div>
+        </div>
         </div>
 
         {/* The footer is a CONTROL, not part of the conversation, so it needs

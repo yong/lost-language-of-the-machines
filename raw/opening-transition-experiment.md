@@ -79,14 +79,24 @@ action from the other two:
   "previous page", which is why phones use an edge-swipe or a nav bar for it
   rather than a pull.
 
-Paper → cover is unambiguous and should stay. For the thread, the choices are:
+Paper → cover is unambiguous and stays. For the thread, **A was chosen: keep
+the pull, but reveal it.** It now behaves like pull-to-refresh —
 
-| | |
-|---|---|
-| **A** | Keep the pull, but **reveal it** — show a "release to go back" affordance as it stretches, the way pull-to-refresh does, so it can never be accidental. The best-practice answer, and more build. |
-| **B** | **Drop it.** The arrow is the way out of the chat, and it already sits top-left where "out of this" lives on a phone. |
+- the thread **follows the finger**, damped 0.55 and capped at 132px, so the
+  finger travels further than the thread does and the gesture has to be meant;
+- a pill says **"pull to go back"**, and only flips to **"release to go back"**
+  once the gesture has actually committed (84px of travel ≈ 153px of finger);
+- it **arms only at `scrollTop 0`**, so a reader scrolling mid-thread never
+  sees it at all.
 
-*Undecided — author's call.*
+Measured: at rest the pill is at opacity 0; a 90px pull warns and stays; a
+240px pull moves the thread 132px, flips the wording and goes back; and a pull
+from 60px down a scrollable thread is plain scrolling with the pill never
+appearing.
+
+**Dragging was also selecting the text it passed over** — the gesture left the
+conversation smeared in blue highlight. `select-none` on the thread and on all
+three opening surfaces; verified 0 characters selected after a drag in both.
 
 **Back works the same in all of them, and it is not the arrow.** Verified per
 variant: swipe DOWN on the paper returns to the cover, and pulling down at the
