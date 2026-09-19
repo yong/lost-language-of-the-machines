@@ -545,6 +545,14 @@ be surfaced elsewhere, not just play locally.
 - Pixel font is `VT323` (`PIXEL_FONT` in `theme.ts`), loaded in `_document.tsx`.
 - Animation is `framer-motion`. Any generated art (stars, etc.) must be
   **deterministic** — no `Math.random()` at render, it causes hydration mismatch.
+- **Falling things use the book's own `react-snowfall`** (`src/react-snowfall/`),
+  the engine already on the deployed cover — see `BinarySnow.tsx`. A CSS
+  reimplementation was tried and binned: linear `translateY` loops read as a
+  screensaver, because what makes snow look real is that no two flakes agree
+  about anything. **Feed it different images rather than rewriting it** — and
+  they must be real `HTMLImageElement`s, because `Snowflake.draw()` gates on
+  `image.complete`, so a canvas fails that check *silently* and every flake
+  falls back to a default grey circle.
 - Interactive components own their own state and persist to localStorage under
   `gameforge.*` keys.
 

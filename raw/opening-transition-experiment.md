@@ -163,8 +163,29 @@ experiment.
 
 Ones and zeroes drift down over the cover art: decoration that happens to be
 the premise — the lost language is still falling on the city and nobody can
-read it, and by the end of the chapter the reader can. 34 glyphs on CSS
-transforms, seeded from a fixed PRNG at module load so the server and client
-generate the identical array (`Math.random()` at render is a hydration
-mismatch). Verified identical across two independent loads, no hydration
-warnings, and `prefers-reduced-motion` holds them still.
+read it, and by the end of the chapter the reader can.
+
+**It runs on the book's own `react-snowfall`, the engine already falling on the
+deployed cover.** A hand-rolled CSS version was written first and binned: 34
+glyphs on linear `translateY` loops read as a screensaver, because what makes
+snow look real is that no two flakes agree about anything — the canvas engine
+gives every flake its own speed, wind that drifts over time, rotation and
+depth, and none of that survives being reimplemented as keyframes. **Do not
+rewrite it. Feed the existing engine different images.**
+
+Same density and physics as the deployed cover (`snowflakeCount` 150–200,
+engine defaults), with two deliberate departures: a **larger radius**, because
+a glyph needs more pixels than a snowflake PNG to read as a *digit* rather than
+a speck, and **gentler rotation**, because hard-tumbling 0s and 1s stop looking
+like numbers.
+
+The one trap worth writing down: the flakes must be real `HTMLImageElement`s,
+**not canvases**. `Snowflake.draw()` gates on `this.image.complete`, a property
+only an `<img>` has, so a canvas fails the check *silently* and every flake
+falls back to the default grey circle — the first attempt rendered snow-coloured
+blobs and the physics looked perfect, which is what made it confusing. Canvas →
+`toDataURL()` → `Image`, exactly the shape `useSnowImages` hands it.
+
+Verified: 0 default-grey pixels and ~4.9k amber ones on the cover canvas, frames
+differing over time, no hydration warnings, and `prefers-reduced-motion` skips
+it entirely.
