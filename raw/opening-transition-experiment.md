@@ -106,6 +106,18 @@ but never carry it alone — not because back needs a button.
 
 ## Notes that cost something
 
+- **The pull never worked on a phone at all.** Built and "verified" with
+  Playwright's mouse; on a real touch sequence the browser claims the drag
+  after ~27px and fires `pointercancel` with `clientY: 0`, so it died every
+  time. Rebuilt on touch events with a non-passive `touchmove` +
+  `preventDefault`. Ordinary scrolling still works — verified `scrollTop
+  0 → 280` on a touch drag — because the pull only takes the gesture when the
+  finger goes DOWN and the thread is already at its top.
+- **Coming back out of the thread flashed the cover.** The track measured its
+  page height in a `useEffect`, so for one frame it sat at `-i*0` — the cover —
+  and animated down to the paper. `useLayoutEffect`, and jump rather than
+  animate on the first positioning.
+
 - **A long pull did LESS than a short one.** `onPointerUp` was on the thread's
   scroller, but a 500px pull ends with the finger over the footer, so the event
   never reached the handler: 150px went back, 500px did nothing. Listen on the

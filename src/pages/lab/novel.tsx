@@ -148,7 +148,60 @@ const Novel: NextPage = () => {
   const pull = useRef<{ y: number; armed: boolean } | null>(null);
   const [pullY, setPullY] = useState(0);
   const [pulling, setPulling] = useState(false);
+  /** mirrors pullY for the end handler — reading it out of a setState updater
+   *  would be a side effect inside a reducer, which React may double-invoke. */
+  const pullYRef = useRef(0);
+  pullYRef.current = pullY;
+
+  // ON A PHONE THIS HAS TO BE TOUCH EVENTS. Pointer events cannot hold the
+  // gesture: traced on a real touch sequence, the browser claims the vertical
+  // drag after ~27px and fires `pointercancel` with clientY 0, so the pull died
+  // every time and only ever worked with a mouse. A non-passive `touchmove`
+  // that calls preventDefault keeps it — and stops the browser's own overscroll
+  // at the same time.
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    let startY = 0;
+    let active = false;
+    const onStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
+      if (!t || onGrid || el.scrollTop > 0) { active = false; return; }
+      active = true; startY = t.clientY; setPulling(true);
+    };
+    const onMove = (e: TouchEvent) => {
+      if (!active) return;
+      const t = e.touches[0];
+      if (!t) return;
+      const dy = t.clientY - startY;
+      if (dy <= 0 || el.scrollTop > 0) { setPullY(0); return; }
+      e.preventDefault();
+      setPullY(Math.min(dy * PULL_DAMP, PULL_MAX));
+    };
+    const onEnd = () => {
+      if (!active) return;
+      active = false;
+      setPulling(false);
+      const travelled = pullYRef.current;
+      setPullY(0);
+      if (travelled >= PULL_COMMIT) goBack();
+    };
+    el.addEventListener('touchstart', onStart, { passive: true });
+    el.addEventListener('touchmove', onMove, { passive: false });
+    el.addEventListener('touchend', onEnd);
+    el.addEventListener('touchcancel', onEnd);
+    return () => {
+      el.removeEventListener('touchstart', onStart);
+      el.removeEventListener('touchmove', onMove);
+      el.removeEventListener('touchend', onEnd);
+      el.removeEventListener('touchcancel', onEnd);
+    };
+  }, [goBack]);
+
+  /** the same pull with a mouse, for desktop. Touch is handled above. */
   const pullDown = (e: React.PointerEvent) => {
+    if (e.pointerType === 'touch') return;
     const el = scroller.current;
     const onGrid = !!(e.target as HTMLElement)?.closest?.('[data-r]');
     if (onGrid || !el || el.scrollTop > 0) { pull.current = null; return; }

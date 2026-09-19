@@ -3,7 +3,7 @@
 //
 // TESTING: does a feed-native pager make a book feel modern, or does it make
 // the prose feel like a post you are meant to flick past?
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { animate, motion, useMotionValue, PanInfo } from 'framer-motion';
 import { PAGE } from '@/components/lab/world/theme';
 import {
@@ -23,12 +23,24 @@ const Track: React.FC<VariantProps> = ({
   const i = PAGES.indexOf(phase);
   const prose = useProseOverflow([h, phase]);
 
-  useEffect(() => {
+  // COMING BACK FROM THE THREAD, THE TRACK MUST ALREADY BE UNDER THE RIGHT
+  // PAGE. `h` used to start at 0, so the first layout put the track at
+  // -i*0 = 0 — the COVER — and it then animated down to the paper. Measured at
+  // +150ms the track was at -633 heading for -844: a visible flash of the
+  // cover on the way back, which reads as "swiping back goes to the cover".
+  // useLayoutEffect measures before paint, and the first positioning is a jump
+  // rather than an animation; only later moves are sprung.
+  const settled = useRef(false);
+  useLayoutEffect(() => {
     const m = () => setH(window.innerHeight);
     m(); window.addEventListener('resize', m);
     return () => window.removeEventListener('resize', m);
   }, []);
-  useEffect(() => { if (h) animate(y, -i * h, SPRING); }, [i, h, y]);
+  useLayoutEffect(() => {
+    if (!h) return;
+    if (!settled.current) { y.set(-i * h); settled.current = true; return; }
+    animate(y, -i * h, SPRING);
+  }, [i, h, y]);
 
   const goTo = (n: number) => {
     if (leaving) return;

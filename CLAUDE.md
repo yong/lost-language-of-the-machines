@@ -238,7 +238,26 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
      reads *"pull to go back"* and only flips to *"release to go back"* once
      the gesture has committed. Nothing happens by surprise.
    - **A drag selects the text it crosses.** Any drag surface needs
-     `select-none`, or the gesture leaves the page smeared in highlight. A swipe starting within 24px of the left edge is
+     `select-none`, or the gesture leaves the page smeared in highlight.
+   - **Pointer events cannot hold a gesture the browser wants.** Traced on a
+     real touch sequence: the browser claims a vertical drag after ~27px and
+     fires `pointercancel` with `clientY: 0`, so a pull built on pointer events
+     worked with a mouse and **never once worked on a phone**. Anything that
+     fights the browser for a scroll direction has to be **touch events with a
+     non-passive `touchmove` calling `preventDefault()`** — which also replaces
+     the browser's own overscroll. Keep the pointer path for the mouse and bail
+     on `pointerType === 'touch'`, or both fire.
+   - **Test gestures with real touch events, not mouse drags.** Playwright's
+     `mouse.*` passes cases that a thumb fails. Dispatch through CDP
+     (`Input.dispatchTouchEvent`), or the test is measuring a device nobody
+     reads on.
+   - **A pager must be under the right page BEFORE its first paint.** Measuring
+     the page height in a `useEffect` left the track at `-i*0` for one frame —
+     the cover — and it then animated down to where it belonged. Measured at
+     +150ms the track was at -633 heading for -844: a visible flash of the
+     cover every time a reader came back out of the thread, which reads as
+     "swiping back goes to the cover". `useLayoutEffect`, and make the first
+     positioning a jump rather than an animation. A swipe starting within 24px of the left edge is
      **Safari's own back gesture** and is left alone; one starting on the pixel
      grid is a **brush stroke** (verified: a 163px drag across the grid paints
      six cells and does not navigate).
