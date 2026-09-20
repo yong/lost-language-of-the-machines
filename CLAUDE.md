@@ -251,6 +251,13 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
      `mouse.*` passes cases that a thumb fails. Dispatch through CDP
      (`Input.dispatchTouchEvent`), or the test is measuring a device nobody
      reads on.
+   - **The story must not run while the reader is still in the opening.**
+     Playback is gated on being in the thread. Without it the conversation
+     played out behind the cover, saved its progress, and the *next* load saw
+     that progress and skipped the opening. This was masked for a while by a
+     different bug — the visibility check wrongly parked playback whenever the
+     thread was hidden, which happened to act as a brake — so fixing that one
+     exposed this one.
    - **A pager must be under the right page BEFORE its first paint.** Measuring
      the page height in a `useEffect` left the track at `-i*0` for one frame —
      the cover — and it then animated down to where it belonged. Measured at
@@ -470,21 +477,32 @@ Rules this establishes:
    than to the interface.
 3. **Warm is the story, blue is the machine.** The cover and paper pills are
    amber and ink; blue arrives only when the phone does.
-4. **A returning reader never sees the opening** — but `?opening=1` replays it.
+4. **Reconcile the two cursors on restore, and block 0 is not progress.**
+   Static counts in **blocks**, the timed modes count in **beats**, and a saved
+   place only ever fills in one of them — so a reader four blocks into the
+   chapter in `static` who opened it in `dots` restored with `at: 0` and landed
+   on ONE bubble, frozen on "continue when you're ready". It looked like a dead
+   chat rather than a typing one. Take whichever cursor is furthest and derive
+   the other. But `BLOCK_ENDS[0]` is **6, not 0**, so a saved block of `0` must
+   count as *no* progress — otherwise a brand-new reader is "restored" past the
+   first block and never sees the opening at all. React double-invokes effects
+   in development, so the restore effect sees the empty `{block: 0, at: 0}` its
+   own save effect just wrote; the maths has to be idempotent.
+5. **A returning reader never sees the opening** — but `?opening=1` replays it.
    Mid-chapter means coming back, not arriving, so the restore skips the cover;
    without a door back that is a **one-way trapdoor**, and once anyone has read
    a line of the chapter the opening becomes impossible to see again — to
    review, to show someone, or to re-read from the top. `?opening=1` forces the
    whole sequence and does **not** wipe progress: you replay the way in and land
    back where you were. It beats `?reveal=` too.
-5. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
+6. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
    entry point, not a reader's first arrival.
-6. **Let the morph land before the thread paints,** or there is nothing to see it
+7. **Let the morph land before the thread paints,** or there is nothing to see it
    against. ~430ms. Use a **CSS transition driven by state, not framer's
    `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
    animation on the same subtree gets overridden and the thread stays invisible
    for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
-7. **Scene transitions are exempt from "animation competes with content."** That
+8. **Scene transitions are exempt from "animation competes with content."** That
    rule is about messages arriving *while you read*. Nothing is being read here —
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.

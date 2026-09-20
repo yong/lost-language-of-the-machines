@@ -271,14 +271,34 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
         if (typeof d?.switchOn === 'boolean') setSwitchOn(d.switchOn);
         if (typeof d?.row === 'number') setRow(d.row);
         if (typeof d?.cut === 'boolean') setCut(d.cut);
-        if (typeof d?.block === 'number') setBlock(Math.min(Math.max(d.block, 0), BLOCK_ENDS.length - 1));
-        if (typeof d?.at === 'number') setAt(Math.min(Math.max(d.at, 0), SCRIPT.length - 1));
+        // RECONCILE THE TWO CURSORS. Static counts in blocks, the timed modes
+        // count in beats, and a saved place only ever fills in one of them —
+        // so a reader who got four blocks into the chapter in `static` and
+        // then opened it in `dots` restored with at:0 and landed on ONE
+        // bubble, frozen on "continue when you're ready". It looked like a
+        // dead chat, not a typing one. Take whichever cursor is furthest
+        // through the script and derive the other from it.
+        const savedBlock = typeof d?.block === 'number'
+          ? Math.min(Math.max(d.block, 0), BLOCK_ENDS.length - 1) : 0;
+        const savedAt = typeof d?.at === 'number'
+          ? Math.min(Math.max(d.at, 0), SCRIPT.length - 1) : 0;
+        // BLOCK 0 IS NOT PROGRESS. BLOCK_ENDS[0] is 6, not 0, so treating a
+        // saved block of 0 as a position "restored" a brand new reader to the
+        // end of the first block and skipped the opening entirely — and React
+        // double-invokes effects in development, so the restore saw the empty
+        // {block: 0, at: 0} its own save effect had just written. Only a block
+        // past the first one says anything about where the reader got to.
+        const fromBlock = savedBlock > 0 ? (BLOCK_ENDS[savedBlock] ?? 0) : 0;
+        const furthest = Math.max(savedAt, fromBlock);
+        const blockFor = BLOCK_ENDS.findIndex((end) => end >= furthest);
+        setAt(furthest);
+        setBlock(blockFor < 0 ? BLOCK_ENDS.length - 1 : blockFor);
         // Come back HELD. Restoring the toys can satisfy the block's gate, and
         // without this the story would notice and race off on its own the
         // instant the page loaded — the reader would watch their chapter play
         // itself. Held renders only when there is no gate outstanding, so this
         // is invisible to a reader who left mid-toy.
-        if (d?.block > 0 || d?.at > 0) {
+        if (furthest > 0) {
           setHeld(true);
           // Someone who is mid-chapter is coming BACK, not arriving. Making
           // them tap through the cover and the paragraph again to reach the
@@ -423,6 +443,14 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
   // Playback. Static has no clock at all. Dots and stream play on until a gate,
   // until a hold, or until the fold parks them.
   useEffect(() => {
+    // THE STORY DOES NOT RUN WHILE NOBODY IS WATCHING IT. The reader is still
+    // on the cover or the paragraph; playing the thread behind the opening
+    // burned through the first block unseen, saved `at: 6`, and then the NEXT
+    // load saw saved progress and skipped the opening altogether. This used to
+    // be masked: the visibility check wrongly parked playback while the thread
+    // was hidden, which happened to act as a brake. Fixing that removed the
+    // brake and exposed the real omission.
+    if (phase !== 'chat') return;
     if (held) return;
     if (mode === 'static') {
       if (gate || done) return;
@@ -432,7 +460,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
     if (done || gate || typing || waiting || streaming) return;
     const t = window.setTimeout(step, dwellFor(SCRIPT[at + 1]));
     return () => window.clearTimeout(t);
-  }, [at, gate, typing, done, waiting, streaming, held, step, mode, block]);
+  }, [at, gate, typing, done, waiting, streaming, held, step, mode, block, phase]);
 
   // The ONLY two times the view moves, and both are answers to something the
   // reader did: a block they unlocked, or a page they asked to turn.
