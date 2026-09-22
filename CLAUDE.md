@@ -488,21 +488,34 @@ Rules this establishes:
    first block and never sees the opening at all. React double-invokes effects
    in development, so the restore effect sees the empty `{block: 0, at: 0}` its
    own save effect just wrote; the maths has to be idempotent.
-5. **A returning reader never sees the opening** — but `?opening=1` replays it.
+5. **Progress is proven by the toys, not by the clock — and fixing the writer
+   does not fix what it already wrote.** The build whose playback ran behind
+   the cover saved `{block: 0, at: 6}` on every device that loaded it, so after
+   the fix those readers *still* restored past the first block and watched it
+   arrive complete and silent instead of typing itself out — the bug report
+   was a screenshot of six bubbles and "flip the switch ↑". A cursor is only a
+   number some earlier build wrote; the **toys** are the record of what the
+   reader actually did. So a save with every toy untouched counts as no
+   progress, whatever its cursor says, and the next plain load rewrites it
+   clean — nobody has to clear their site data. Distrust **only** that case: a
+   reader who erased their drawing after passing its gate is genuinely further
+   on than their toys can prove, and clamping them to it would cost real
+   progress.
+6. **A returning reader never sees the opening** — but `?opening=1` replays it.
    Mid-chapter means coming back, not arriving, so the restore skips the cover;
    without a door back that is a **one-way trapdoor**, and once anyone has read
    a line of the chapter the opening becomes impossible to see again — to
    review, to show someone, or to re-read from the top. `?opening=1` forces the
    whole sequence and does **not** wipe progress: you replay the way in and land
    back where you were. It beats `?reveal=` too.
-6. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
+7. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
    entry point, not a reader's first arrival.
-7. **Let the morph land before the thread paints,** or there is nothing to see it
+8. **Let the morph land before the thread paints,** or there is nothing to see it
    against. ~430ms. Use a **CSS transition driven by state, not framer's
    `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
    animation on the same subtree gets overridden and the thread stays invisible
    for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
-8. **Scene transitions are exempt from "animation competes with content."** That
+9. **Scene transitions are exempt from "animation competes with content."** That
    rule is about messages arriving *while you read*. Nothing is being read here —
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.

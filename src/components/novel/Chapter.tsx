@@ -289,7 +289,21 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
         // {block: 0, at: 0} its own save effect had just written. Only a block
         // past the first one says anything about where the reader got to.
         const fromBlock = savedBlock > 0 ? (BLOCK_ENDS[savedBlock] ?? 0) : 0;
-        const furthest = Math.max(savedAt, fromBlock);
+        // PROGRESS IS PROVEN BY THE TOYS, NOT BY THE CLOCK. A cursor is only a
+        // number some earlier build wrote; the toys are the record of what the
+        // reader actually DID. A build that let playback run behind the cover
+        // left devices carrying {block: 0, at: 6} with every toy untouched — a
+        // whole block "already read" by someone who had not seen a word of it,
+        // so the first block arrived complete and silent instead of typing
+        // itself out. Nothing touched is no progress: the first gate is six
+        // beats in, so an untouched save can never honestly be past it anyway.
+        // Only this one case is distrusted — a reader who erased their drawing
+        // after passing its gate is still further on than their toys can
+        // prove, and walking THEM back would cost real progress.
+        const touched = d?.switchOn === true || d?.cut === true
+          || (typeof d?.row === 'number' && d.row !== 0)
+          || (Array.isArray(d?.rows) && d.rows.some((r: unknown) => r !== 0));
+        const furthest = touched ? Math.max(savedAt, fromBlock) : 0;
         const blockFor = BLOCK_ENDS.findIndex((end) => end >= furthest);
         setAt(furthest);
         setBlock(blockFor < 0 ? BLOCK_ENDS.length - 1 : blockFor);
