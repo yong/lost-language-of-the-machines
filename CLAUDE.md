@@ -541,14 +541,25 @@ Rules this establishes:
    review, to show someone, or to re-read from the top. `?opening=1` forces the
    whole sequence and does **not** wipe progress: you replay the way in and land
    back where you were. It beats `?reveal=` too.
-7. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
+7. **`?restart=1` reads it again from the top — and without it the chapter can
+   only be read once.** Resuming is right for a reader coming back to a book,
+   and wrong for every other reason anyone opens the page: to review it, to
+   show it to someone, to check a change. For those, "your place" is a wall of
+   already-read messages dumped on arrival — **growing with every chapter you
+   get through, and never typing a word, because typing only happens ahead of
+   your place.** That is what "it is still dumping everything together" meant,
+   three reports running, while every fresh-reader test passed. `?opening=1` is
+   not this door: it deliberately keeps your place. `?restart=1` clears the
+   save outright, toys included, because reading from the top means playing
+   them again.
+8. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
    entry point, not a reader's first arrival.
-8. **Let the morph land before the thread paints,** or there is nothing to see it
+9. **Let the morph land before the thread paints,** or there is nothing to see it
    against. ~430ms. Use a **CSS transition driven by state, not framer's
    `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
    animation on the same subtree gets overridden and the thread stays invisible
    for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
-9. **Scene transitions are exempt from "animation competes with content."** That
+10. **Scene transitions are exempt from "animation competes with content."** That
    rule is about messages arriving *while you read*. Nothing is being read here —
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.
@@ -642,6 +653,21 @@ be surfaced elsewhere, not just play locally.
     the link must carry **`?opening=1`**; `?reveal=` picks a thread mode and
     skips the opening. Handing over a plain `/lab/novel` to review the cover is
     a broken hand-off: it worked once, on a device that had never seen it.
+  - **To review the CHAPTER, the link is `?restart=1`.** A reviewer is never a
+    first-time reader — they have read it before, by definition — so a plain
+    link resumes and dumps their history on them instead of showing the thing
+    you just changed. Three separate reports of "it dumps everything" were this
+    hand-off, not the code under discussion.
+  - **Test what they will run, not what is convenient.** Every check was
+    against `npm run dev` while the report was about the deployed build, and
+    every check was of a *fresh* reader while the reporter had saved progress.
+    Both gaps hid the same bug for three rounds. Build it, serve it
+    (`npx next start`), and seed the reader state the reporter actually has.
+  - **A seeded test can be a lie.** Writing localStorage from a page that is
+    already running the component lets its own save effect overwrite the seed
+    before the next navigation — the run then "passes" while measuring a fresh
+    reader. Seed from a page that does not mount the thing under test, and
+    assert the seed stuck before measuring.
   - **Never claim the deploy succeeded.** Pushing to `main` only *triggers* the
     Amplify build, and this environment cannot reach `amplifyapp.com` — the
     egress proxy answers 403 to CONNECT, so the live page cannot be fetched from

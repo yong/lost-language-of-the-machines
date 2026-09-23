@@ -278,6 +278,18 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
       // show someone, or to re-read the chapter from the top. Progress is NOT
       // wiped; you replay the way in and land back where you were.
       const replay = params.get('opening') === '1';
+      // ?restart=1 READS IT AGAIN FROM THE TOP. Resuming is right for a reader
+      // coming back to a book, and wrong for every other reason anyone opens
+      // this page: to review it, to show it to someone, to check a change. For
+      // those, "your place" is a wall of messages you have already read
+      // dumped on arrival — every visit, growing with each chapter you get
+      // through, and never typing a word because typing only happens ahead of
+      // your place. There was no way out of that: once you had read any of the
+      // chapter you could never see it read itself again. ?opening=1 replays
+      // the way in but deliberately keeps your place, so it is not that door.
+      // This one clears the save outright, toys included, because reading it
+      // from the top means playing them again.
+      if (params.get('restart') === '1') window.localStorage.removeItem(STORAGE_KEY);
       const s = window.localStorage.getItem(STORAGE_KEY);
       if (s) {
         const d = JSON.parse(s);
