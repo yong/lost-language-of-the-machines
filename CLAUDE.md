@@ -379,12 +379,28 @@ a transcript, and it also measured the **fastest** mode (75s vs 88s for
 popping bubbles into silence). The structural findings below are what survive:
 they are about **blocks and gates**, and they hold in every mode.
 
-**Watch for this failure, it has happened twice:** a reader is handed a link
-and sees the whole block at once, and it reads as typing having been thrown
-away. Both times the mode was untouched — once a saved cursor from a bad build
-restored past block one, once `/lab/novel` opened on `static` by default.
-Before defending the code, open the two doors side by side and count how the
-bubbles arrive.
+**⚠️ ONE SYMPTOM, FOUR CAUSES — the most expensive bug in this project so far.**
+"Everything arrives at once" was reported three times over three rounds, and
+each round had a *different* cause. **The mode was correct every single time.**
+
+| What the reader saw | What it actually was |
+|---|---|
+| block one complete and silent | playback ran behind the cover and saved `at: 6` |
+| still complete, after that fix | the **leftover** `at: 6` already on the device |
+| whole thread dumped on arrival | a **returning reader** — resume paints your history, and typing only happens ahead of your place |
+| (and, in the lab) six bubbles | `/lab/novel` defaulted to `static`, plus a remembered mode preference |
+
+The trap is that "everything at once" is *exactly what `static` looks like*, so
+every round began by checking the mode, finding it right, and concluding the
+report was mistaken. **Checking the mode does not answer the question.** Before
+touching anything, count the ways this symptom can be produced — at least four
+— and rule them out on the reader's own terms: the build they load, with the
+saved state they have. A fresh-reader test on the dev server is the one test
+that cannot fail for any of these.
+
+**When a report repeats after a fix, assume a new cause, not a confused
+reporter.** Three times the report was literally accurate and the explanation
+offered back was wrong.
 
 **Structure, in every mode:**
 
