@@ -342,24 +342,43 @@ desktop window, but with a real mobile viewport (see Browser Automation below).
 Checking `document.documentElement.scrollWidth > clientWidth` catches overflow
 in one line.
 
-## 💬 Chat-novel pacing — settled: static blocks
+## 💬 Chat-novel pacing — ⭐ SETTLED: typing (`dots`)
+
+**The words type themselves in, one message at a time, with "typing…" in the
+header.** Both doors — `/chapter1` and `/lab/novel` — open on it; the other two
+modes stay behind the lab's toggle. **Do not change the default away from
+typing**, and do not read the paragraphs below as licence to: they record what
+the *pacing* experiment measured, and the reading that followed overruled its
+conclusion. A chat novel whose messages do not arrive is a wall of text
+pretending to be a conversation.
 
 **Full experiment log and measurements: `raw/chat-novel-pacing-experiment.md`.**
 Four reveal modes were built and read end to end; read that before proposing a
 different one.
 
-**The finding that decided it: animation competes with the content.** Motion
-pulls the eye to the *arrival* of the words rather than to the words. For a book
-whose job is comprehension, that is the wrong trade however good it feels in a
-demo — even though the liveliest mode (typing dots) also measured the *fastest*
-(75s vs 88s for popping bubbles into silence).
+**What the experiment found, and why it did not win.** *Animation competes with
+the content*: motion pulls the eye to the arrival of the words rather than to
+the words, which for a book about comprehension sounds like the wrong trade.
+Static blocks were adopted on that basis. Reading whole chapters then said
+otherwise — typing is what makes the thread read as a conversation rather than
+a transcript, and it also measured the **fastest** mode (75s vs 88s for
+popping bubbles into silence). The structural findings below are what survive:
+they are about **blocks and gates**, and they hold in every mode.
 
-**What to build:**
+**Watch for this failure, it has happened twice:** a reader is handed a link
+and sees the whole block at once, and it reads as typing having been thrown
+away. Both times the mode was untouched — once a saved cursor from a bad build
+restored past block one, once `/lab/novel` opened on `static` by default.
+Before defending the code, open the two doors side by side and count how the
+bubbles arrive.
 
-1. **Static blocks, gated by the toys.** Cut the script into segments at each
-   interactive beat. A segment renders **whole and still** — the reader reads at
-   their own speed, nothing moving — and ends at its toy. Playing the toy reveals
-   the next segment. Attention goes: words → hands → words. Never a contest.
+**Structure, in every mode:**
+
+1. **Blocks, gated by the toys.** Cut the script into segments at each
+   interactive beat. A segment ends at its toy, and playing the toy releases the
+   next one. Attention goes: words → hands → words. Never a contest. (In
+   `static` the segment also renders whole and still; in `dots` it types itself
+   out. The gating is the part that matters.)
 2. **Land the reader at the TOP of a new block,** not the bottom. You follow the
    tail of a live conversation, but you read a block from its start.
 3. **One quick fade per block, never per message.** Staggered bubbles are the
@@ -395,9 +414,9 @@ the reader asked for, not a conveyor belt. (Needs a bottom spacer of ~a
 viewport, or the newest message can only be brought to the bottom of the view
 rather than the top.) User experience matters as much as the content.
 
-Three modes ship — `?reveal=static|dots|stream`; anything else falls back to
-static. Only **"whole bubble" was dropped**: a bubble popping into silence is
-dead air, and it measured slowest. `stream` is kept because **combining it with
+Three modes ship — `?reveal=static|dots|stream` in the lab; anything else falls
+back to **`dots`, the winner**. Only **"whole bubble" was dropped**: a bubble
+popping into silence is dead air, and it measured slowest. `stream` is kept because **combining it with
 the dots** is the one unexplored idea still worth trying.
 
 **Layout rules that cost real debugging** (details in the log): the page must

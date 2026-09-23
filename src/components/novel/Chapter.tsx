@@ -99,9 +99,15 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
   const [rows, setRows] = useState<number[]>(Array(8).fill(0));
   const [cut, setCut] = useState(false);
   const [typing, setTyping] = useState(false);
-  // SETTLED: the official chapter reads in `dots`. The lab still opens on
-  // `static` so the three can be compared from the same starting point.
-  const [mode, setMode] = useState<Reveal>(lab ? 'static' : 'dots');
+  // SETTLED: the chapter reads in `dots` — the words type themselves in. BOTH
+  // DOORS OPEN ON THE WINNER. The lab used to start on `static` "so the three
+  // could be compared from the same starting point", which sounds reasonable
+  // and was a trap: /lab/novel is the link that got handed out all through the
+  // experiment, so opening one of those links showed the whole block at once
+  // and read as the winning mode having been thrown away. A comparison that
+  // does not start from the thing that won is comparing against the wrong
+  // baseline anyway; the toggle is still right there for the other two.
+  const [mode, setMode] = useState<Reveal>('dots');
   const [block, setBlock] = useState(0);
   /** dots mode: playback is parked because the newest message is below the fold */
   const [waiting, setWaiting] = useState(false);
