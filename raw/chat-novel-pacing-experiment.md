@@ -1,5 +1,25 @@
 # Chat-novel pacing — experiment log
 
+> ## ⭐ OVERRULED, AND THIS IS THE SETTLED ANSWER: **typing (`dots`)**
+>
+> This log picked `static`. Reading whole chapters in it then overruled that,
+> and the pick is now **typing** — the messages arrive one at a time with a
+> "typing…" indicator, on `/chapter1` **and** `/lab/novel`. The measurements
+> below stand; the verdict line in the table does not. Keep reading for *why*
+> each mode behaves as it does, not for what to default to.
+>
+> Typing is not a decoration here. It is what makes a thread read as a
+> conversation instead of a transcript, and it also measured the **fastest**
+> mode (75s vs 88s). The experiment's own finding — *animation competes with
+> the content* — turned out to be about motion **while you read**, which is
+> what `static`'s block structure and the toy gates already solve.
+>
+> **Three separate times** a reader was shown the whole block at once and it
+> read as typing having been thrown away, while the mode itself was untouched:
+> a saved cursor from a bad build restoring past block one, `/lab/novel`
+> defaulting to `static`, and a remembered mode preference outliving the visit.
+> Before defending the code, open both doors and count how the bubbles arrive.
+
 > How should a chapter's conversation arrive on screen? Four reveal modes were
 > built and read end to end on a 390×844 phone. This is what we learned and what
 > we settled on, so it does not get re-litigated.
@@ -12,15 +32,17 @@
 
 | | Mode | How a message arrives | Verdict |
 |---|---|---|---|
-| **0** | **static** | the whole block appears at once; nothing moves | ⭐ **kept, default** — `?reveal=static` |
-| 1 | dots | "…" sized to the message, then the whole bubble | ⭐ **kept** — `?reveal=dots` |
+| 0 | static | the whole block appears at once; nothing moves | **kept, lab only** — `?reveal=static` |
+| **1** | **dots** | "…" sized to the message, then the whole bubble | ⭐ **THE DEFAULT, everywhere** |
 | 2 | bubble | bubble pops, then a silent reading pause | ❌ **dropped** — dead air |
 | 3 | stream | word by word with a caret, like an LLM | ⭐ **kept** — `?reveal=stream` |
 
 `static`, `dots` and `stream` all ship. **Only `bubble` was deleted** — a bubble
 popping into silence is dead air, and it measured slowest. `stream` is kept
 despite the objections below because **combining it with the dots** is the one
-unexplored idea worth trying. An unknown `?reveal=` value falls back to `static`.
+unexplored idea worth trying. An unknown `?reveal=` value falls back to **`dots`**, and so does everything
+else: `?reveal=` is lab-only, and the mode is **not remembered between loads**,
+so every arrival at either door starts in typing.
 
 ## Measured
 

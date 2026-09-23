@@ -346,11 +346,25 @@ in one line.
 
 **The words type themselves in, one message at a time, with "typing…" in the
 header.** Both doors — `/chapter1` and `/lab/novel` — open on it; the other two
-modes stay behind the lab's toggle. **Do not change the default away from
-typing**, and do not read the paragraphs below as licence to: they record what
-the *pacing* experiment measured, and the reading that followed overruled its
-conclusion. A chat novel whose messages do not arrive is a wall of text
-pretending to be a conversation.
+modes stay behind the lab's toggle and `?reveal=`. **Do not change the default
+away from typing**, and do not read the paragraphs below as licence to: they
+record what the *pacing* experiment measured, and the reading that followed
+overruled its conclusion (the log now says so at the top). A chat novel whose
+messages do not arrive is a wall of text pretending to be a conversation.
+
+**Three things make that a rule rather than a preference**, because a default
+can be lost without anyone choosing to lose it:
+
+- **`dots` is first in `MODES`**, so anything reaching for the head of the list
+  reaches for typing.
+- **The mode is not remembered between loads.** It used to be: toggle the chip
+  once to compare, and every visit after that opened in whatever you last
+  looked at — months later, on a device whose owner had forgotten. A preference
+  that outlives the visit quietly becomes the default. The old
+  `gameforge.novel.reveal` key is *removed on sight*, because a leftover
+  outlives the build that wrote it.
+- **The lab is not an exception.** `/lab/novel` is the link that gets handed
+  out, so a "lab convenience" default is just the default with extra steps.
 
 **Full experiment log and measurements: `raw/chat-novel-pacing-experiment.md`.**
 Four reveal modes were built and read end to end; read that before proposing a

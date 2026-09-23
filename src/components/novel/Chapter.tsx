@@ -16,13 +16,19 @@
 // raw/chat-novel-pacing-experiment.md). Only "whole bubble" was dropped: a
 // bubble popping into silence is dead air, and it measured slowest.
 //
-//   static  the default. The script is cut into blocks at each toy; a block
-//           renders whole and still, ends at its toy, and playing the toy
-//           reveals the next. Nothing moves, so nothing competes with the words.
-//   dots    a typing indicator sized to the message, then the whole bubble.
+//   dots    ⭐ THE DEFAULT, AND THE ONLY ONE OUTSIDE THE LAB. A typing
+//           indicator sized to the message, then the whole bubble. This is a
+//           chat novel: the messages have to arrive, or the thread is a wall
+//           of text pretending to be a conversation. Nothing may quietly make
+//           another mode the default again — not a saved preference, not a
+//           lab convenience, not a first entry in this list.
+//   static  the script is cut into blocks at each toy; a block renders whole
+//           and still, ends at its toy, and playing the toy reveals the next.
+//           What the pacing experiment picked, before whole chapters were
+//           read in it. Lab only.
 //   stream  word by word with a caret. Kept because combining it WITH the dots
 //           is the one unexplored idea worth trying; a tap completes the
-//           message instantly.
+//           message instantly. Lab only.
 //
 // THE PAGE IS NEVER SCROLLED FOR THE READER. A reader's speed and a playback
 // clock cannot be kept in sync, so the machine must not try: when the newest
@@ -42,10 +48,15 @@ import { OPENING } from '@/components/novel/opening';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const STORAGE_KEY = 'gameforge.novel.v1';
-const MODE_KEY = 'gameforge.novel.reveal';
+/** The mode is no longer remembered, but devices still carry the key from when
+ *  it was — and a leftover outlives the build that wrote it. Cleared on sight
+ *  so it can never be read back as a default. */
+const STALE_MODE_KEY = 'gameforge.novel.reveal';
 
 type Reveal = 'static' | 'dots' | 'stream';
-const MODES: Reveal[] = ['static', 'dots', 'stream'];
+/** `dots` first: the winner leads, so anything that reaches for the head of
+ *  this list reaches for typing. The lab's chip cycles in this order. */
+const MODES: Reveal[] = ['dots', 'static', 'stream'];
 const MODE_LABEL: Record<Reveal, string> = {
   static: 'static',
   dots: '••• typing',
@@ -327,13 +338,19 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
           if (!replay) setPhase('chat');
         }
       }
-      // ?reveal=static|dots gives each experience its own shareable URL and
-      // wins over whatever was last used on this device. Lab only: the
-      // official chapter is not a place to be handed a different experience by
-      // a URL, or by whatever was last poked at in the lab.
+      // ?reveal=static|dots|stream gives each experience its own shareable URL.
+      // Lab only: the official chapter is not a place to be handed a different
+      // experience by a URL, or by anything poked at in the lab.
+      //
+      // THE MODE IS NOT REMEMBERED ACROSS LOADS. It used to be, and that is a
+      // third way for the reader to be handed `static` without anyone choosing
+      // it: toggle the chip once to compare, and every later visit opens in
+      // whatever you last looked at — months later, on a device whose owner
+      // has forgotten. A preference that outlives the visit quietly becomes
+      // the default. The chip still switches freely while you are here.
+      window.localStorage.removeItem(STALE_MODE_KEY);
       const q = lab ? params.get('reveal') : null;
-      const m = lab ? (q ?? window.localStorage.getItem(MODE_KEY)) : null;
-      if (m && (MODES as string[]).includes(m)) setMode(m as Reveal);
+      if (q && (MODES as string[]).includes(q)) setMode(q as Reveal);
       // An explicit ?reveal= is a direct link to one thread mode — a lab entry
       // point for comparing them, not a reader arriving at the chapter. Skip
       // the cover: you asked for the thread, so you get the thread. A reader
@@ -346,10 +363,6 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows, switchOn, row, cut, block, at }));
     } catch { /* private mode */ }
   }, [rows, switchOn, row, cut, block, at]);
-  useEffect(() => {
-    if (!lab) return;                       // the official read has one mode
-    try { window.localStorage.setItem(MODE_KEY, mode); } catch { /* private mode */ }
-  }, [mode, lab]);
 
   // Let the header finish travelling before the conversation paints behind it.
   // Plain CSS, not a framer `animate`: inside the LayoutGroup that drives the
@@ -451,8 +464,8 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
     // Changing mode moves `head` between a block's toy and a per-message
     // cursor, so `gate` can go from set to null without the reader touching
     // anything. That is not a satisfied gate and must not hold the story —
-    // it fired on the very first render, because the page defaults to `static`
-    // for one frame before ?reveal= is read.
+    // it fired on the very first render, when the page sat in its default mode
+    // for one frame before ?reveal= was read.
     const modeChanged = prevMode.current !== mode;
     if (modeChanged) setHeld(false);
     else if (prevGate.current && !gate) setHeld(true);
