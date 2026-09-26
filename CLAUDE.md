@@ -695,11 +695,34 @@ be surfaced elsewhere, not just play locally.
     link resumes and dumps their history on them instead of showing the thing
     you just changed. Three separate reports of "it dumps everything" were this
     hand-off, not the code under discussion.
+  - **To review a MOMENT deep in a chapter, the link is `?from=<mark>`.** A
+    chapter's top is the wrong door for a scene 110 messages in: the Pac-Man
+    level-256 coda was handed over as `/lab/overflow`, never reached, and came
+    back as "where is the pac man one?". Name the moment with a
+    `{ kind: 'beat', mark: '…' }` in the script and give each toy a `played`
+    state in its `ChapterDef`; `?from=` (lab only) plays every earlier toy,
+    makes the thread before the mark history, and types on from there. It
+    replaces that chapter's saved place. Anything worth showing someone gets a
+    mark **and** its own row on the `/lab` index.
+  - **Arriving at the right index is not landing on the moment.** The first
+    `?from=` set the cursor correctly and every automated check passed — while
+    the thread opened at its *top*, 101 messages above, showing the chapter's
+    first line, which read as a link to the start. The test had clicked "keep
+    reading" for the reader. So after measuring, **open the link and touch
+    nothing**, then look at what is on screen.
   - **Test what they will run, not what is convenient.** Every check was
     against `npm run dev` while the report was about the deployed build, and
     every check was of a *fresh* reader while the reporter had saved progress.
     Both gaps hid the same bug for three rounds. Build it, serve it
     (`npx next start`), and seed the reader state the reporter actually has.
+  - **A dev-server number is not a baseline.** React StrictMode runs every
+    effect twice in dev, and the doubled restore nudged playback one beat past
+    a saved place: the restore test read 38 bubbles on dev and 37 on the
+    production build for identical code. Production is what readers get, and
+    it was the one doing what the design says (come back HELD).
+  - **Never `pkill -f` a pattern your own command contains.** `-f` matches the
+    whole command line, so `pkill -f "next dev"` inside a script that says
+    "next dev" kills the script. Match the server's process (`next-server`).
   - **A seeded test can be a lie.** Writing localStorage from a page that is
     already running the component lets its own save effect overwrite the seed
     before the next navigation — the run then "passes" while measuring a fresh

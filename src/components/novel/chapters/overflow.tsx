@@ -87,5 +87,12 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
         default: return null;
       }
     },
+    played: {
+      pump: { cents: 0, pumpWrapped: true },
+      byte: { byte: 0, byteWrapped: true },
+      year: { year: 3 },
+      score: { score: 300, bytes: 2 },
+      level: { level: 256, killed: true },
+    },
   },
 };

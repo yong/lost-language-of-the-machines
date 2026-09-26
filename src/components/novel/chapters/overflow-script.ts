@@ -162,7 +162,8 @@ export const OVERFLOW_SCRIPT: Beat[] = [
 
   // ── CODA. The chapter looks finished here, and that is the point: the
   // reader has just been told Nova is asleep under the sign. She is not.
-  { kind: 'beat' },
+  // Reachable directly at /lab/overflow?from=level256.
+  { kind: 'beat', mark: 'level256' },
 
   { kind: 'msg', who: 'starlax', text: 'hang on' },
   { kind: 'msg', who: 'starlax', text: 'where is nova', rush: true },

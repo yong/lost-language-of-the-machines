@@ -19,7 +19,8 @@ export type Beat =
       /** show a typing indicator before this one; reserve for real suspense */
       typing?: true;
     }
-  | { kind: 'beat' }
+  /** `mark` names a moment so a lab link can land on it: `?from=<mark>` */
+  | { kind: 'beat'; mark?: string }
   /** `toy` names one of the chapter's own toys; the chapter decides what it is */
   | { kind: 'toy'; toy: string; label: string };
 
@@ -46,6 +47,10 @@ export interface ChapterDef {
     /** what the reader still has to do, or null once the story may go on */
     gate(toy: string, s: ToyState): string | null;
     render(toy: string, s: ToyState, set: (patch: ToyState) => void): ReactNode;
+    /** per toy, a state that satisfies its gate — what a reader who played it
+     *  would have. Only `?from=` uses it, to arrive past toys you skipped
+     *  without the story stalling at a gate you never saw. */
+    played?: Record<string, ToyState>;
   };
 }
 

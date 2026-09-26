@@ -347,6 +347,29 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
           if (!replay) setPhase('chat');
         }
       }
+      // ?from=<mark> LANDS ON A MOMENT. Lab only. A scene that lives deep in a
+      // chapter cannot be reviewed from a link to the chapter's top: the
+      // level-256 coda sits ~110 messages and four toys in, and handing that
+      // over as /lab/overflow meant it was never found — "where is the pac man
+      // one?". Every earlier toy is put in its played state (so no gate you
+      // never saw can stall you), the thread before the mark is history, and
+      // the story types on from there. It replaces this chapter's saved place,
+      // which is what a direct link into the middle of a book means.
+      const from = lab ? params.get('from') : null;
+      const markAt = from ? SCRIPT.findIndex((b) => b.kind === 'beat' && b.mark === from) : -1;
+      if (markAt >= 0) {
+        landing.current = from;
+        let t: ToyState = { ...TOYS.initial };
+        SCRIPT.slice(0, markAt).forEach((b) => {
+          if (b.kind === 'toy') t = { ...t, ...(TOYS.played?.[b.toy] ?? {}) };
+        });
+        setToys(t);
+        setAt(markAt);
+        const bf = BLOCK_ENDS.findIndex((end) => end >= markAt);
+        setBlock(bf < 0 ? BLOCK_ENDS.length - 1 : bf);
+        setHeld(false);
+        setPhase('chat');
+      }
       // ?reveal=static|dots|stream gives each experience its own shareable URL.
       // Lab only: the official chapter is not a place to be handed a different
       // experience by a URL, or by anything poked at in the lab.
@@ -433,6 +456,12 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     return () => window.clearTimeout(t);
   }, [streaming, words]);
 
+  /** A `?from=` link is landing on this mark and the view has not been put
+   *  there yet. Arriving at the right index was not enough: the thread opened
+   *  at its TOP, 101 messages above the moment, showing the chapter's first
+   *  line — which read exactly like a link to the start of the chapter. */
+  const landing = useRef<string | null>(null);
+
   /** Is the newest beat fully on screen from where the reader currently is? */
   const newestVisible = () => {
     const el = scroller.current, m = newest.current;
@@ -451,6 +480,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
   useEffect(() => {
     if (mode === 'static' || done) return;
     if (phase !== 'chat') return;          // nothing to park: it is not on screen yet
+    if (landing.current) return;           // a ?from= link is still moving the view to its moment
     const id = requestAnimationFrame(() => { if (!newestVisible()) setWaiting(true); });
     return () => cancelAnimationFrame(id);
   }, [at, typing, words, mode, done, phase]);
@@ -510,6 +540,22 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     return () => cancelAnimationFrame(id);
   }, [mode, block]);
 
+  // A ?from= link is the reader asking to be put somewhere, so this is the
+  // third time the view may move: once, on arrival, to the marked moment at the
+  // top of the screen ("land the reader at the TOP of a new block"). After the
+  // static block effect, so it wins in every mode.
+  useEffect(() => {
+    if (phase !== 'chat' || !threadIn || !landing.current) return;
+    const id = requestAnimationFrame(() => {
+      const el = scroller.current;
+      const mark = el?.querySelector<HTMLElement>(`[data-mark="${landing.current}"]`);
+      if (el && mark) el.scrollTop = Math.max(0, mark.offsetTop - 12);
+      landing.current = null;
+      setWaiting(false);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [phase, threadIn]);
+
   /** Reader scrolled far enough themselves — no need to make them tap as well. */
   const onScroll = () => { if (waiting && newestVisible()) setWaiting(false); };
 
@@ -552,7 +598,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
 
   const renderBeat = (b: Beat, i: number, animated: boolean) => {
     const ref = i === head ? newest : undefined;
-    if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" />;
+    if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" data-mark={b.mark} />;
     if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b)}</div>;
     const w = WHO[b.who];
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
