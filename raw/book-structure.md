@@ -150,14 +150,20 @@ their numbers. Mostly about food.
   one byte, so 255 points reads `000` and the machine congratulates you. The
   reader repairs it by giving the score a second byte — the concept and the
   restoration are the same action.
-- **The hook is the cover:** a fuel price sign with four windows, caught at
-  9.99 with the carry climbing off the top (`public/overflow/cover.svg`). It is
-  drawn from a real photograph of a forecourt at $9.99, which is the whole
-  lesson standing by a road.
+- **The hook is the cover:** a fuel price sign with four windows —
+  8.99 / 9.19 / 9.39 and diesel **9.99**, pinned to the top of what the display
+  can hold, with the digit that has nowhere to go glowing beside it
+  (`public/overflow/cover.svg`). Drawn from a real photograph of a forecourt at
+  $9.99: the whole lesson standing by a road.
+  *A first pass showed diesel already rolled to 0.00, which read as "free
+  diesel" — silly rather than unsettling — and spoiled the first toy's
+  punchline before the reader had touched anything. A cover asks the question.*
 - **Key jokes:** *they lied to the sign* (2008 pumps sold half-gallons so the
   number stayed small — true) · the great-great-grandmother who is **minus
   eighty-five** in the year 00 · "almost nothing broke" / "so there was never a
-  problem" · **"it was always soon. that is the job."**
+  problem" · **"it was always soon. that is the job."** · and the closing turn:
+  *"nobody has checked in two hundred years. the sign kept saying 9.99 and
+  everybody believed it."*
 - **Toys:** the price sign · the byte at 255 · the two-digit year · the score.
   Four costumes, one shape; the phrase "integer overflow" is never used, because
   by the fourth costume naming it would spoil the reader's own conclusion.

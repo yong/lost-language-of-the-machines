@@ -13,22 +13,24 @@
 import type { Beat } from '@/components/novel/chapter-def';
 
 export const OVERFLOW_SCRIPT: Beat[] = [
-  { kind: 'msg', who: 'starlax', text: 'the sign outside the museum says fuel is free' },
-  { kind: 'msg', who: 'flamey', text: 'fuel is not free' },
-  { kind: 'msg', who: 'starlax', text: 'it says 0.00', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'fuel has not been free for four hundred years' },
-  { kind: 'msg', who: 'starlax', text: 'tell the sign' },
-  { kind: 'msg', who: 'flamey', text: 'is it broken' },
+  { kind: 'msg', who: 'starlax', text: 'the price sign on the forecourt' },
+  { kind: 'msg', who: 'starlax', text: 'regular 8.99. plus 9.19. premium 9.39.', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'diesel 9.99.', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'diesel is dearest. that is normal.' },
+  { kind: 'msg', who: 'starlax', text: 'diesel has been 9.99 since before I was born' },
+  { kind: 'msg', who: 'flamey', text: 'nothing holds still that long' },
+  { kind: 'msg', who: 'starlax', text: 'the other three move every week. that one has never moved once.' },
+  { kind: 'msg', who: 'flamey', text: 'so the sign is broken' },
   { kind: 'msg', who: 'starlax', text: 'that is the thing. I think it is working perfectly.' },
 
   { kind: 'toy', toy: 'pump', label: 'put the price up' },
 
   { kind: 'msg', who: 'flamey', text: 'what did you do', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'a penny at a time' },
-  { kind: 'msg', who: 'starlax', text: '9.97. 9.98. 9.99.', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'and then', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'and then' },
+  { kind: 'msg', who: 'starlax', text: 'I put it up one penny' },
+  { kind: 'msg', who: 'starlax', text: 'nine ninety-nine, and one more cent', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'ten dollars' },
   { kind: 'msg', who: 'starlax', text: '0.00' },
+  { kind: 'msg', who: 'flamey', text: 'that is not ten dollars' },
 
   { kind: 'beat' },
 
@@ -149,8 +151,14 @@ export const OVERFLOW_SCRIPT: Beat[] = [
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'starlax', text: 'nova has been sitting under the sign this whole time' },
-  { kind: 'msg', who: 'flamey', text: 'why' },
-  { kind: 'msg', who: 'starlax', text: 'waiting for somebody to pull in and ask for free fuel' },
+  { kind: 'msg', who: 'starlax', text: 'hey' },
+  { kind: 'msg', who: 'starlax', text: 'so what does diesel actually cost', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'more than the sign can say' },
+  { kind: 'msg', who: 'starlax', text: 'how much more' },
+  { kind: 'msg', who: 'flamey', text: 'nobody has checked in two hundred years', typing: true },
+  { kind: 'msg', who: 'flamey', text: 'the sign kept saying 9.99 and everybody believed it', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'that is the scariest thing you have said all night' },
+  { kind: 'msg', who: 'flamey', text: 'that is the other half of the job.' },
+  { kind: 'msg', who: 'starlax', text: 'nova is asleep under it' },
   { kind: 'msg', who: 'nova', text: '🐱', rush: true },
 ];

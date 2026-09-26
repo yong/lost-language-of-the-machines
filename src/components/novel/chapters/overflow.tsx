@@ -22,8 +22,8 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
     paragraphs: [
       // Short on purpose: everything stated here is something the toys no longer
       // get to reveal. The sign is the hook and the joke; the reason is theirs.
-      'The price sign on the museum forecourt had been lit for two hundred years, and for most of them it had been wrong. It had four little windows — three digits and a dot — and the world had long since cost more than four windows could hold. So every morning it tried, ran out of room, and settled cheerfully on 0.00, as though fuel were free.',
-      'Nova had been sitting under it since breakfast, waiting for someone to pull in and believe it.',
+      'The price sign on the museum forecourt had four little windows — three digits and a dot. Regular climbed. Plus climbed. Premium climbed. And the bottom row, diesel, had read 9.99 through two shortages, one drought and an entire war: perfectly steady, the only price in the world that appeared to have made up its mind.',
+      'Nobody had ever thought to ask what diesel actually cost.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },
@@ -34,7 +34,7 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
   },
   script: OVERFLOW_SCRIPT,
   toys: {
-    initial: { cents: 997, pumpWrapped: false, byte: 250, byteWrapped: false, year: 0, wideYear: false, score: 0, bytes: 1 },
+    initial: { cents: 999, pumpWrapped: false, byte: 250, byteWrapped: false, year: 0, wideYear: false, score: 0, bytes: 1 },
     gate: (toy, s) => {
       switch (toy) {
         // Each gate asks for the moment the box overflows, never for an answer.

@@ -69,7 +69,7 @@ export const PumpToy: React.FC<{
       <div className="mt-3 flex gap-2">
         <Push onClick={() => bump(1)} label="put the price up one cent">+1¢</Push>
         <Push onClick={() => bump(10)} label="put the price up ten cents">+10¢</Push>
-        <Push tone="ghost" onClick={() => onChange(997, wrapped)} label="set the price to 9.97">9.97</Push>
+        <Push tone="ghost" onClick={() => onChange(990, wrapped)} label="set the price back to 9.90">9.90</Push>
       </div>
       {wrapped && (
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 text-center text-[0.8125rem] text-amber-300">

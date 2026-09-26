@@ -44,10 +44,10 @@ export const JOKES: Joke[] = [
 
   // ——— Chapter 6b · A Number Can Run Out of Room (new, /lab/overflow) ———
   {
-    id: 'sign-says-fuel-is-free',
+    id: 'diesel-has-always-been-999',
     chapter: 6, status: 'live', anchor: true,
-    text: 'The price sign has four windows. The price went past 9.99, so every morning it gives up and announces that fuel is free.',
-    why: 'The whole chapter in one image, and it is the cover. Fixed width is not an abstraction when a sign is lying to a forecourt.',
+    text: 'Regular climbs, plus climbs, premium climbs — and diesel has read 9.99 through two shortages, a drought and an entire war. “Nothing holds still that long.” — “That is the thing. I think the sign is working perfectly.”',
+    why: 'The whole chapter in one image, and it is the cover. A price pinned at the top of its display is more unsettling than a wrong one, and it poses the question instead of answering it: the reader finds out what the next cent does by pressing it.',
   },
   {
     id: 'they-lied-to-the-sign',
@@ -72,6 +72,12 @@ export const JOKES: Joke[] = [
     chapter: 6, status: 'live',
     text: '“Each one carried into the next, and the last one carried into nothing.” — “Because there is no ninth switch.” — “There is never a ninth switch. That is what a byte IS.”',
     why: 'Defines the byte by its edge instead of its size. Pays off Chapter One’s row of eight.',
+  },
+  {
+    id: 'nobody-checked-in-two-hundred-years',
+    chapter: 6, status: 'live', anchor: true,
+    text: '“So what does diesel actually cost?” — “More than the sign can say.” — “How much more?” — “Nobody has checked in two hundred years. The sign kept saying 9.99 and everybody believed it.”',
+    why: 'The chapter’s last turn, and the half of the lesson that is not arithmetic: a number that cannot go up stops being a measurement and starts being a story people trust.',
   },
   {
     id: 'new-record-zero',
