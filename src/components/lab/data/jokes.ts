@@ -42,6 +42,62 @@ export const JOKES: Joke[] = [
     why: 'Nobody reads anything anymore. Seeds the helper-bot voice that fails in Ch13.',
   },
 
+  // ——— Chapter 6b · A Number Can Run Out of Room (new, /lab/overflow) ———
+  {
+    id: 'sign-says-fuel-is-free',
+    chapter: 6, status: 'live', anchor: true,
+    text: 'The price sign has four windows. The price went past 9.99, so every morning it gives up and announces that fuel is free.',
+    why: 'The whole chapter in one image, and it is the cover. Fixed width is not an abstraction when a sign is lying to a forecourt.',
+  },
+  {
+    id: 'they-lied-to-the-sign',
+    chapter: 6, status: 'live', anchor: true,
+    text: '“In 2008 the price of fuel went past 3.99 and the pumps could not print a 4.” — “What did they do?” — “Sold it half a gallon at a time, so the number stayed small.” — “They LIED to the sign.” — “They lied to the sign.”',
+    why: 'True (US pumps in 2008). The funniest workaround in the book is also the clearest statement of what a fixed-width field does to you.',
+  },
+  {
+    id: 'y2k-not-yet-born',
+    chapter: 6, status: 'live', anchor: true,
+    text: 'Two digits for the year. 97, 98, 99, 00 — and the great-great-grandmother born in ’85 is now minus eighty-five years old. “She is ninety-one!” — “The machine disagrees, and the machine is doing the paperwork.”',
+    why: 'Y2K as a thing the reader does with a thumb rather than a date they are told about. The joke IS the lesson.',
+  },
+  {
+    id: 'y2k-worst-prize',
+    chapter: 6, status: 'live',
+    text: '“Hundreds of billions of dollars, five years, every machine on the planet.” — “Did it work?” — “Almost nothing broke.” — “So there was never a problem.” — “That is exactly what everyone said.”',
+    why: 'True and load-bearing: the prize for prevention is looking unnecessary. Sets up why Evergreen is not famous.',
+  },
+  {
+    id: 'no-ninth-switch',
+    chapter: 6, status: 'live',
+    text: '“Each one carried into the next, and the last one carried into nothing.” — “Because there is no ninth switch.” — “There is never a ninth switch. That is what a byte IS.”',
+    why: 'Defines the byte by its edge instead of its size. Pays off Chapter One’s row of eight.',
+  },
+  {
+    id: 'new-record-zero',
+    chapter: 6, status: 'live',
+    text: 'The cabinet: 255 points, then 000 — followed by NEW RECORD.',
+    why: 'The repair beat. The reader fixes it by giving the score a second byte, which is the chapter’s game piece.',
+  },
+  {
+    id: 'it-was-always-soon',
+    chapter: 6, status: 'live',
+    text: '“The clocks count seconds in four bytes. They run out on the 19th of January, 2038.” — “That is soon.” — “It was always soon. That is the job.”',
+    why: 'True, and the chapter’s last line: Y2K was not a one-off, it was the first instalment.',
+  },
+  {
+    id: 'gangnam-style-counter',
+    chapter: 6, status: 'live',
+    text: '“A song called Gangnam Style broke a video counter in 2014. It went past 2,147,483,647 views and the number gave up.”',
+    why: 'True (YouTube moved the counter to 64-bit). Kids love that the biggest number in computing was beaten by a music video.',
+  },
+  {
+    id: 'pacman-kill-screen',
+    chapter: 6, status: 'spare',
+    text: 'Pac-Man has 255 levels, and then it has a level made of garbage — the level counter is one byte, and level 256 is level 0 wearing a costume.',
+    why: 'True and beloved, but the chapter already has four overflows; holding it for the arcade chapter.',
+  },
+
   // ——— Chapter 1 ———
   {
     id: 'ten-students',

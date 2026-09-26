@@ -142,6 +142,30 @@ their numbers. Mostly about food.
 - **Mini-game:** Pack the Cartridge — fit the game's real assets into a byte
   budget; discover lossless vs lossy squeezing.
 
+### Chapter 6b — "A Number Can Run Out of Room" 🆕 **BUILT: `/lab/overflow`**
+- **Learning goal:** integer overflow. A number lives in a box with a fixed
+  number of windows, and one past the last one is not "bigger" — it is *zero*.
+  Byte → 255 + 1 · two-digit year → Y2K · 32-bit counters → 2038.
+- **Game piece restored:** ⭐ **the score counter.** The cabinet's high score is
+  one byte, so 255 points reads `000` and the machine congratulates you. The
+  reader repairs it by giving the score a second byte — the concept and the
+  restoration are the same action.
+- **The hook is the cover:** a fuel price sign with four windows, caught at
+  9.99 with the carry climbing off the top (`public/overflow/cover.svg`). It is
+  drawn from a real photograph of a forecourt at $9.99, which is the whole
+  lesson standing by a road.
+- **Key jokes:** *they lied to the sign* (2008 pumps sold half-gallons so the
+  number stayed small — true) · the great-great-grandmother who is **minus
+  eighty-five** in the year 00 · "almost nothing broke" / "so there was never a
+  problem" · **"it was always soon. that is the job."**
+- **Toys:** the price sign · the byte at 255 · the two-digit year · the score.
+  Four costumes, one shape; the phrase "integer overflow" is never used, because
+  by the fourth costume naming it would spoil the reader's own conclusion.
+- **⚠️ NUMBERING IS UNRESOLVED.** It is written as *Chapter Six* and it wants to
+  sit next to "A Memory Is a Shelf" — a box with a size, then a number that
+  falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything
+  after it along) is a call to make deliberately, so nothing is renumbered here.
+
 ---
 
 ## PART II — Everything Is a Decision *(the game's BRAIN · Ch 7–12)*

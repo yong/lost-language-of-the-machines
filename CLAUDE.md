@@ -580,6 +580,27 @@ Rules this establishes:
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.
 
+### A chapter is data; `Chapter.tsx` is the engine
+
+**`src/components/novel/chapters/*` — one `ChapterDef` per chapter, handed to
+`@/components/novel/Chapter`.** A chapter is its `opening` copy, its `script`,
+its `ending`, and a `toys` module: the starting state, a `gate(toy, state)`
+that says what the reader still has to do, and a `render(toy, state, set)`.
+Nothing about a chapter lives in the engine any more.
+
+- **Never fork the reader to add a chapter.** This is the same rule as "one
+  implementation, two doors", one level up: a copied `Chapter.tsx` inherits
+  today's bug fixes and none of tomorrow's. Every hard-coded thing found during
+  the second chapter — the exit href, the `<title>`, the end-of-chapter line —
+  was invisible until there were two.
+- **Toys are saved flat, beside the cursor** (`{...toys, block, at}`), so the
+  shape Chapter One has been writing since it shipped still reads back. Adding
+  a chapter must never orphan a reader's progress or their drawing.
+- **"Progress is proven by the toys" is generic now:** `toysTouched` compares
+  the save against the chapter's own `initial`, so a new chapter gets that
+  protection without thinking about it.
+- Each chapter owns a **storage key**; `?restart=1` clears only that one.
+
 ## Writing principles
 
 1. **The joke IS the lesson.** The best material teaches while it's being funny —

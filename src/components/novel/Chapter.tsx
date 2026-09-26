@@ -35,19 +35,17 @@
 // message would fall below the fold, playback STOPS and waits. The reader
 // continues when they are ready, and only then does the view move — a page
 // turn they asked for, not an interruption.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
-import { SCRIPT, Beat } from '@/components/novel/script';
-import { SwitchToy, RowToy, GridToy, HexToy } from '@/components/novel/toys';
 import ChapterOpening, { OpeningPhase } from '@/components/novel/ChapterOpening';
-import { OPENING } from '@/components/novel/opening';
+import { CHAPTER_ONE } from '@/components/novel/chapters/one';
+import { readToys, toysTouched } from '@/components/novel/chapter-def';
+import type { Beat, ChapterDef, ToyState } from '@/components/novel/chapter-def';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
-
-const STORAGE_KEY = 'gameforge.novel.v1';
 /** The mode is no longer remembered, but devices still carry the key from when
  *  it was — and a leftover outlives the build that wrote it. Cleared on sight
  *  so it can never be read back as a default. */
@@ -73,11 +71,11 @@ const PULL_COMMIT = 84;
 
 /** In static mode the script is cut into blocks at each toy. `BLOCK_ENDS[i]` is
  *  the index of the last beat to show while block `i` is the live one. */
-const BLOCK_ENDS: number[] = (() => {
-  const ends = SCRIPT.map((b, i) => (b.kind === 'toy' ? i : -1)).filter((i) => i >= 0);
-  ends.push(SCRIPT.length - 1); // the tail after the final toy
+const blockEndsOf = (script: Beat[]): number[] => {
+  const ends = script.map((b, i) => (b.kind === 'toy' ? i : -1)).filter((i) => i >= 0);
+  ends.push(script.length - 1); // the tail after the final toy
   return ends;
-})();
+};
 
 const WHO = {
   starlax: { name: 'Starlax', cls: 'bg-sky-700 text-white', side: 'right' as const },
@@ -101,14 +99,18 @@ const dotsFor = (b: Beat) =>
 export interface ChapterProps {
   /** show the experiment switches and honour ?open= / ?reveal= */
   lab?: boolean;
+  /** which chapter to read. Defaults to Chapter One so the two doors that
+   *  already exist keep working without passing anything. */
+  chapter?: ChapterDef;
 }
 
-const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
+const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_ONE }) => {
+  const { script: SCRIPT, opening: OPENING, toys: TOYS } = chapter;
+  const STORAGE_KEY = chapter.storageKey;
+  const BLOCK_ENDS = useMemo(() => blockEndsOf(SCRIPT), [SCRIPT]);
   const [at, setAt] = useState(0);
-  const [switchOn, setSwitchOn] = useState(false);
-  const [row, setRow] = useState(0);
-  const [rows, setRows] = useState<number[]>(Array(8).fill(0));
-  const [cut, setCut] = useState(false);
+  const [toys, setToys] = useState<ToyState>(TOYS.initial);
+  const setToy = useCallback((patch: ToyState) => setToys((t) => ({ ...t, ...patch })), []);
   const [typing, setTyping] = useState(false);
   // SETTLED: the chapter reads in `dots` — the words type themselves in. BOTH
   // DOORS OPEN ON THE WINNER. The lab used to start on `static` "so the three
@@ -154,10 +156,10 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
     setPhase((v) => {
       if (v === 'chat') return 'page';
       if (v === 'page') return 'cover';
-      router.push('/lab');
+      router.push(chapter.exitHref);
       return v;
     });
-  }, [router]);
+  }, [router, chapter.exitHref]);
 
   // VERTICAL PAGING, the same idiom as the opening: at the very top of the
   // thread, pulling DOWN turns back to the paper. Everywhere else a vertical
@@ -296,10 +298,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
         // Everything the reader did, not just the drawing. A kid who takes a
         // phone call four blocks in was being dropped back at "flip the
         // switch" — the chapter restarted and their cat was gone.
-        if (Array.isArray(d?.rows) && d.rows.length === 8) setRows(d.rows);
-        if (typeof d?.switchOn === 'boolean') setSwitchOn(d.switchOn);
-        if (typeof d?.row === 'number') setRow(d.row);
-        if (typeof d?.cut === 'boolean') setCut(d.cut);
+        setToys(readToys(TOYS.initial, d ?? {}));
         // RECONCILE THE TWO CURSORS. Static counts in blocks, the timed modes
         // count in beats, and a saved place only ever fills in one of them —
         // so a reader who got four blocks into the chapter in `static` and
@@ -329,9 +328,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
         // Only this one case is distrusted — a reader who erased their drawing
         // after passing its gate is still further on than their toys can
         // prove, and walking THEM back would cost real progress.
-        const touched = d?.switchOn === true || d?.cut === true
-          || (typeof d?.row === 'number' && d.row !== 0)
-          || (Array.isArray(d?.rows) && d.rows.some((r: unknown) => r !== 0));
+        const touched = toysTouched(TOYS.initial, d ?? {});
         const furthest = touched ? Math.max(savedAt, fromBlock) : 0;
         const blockFor = BLOCK_ENDS.findIndex((end) => end >= furthest);
         setAt(furthest);
@@ -372,9 +369,11 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
   }, []);
   useEffect(() => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ rows, switchOn, row, cut, block, at }));
+      // The toys are spread at the top level rather than nested, so the shape
+      // Chapter One has been writing since it shipped still reads back.
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...toys, block, at }));
     } catch { /* private mode */ }
-  }, [rows, switchOn, row, cut, block, at]);
+  }, [toys, block, at, STORAGE_KEY]);
 
   // Let the header finish travelling before the conversation paints behind it.
   // Plain CSS, not a framer `animate`: inside the LayoutGroup that drives the
@@ -396,16 +395,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
   const pending = current?.kind === 'toy' ? current : null;
   const blockStart = mode === 'static' ? (block === 0 ? 0 : BLOCK_ENDS[block - 1] + 1) : -1;
 
-  const gate = (() => {
-    if (!pending) return null;
-    switch (pending.toy) {
-      case 'switch': return switchOn ? null : 'flip the switch';
-      case 'row': return row !== 0 ? null : 'flip some of them';
-      case 'grid': return rows.reduce((n, r) => n + r.toString(2).replace(/0/g, '').length, 0) >= 8
-        ? null : 'draw something first';
-      case 'hex': return cut ? null : 'cut it in half';
-    }
-  })();
+  const gate = pending ? TOYS.gate(pending.toy, toys) : null;
 
   const done = mode === 'static'
     ? block >= BLOCK_ENDS.length - 1 && !gate
@@ -556,12 +546,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
       className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
     >
       <div className="mb-2 text-center text-[0.625rem] uppercase tracking-widest text-amber-400/80">{b.label}</div>
-      {b.toy === 'switch' && <SwitchToy on={switchOn} onChange={setSwitchOn} />}
-      {b.toy === 'row' && <RowToy value={row} onChange={setRow} />}
-      {b.toy === 'grid' && <GridToy rows={rows} onChange={setRows} />}
-      {b.toy === 'hex' && (
-        <HexToy value={rows.find((r) => r !== 0) ?? row ?? 0b00111100} cut={cut} onCut={() => setCut(true)} />
-      )}
+      {TOYS.render(b.toy, toys, setToy)}
     </div>
   );
 
@@ -598,7 +583,8 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
     <LayoutGroup>
       <Head>
         <title>
-          {lab ? '[lab] Chapter One, as a chat novel' : 'Chapter One · A Bit Is a Light'}
+          {lab ? `[lab] ${OPENING.title}, as a chat novel`
+               : `${OPENING.eyebrow} · ${OPENING.title}`}
           {' - Lost Language of the Machines'}
         </title>
         {lab && <meta name="robots" content="noindex, nofollow" />}
@@ -769,14 +755,12 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false }) => {
           <div className="mx-auto max-w-lg">
             {done ? (
               <div className="py-1 text-center">
-                <p className="mb-2 text-sm text-gray-500">
-                  end of chapter one. she is going to need twenty four switches.
-                </p>
+                <p className="mb-2 text-sm text-gray-500">{chapter.ending.line}</p>
                 <Link
-                  href="/lab/proto-rom"
+                  href={chapter.ending.href}
                   className="inline-flex min-h-11 items-center rounded-full bg-amber-500/20 px-5 text-sm text-amber-200"
                 >
-                  chapter two →
+                  {chapter.ending.next}
                 </Link>
               </div>
             ) : (
