@@ -159,6 +159,52 @@ export const OVERFLOW_SCRIPT: Beat[] = [
   { kind: 'msg', who: 'flamey', text: 'the sign kept saying 9.99 and everybody believed it', rush: true },
   { kind: 'msg', who: 'starlax', text: 'that is the scariest thing you have said all night' },
   { kind: 'msg', who: 'flamey', text: 'that is the other half of the job.' },
-  { kind: 'msg', who: 'starlax', text: 'nova is asleep under it' },
+
+  // ── CODA. The chapter looks finished here, and that is the point: the
+  // reader has just been told Nova is asleep under the sign. She is not.
+  { kind: 'beat' },
+
+  { kind: 'msg', who: 'starlax', text: 'hang on' },
+  { kind: 'msg', who: 'starlax', text: 'where is nova', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'asleep under the sign. you said.' },
+  { kind: 'msg', who: 'starlax', text: 'she is not under the sign' },
+  { kind: 'msg', who: 'starlax', text: 'the cabinet is on', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'she is PLAYING it', typing: true },
+  { kind: 'msg', who: 'flamey', text: 'cats cannot play' },
+  { kind: 'msg', who: 'starlax', text: 'she has been on it all night. she is on level 255.' },
+  { kind: 'msg', who: 'flamey', text: '...', typing: true },
+  { kind: 'msg', who: 'flamey', text: 'do not let her finish that level' },
+  { kind: 'msg', who: 'starlax', text: 'why' },
+  { kind: 'msg', who: 'flamey', text: 'how many levels fit in one byte' },
+
+  { kind: 'toy', toy: 'level', label: 'let her finish level 255' },
+
+  { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
+  { kind: 'msg', who: 'starlax', text: 'half the screen is gibberish', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'I know. it happened to the most famous arcade game in the world.' },
+  { kind: 'msg', who: 'flamey', text: 'pac-man keeps its level in one byte. on level 256 the byte runs out of room.' },
+  { kind: 'msg', who: 'flamey', text: 'the game loses count of how much fruit to draw, and draws so much it spills across half the maze', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'can you win it' },
+  { kind: 'msg', who: 'flamey', text: 'nobody ever has. there are not enough dots left on the good half.' },
+  { kind: 'msg', who: 'starlax', text: 'so it is the last level' },
+  { kind: 'msg', who: 'flamey', text: 'the last level of the most famous game in the world. nobody built it on purpose.' },
+
+  { kind: 'beat' },
+
+  { kind: 'msg', who: 'starlax', text: 'wait' },
+  { kind: 'msg', who: 'starlax', text: 'the gibberish says CATVEN', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'the rest of the word fell off the edge' },
+  { kind: 'msg', who: 'starlax', text: 'and 65535. and 11111111.' },
+  { kind: 'msg', who: 'starlax', text: 'and FF 99 33 — that is the cat', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'and 9.99. of COURSE it says 9.99', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'it is not gibberish' },
+  { kind: 'msg', who: 'flamey', text: 'it is the inside of the game, drawn as if it were the maze', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'so that is what the lost language looks like' },
+  { kind: 'msg', who: 'flamey', text: 'that is what it looks like when it spills out.', typing: true },
+
+  { kind: 'beat' },
+
+  { kind: 'msg', who: 'starlax', text: 'nobody built level 256' },
+  { kind: 'msg', who: 'starlax', text: 'nova built it', rush: true },
   { kind: 'msg', who: 'nova', text: '🐱', rush: true },
 ];

@@ -164,9 +164,20 @@ their numbers. Mostly about food.
   problem" · **"it was always soon. that is the job."** · and the closing turn:
   *"nobody has checked in two hundred years. the sign kept saying 9.99 and
   everybody believed it."*
-- **Toys:** the price sign · the byte at 255 · the two-digit year · the score.
-  Four costumes, one shape; the phrase "integer overflow" is never used, because
-  by the fourth costume naming it would spoil the reader's own conclusion.
+- **Toys:** the price sign · the byte at 255 · the two-digit year · the score ·
+  and a coda, **level 256**. Four costumes and an encore, one shape; the phrase
+  "integer overflow" is never used, because by the fourth costume naming it
+  would spoil the reader's own conclusion.
+- **The coda (a surprise):** the chapter seems to end on the diesel line, and
+  then Nova is not asleep under the sign — she has been playing the cabinet all
+  night and is on level 255. One tap and the right half of the maze fills with
+  garbage: the Pac-Man kill screen (true — the level counter is one byte, the
+  level cannot be finished). The garbage is the cartridge's own memory, seeded
+  with numbers the reader has already met — `FF 99 33`, `65535`, `11111111`,
+  `9.99`, and `CATVEN` with the rest fallen off the edge — so the first glimpse
+  of the machine's insides is one the reader can partly *read*. That is Act 1's
+  core move arriving three chapters early. Last line: *"nobody built level 256"*
+  — *"nova built it."* 🐱
 - **⚠️ NUMBERING IS UNRESOLVED.** It is written as *Chapter Six* and it wants to
   sit next to "A Memory Is a Shelf" — a box with a size, then a number that
   falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything

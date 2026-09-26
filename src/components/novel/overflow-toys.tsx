@@ -7,6 +7,7 @@
 // Thumb notes (CLAUDE.md): the raw px below are TAP sizes and stay px on
 // purpose — a 44px target is a physical dimension and must not move with the
 // reader's font setting. Everything carrying text is rem or cqw.
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
@@ -207,6 +208,133 @@ export const ScoreToy: React.FC<{ score: number; bytes: number; onChange: (score
             {bytes === 1 ? 'add a byte' : 'back to 1 byte'}
           </Push>
         </div>
+      </div>
+    );
+  };
+
+// ── 5. level 256 ────────────────────────────────────────────────────────────
+// The coda. Nova has been playing the cabinet all night and is on level 255.
+// One more level and the counter — one byte — runs out of room, the game loses
+// count of what to draw, and the right half of the maze fills with the
+// cartridge's own insides. That is what happened to the most famous arcade
+// game in the world, and it is true in both halves: the level is unwinnable
+// (not enough dots left on the good side), and the "garbage" is the game's
+// memory drawn as if it were maze tiles.
+//
+// The right half is NOT random. It is seeded with things the reader has already
+// met — the cat's orange, the score's new ceiling, the full byte, the price on
+// the sign — so the first time anyone in this book sees the cartridge's
+// insides, they recognise their own numbers in it. And CATVENTURE is cut off at
+// the edge of the screen, because of course it is.
+
+const MAZE_LEFT = [
+  '########',
+  '#.......',
+  '#.##.##.',
+  '#.......',
+  '#.##.#..',
+  '#....#..',
+  '#.##.##.',
+  '#.......',
+  '#.##....',
+  '########',
+];
+const MAZE = MAZE_LEFT.map((r) => r + r.split('').reverse().join(''));
+/** a level nearly cleared: the last few dots Nova has not eaten yet */
+const LAST_DOTS = new Set(['3,5', '5,12', '7,14']);
+
+// Deterministic, so the server and the phone draw the same garbage (CLAUDE.md:
+// no Math.random at render). mulberry32 — small, and exact in 32-bit ints.
+const mulberry32 = (a: number) => () => {
+  a = (a + 0x6d2b79f5) | 0;
+  let t = Math.imul(a ^ (a >>> 15), 1 | a);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+// Filler is symbols ONLY. With letters and digits in the noise, a stray "3 3" or
+// "5 1" diluted the planted fragments until nobody could find them — and
+// finding them is the point: it is the book's Act 1 move (search for a value
+// you can see) arriving three chapters early.
+const GLYPHS = '▓▒░█▚▞▙▟◆■▲●◢◣◤◥▌▐▀▄#%&@=+?$';
+const JUNK = ['#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#f5f5f4', '#a78bfa', '#f87171'];
+const GARBAGE: { ch: string; c: string }[][] = (() => {
+  const rnd = mulberry32(256);
+  const g = Array.from({ length: 10 }, () =>
+    Array.from({ length: 8 }, () => ({ ch: GLYPHS[Math.floor(rnd() * GLYPHS.length)], c: JUNK[Math.floor(rnd() * JUNK.length)] })));
+  const put = (r: number, c0: number, s: string, c: string) =>
+    [...s].forEach((ch, i) => { if (c0 + i < 8) g[r][c0 + i] = { ch, c }; });
+  put(1, 0, 'FF 99 33', '#fb923c');    // the cat's orange
+  put(3, 2, 'CATVENTURE', '#fde68a');  // runs off the edge: CATVEN
+  put(5, 1, '65535', '#22d3ee');       // the score's new ceiling
+  put(7, 0, '11111111', '#fbbf24');    // the byte that just ran out
+  put(8, 3, '9.99', GREEN);            // the sign
+  return g;
+})();
+
+export const LevelToy: React.FC<{ level: number; killed: boolean; onChange: (level: number, killed: boolean) => void }> =
+  ({ level, killed, onChange }) => {
+    const [tried, setTried] = useState(false);
+    const showing = level > 255;
+    const counter = level & 255;
+    const nova = showing ? '7,2' : '7,13';
+    return (
+      <div>
+        <div
+          className="grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
+          style={{ gridTemplateColumns: 'repeat(16, 1fr)', aspectRatio: '16 / 10', containerType: 'inline-size' }}
+          aria-label={showing ? 'the maze, with its right half full of garbage' : 'the maze, nearly cleared'}
+          role="img"
+        >
+          {MAZE.flatMap((row, r) => [...row].map((cell, c) => {
+            const key = `${r},${c}`;
+            if (key === nova) {
+              return <div key={key} className="flex items-center justify-center" style={{ fontSize: '4.4cqw' }}>🐱</div>;
+            }
+            if (showing && c >= 8) {
+              const j = GARBAGE[r][c - 8];
+              return (
+                <div key={key} className="flex items-center justify-center"
+                  style={{ fontFamily: PIXEL_FONT, fontSize: '4.6cqw', color: j.c, lineHeight: 1 }}>
+                  {j.ch === ' ' ? '' : j.ch}
+                </div>
+              );
+            }
+            if (cell === '#') return <div key={key} className="m-[0.5px] rounded-[2px] bg-blue-800" />;
+            const dot = showing ? c < 8 : LAST_DOTS.has(key);
+            return (
+              <div key={key} className="flex items-center justify-center">
+                {dot && <span className="rounded-full bg-amber-100" style={{ width: '1.1cqw', height: '1.1cqw' }} />}
+              </div>
+            );
+          }))}
+        </div>
+        <div className="mt-2 flex items-baseline justify-between">
+          <span className={showing ? 'text-red-400' : 'text-amber-200'} style={{ fontFamily: PIXEL_FONT, fontSize: '1.5rem' }}>
+            LEVEL {level}
+          </span>
+          <span className="text-[0.75rem] text-gray-500" style={{ fontFamily: MONO }}>
+            counter {counter.toString(2).padStart(8, '0')}
+          </span>
+        </div>
+        <div className="mt-3 flex gap-2">
+          {showing ? (
+            // Not a dead control: tapping it answers, because this is the
+            // level nobody has ever finished and the kid deserves to be told.
+            <Push onClick={() => setTried(true)} label="try to clear level 256">try to clear it</Push>
+          ) : (
+            <Push onClick={() => onChange(level + 1, killed || level + 1 > 255)} label="let nova clear the level">
+              let her clear it
+            </Push>
+          )}
+          <Push tone="ghost" onClick={() => { setTried(false); onChange(254, killed); }} label="start again at level 254">
+            back to 254
+          </Push>
+        </div>
+        {showing && tried && (
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-center text-[0.8125rem] text-red-300">
+            not enough dots on the good half. nobody ever has.
+          </motion.p>
+        )}
       </div>
     );
   };

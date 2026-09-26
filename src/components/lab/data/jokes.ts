@@ -99,9 +99,21 @@ export const JOKES: Joke[] = [
   },
   {
     id: 'pacman-kill-screen',
-    chapter: 6, status: 'spare',
-    text: 'Pac-Man has 255 levels, and then it has a level made of garbage — the level counter is one byte, and level 256 is level 0 wearing a costume.',
-    why: 'True and beloved, but the chapter already has four overflows; holding it for the arcade chapter.',
+    chapter: 6, status: 'live', anchor: true,
+    text: 'The chapter looks finished — and Nova is not asleep under the sign. She has been playing the cabinet all night and is on level 255. “Do not let her finish that level.” — “Why?” — “How many levels fit in one byte?” One tap later the right half of the maze is garbage: the Pac-Man kill screen, the most famous last level in the world, which nobody built on purpose.',
+    why: 'True (the level counter is one byte; at 256 the fruit routine draws past its table and the level cannot be finished). Promoted from spare to the coda because it is the one overflow a kid can SEE, and because the garbage is the cartridge’s own memory.',
+  },
+  {
+    id: 'the-garbage-says-catven',
+    chapter: 6, status: 'live', anchor: true,
+    text: 'The gibberish is not gibberish. It says CATVEN — “the rest of the word fell off the edge” — and 65535, and 11111111, and FF 99 33 (“that is the cat”), and 9.99. “Of COURSE it says 9.99.” — “It is the inside of the game, drawn as if it were the maze.” — “So that is what the lost language looks like.” — “That is what it looks like when it spills out.”',
+    why: 'The first time the book shows the cartridge’s insides, the reader recognises their own numbers in it — Act 1’s core move (search for a value you can see) arriving early. The filler is symbols only so nothing else in it is readable.',
+  },
+  {
+    id: 'nova-built-it',
+    chapter: 6, status: 'live',
+    text: '“Nobody built level 256.” — “Nova built it.” 🐱',
+    why: 'Pays off Nova as the book’s chaos input (the random number generator, Ch1). The last line of the chapter goes to the cat.',
   },
 
   // ——— Chapter 1 ———
