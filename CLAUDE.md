@@ -580,6 +580,26 @@ Rules this establishes:
    this motion carries meaning rather than competing with it. Every movement
    still waits for a tap.
 
+### ⭐ Approved to keep: the overflow chapter — and nothing else yet
+
+**`/lab/overflow` ("A Number Can Run Out of Room") is the only thing built so
+far that is approved to keep, and the only one eligible to graduate out of the
+lab.** That is the author's call, in their words. It is **locked as it stands**
+(its script ends on *"nova is asleep under it"* 🐱): no additions, no
+"improvements", no codas, without their explicit sign-off.
+
+**An approved chapter is finished — a new idea gets a new chapter.** This rule
+exists because it was broken: the Pac-Man level-256 scene was bolted onto the
+end of the approved overflow chapter as a surprise coda. It crowded a chapter
+the author already liked ("do not ruin it"), and it buried the new scene 110
+messages deep, where it was never found. It now lives at `/lab/level256` as
+its own chapter, and the overflow chapter was restored byte for byte.
+
+**When you offer a choice, say which one you took.** "Here, or in a later
+chapter?" answered with "surprise me" is still a choice — and choosing "here"
+silently meant the author spent three rounds looking for a chapter that did
+not exist.
+
 ### A chapter is data; `Chapter.tsx` is the engine
 
 **`src/components/novel/chapters/*` — one `ChapterDef` per chapter, handed to
@@ -703,7 +723,10 @@ be surfaced elsewhere, not just play locally.
     state in its `ChapterDef`; `?from=` (lab only) plays every earlier toy,
     makes the thread before the mark history, and types on from there. It
     replaces that chapter's saved place. Anything worth showing someone gets a
-    mark **and** its own row on the `/lab` index.
+    mark **and** its own row on the `/lab` index. (That scene has since moved
+    to its own chapter, `/lab/level256` — the better fix. A link into the
+    middle of a chapter is for reviewing a moment, not a substitute for a
+    scene that deserved its own door.)
   - **Arriving at the right index is not landing on the moment.** The first
     `?from=` set the cursor correctly and every automated check passed — while
     the thread opened at its *top*, 101 messages above, showing the chapter's

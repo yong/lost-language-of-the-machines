@@ -142,7 +142,12 @@ their numbers. Mostly about food.
 - **Mini-game:** Pack the Cartridge — fit the game's real assets into a byte
   budget; discover lossless vs lossy squeezing.
 
-### Chapter 6b — "A Number Can Run Out of Room" 🆕 **BUILT: `/lab/overflow`**
+### Chapter 6b — "A Number Can Run Out of Room" ⭐ **APPROVED — `/lab/overflow`**
+- **⭐ The one chapter so far approved to keep, and eligible to graduate out of
+  the lab** (the author's call). Locked as it stands: its script ends on
+  *"nova is asleep under it"* 🐱. Do not add to it. A new idea that grows out
+  of it gets its own chapter — see Level 256 below, which began as a coda on
+  this chapter's last page and was moved out.
 - **Learning goal:** integer overflow. A number lives in a box with a fixed
   number of windows, and one past the last one is not "bigger" — it is *zero*.
   Byte → 255 + 1 · two-digit year → Y2K · 32-bit counters → 2038.
@@ -164,24 +169,35 @@ their numbers. Mostly about food.
   problem" · **"it was always soon. that is the job."** · and the closing turn:
   *"nobody has checked in two hundred years. the sign kept saying 9.99 and
   everybody believed it."*
-- **Toys:** the price sign · the byte at 255 · the two-digit year · the score ·
-  and a coda, **level 256**. Four costumes and an encore, one shape; the phrase
-  "integer overflow" is never used, because by the fourth costume naming it
-  would spoil the reader's own conclusion.
-- **The coda (a surprise):** the chapter seems to end on the diesel line, and
-  then Nova is not asleep under the sign — she has been playing the cabinet all
-  night and is on level 255. One tap and the right half of the maze fills with
-  garbage: the Pac-Man kill screen (true — the level counter is one byte, the
-  level cannot be finished). The garbage is the cartridge's own memory, seeded
-  with numbers the reader has already met — `FF 99 33`, `65535`, `11111111`,
-  `9.99`, and `CATVEN` with the rest fallen off the edge — so the first glimpse
-  of the machine's insides is one the reader can partly *read*. That is Act 1's
-  core move arriving three chapters early. Last line: *"nobody built level 256"*
-  — *"nova built it."* 🐱
+- **Toys:** the price sign · the byte at 255 · the two-digit year · the score.
+  Four costumes, one shape; the phrase "integer overflow" is never used, because
+  by the fourth costume naming it would spoil the reader's own conclusion.
 - **⚠️ NUMBERING IS UNRESOLVED.** It is written as *Chapter Six* and it wants to
   sit next to "A Memory Is a Shelf" — a box with a size, then a number that
   falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything
   after it along) is a call to make deliberately, so nothing is renumbered here.
+
+### "Level 256" — "A Glitch Is a Window" 🆕 **BUILT: `/lab/level256`** (unnumbered)
+- **Learning goal:** everything on the screen is memory. When the Pac-Man level
+  counter runs out of room, the game draws whatever it finds next — its own
+  memory — across half the maze. The kill screen is not the lesson, it is the
+  **door**: the first time anyone has seen the cartridge's insides.
+- **Game piece restored:** ⭐ **the cat's colour.** The reader finds `FF 99 33`
+  in the leaked memory and changes it until the cat is green — Act 1's first
+  move ("find the orange, make it green") arriving through a glitch.
+- **The wall (the ending):** the reader tries the same trick on level 256 and
+  it fails: *"you can change what a number IS. you cannot change what the game
+  DOES with it."* The gate is passed by failing. This is the ceiling
+  CLAUDE.md says must not be fixed — values, not behaviour — and it points at
+  the language.
+- **Toys:** level 255 → 256 (the split) · find the cat's orange in the memory ·
+  make her green (three bytes) · fix level 256 (it cannot be done).
+- **True things:** the one-byte Pac-Man level counter and the unwinnable level
+  256; the garbage being memory drawn as tiles; Game Genie ("they sold a whole
+  machine for it").
+- **Not a rerun of the overflow chapter:** that one teaches 255 + 1 = 0; this
+  one starts where it stops. Eyebrow reads *LEVEL 256* where a chapter number
+  would go — numbering is still unresolved.
 
 ---
 

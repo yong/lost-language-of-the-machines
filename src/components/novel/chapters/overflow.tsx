@@ -8,7 +8,7 @@
 // The cover is the real hook: a fuel price sign with four windows, photographed
 // at 9.99, one cent from having nowhere to put the answer. `public/overflow/
 // cover.svg` draws it mid-roll, with the carry climbing off the top.
-import { PumpToy, ByteToy, YearToy, ScoreToy, LevelToy } from '@/components/novel/overflow-toys';
+import { PumpToy, ByteToy, YearToy, ScoreToy } from '@/components/novel/overflow-toys';
 import { OVERFLOW_SCRIPT } from '@/components/novel/chapters/overflow-script';
 import type { ChapterDef } from '@/components/novel/chapter-def';
 
@@ -28,13 +28,13 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
     handoffLine: 'Starlax got out her phone.',
   },
   ending: {
-    line: 'end of chapter six. the score holds 65535 now. level 256 is still there, and nobody has ever finished it.',
+    line: 'end of chapter six. the score counter holds 65535 now — and the clocks have until 2038.',
     next: 'back to the lab →',
     href: '/lab',
   },
   script: OVERFLOW_SCRIPT,
   toys: {
-    initial: { cents: 999, pumpWrapped: false, byte: 250, byteWrapped: false, year: 0, wideYear: false, score: 0, bytes: 1, level: 255, killed: false },
+    initial: { cents: 999, pumpWrapped: false, byte: 250, byteWrapped: false, year: 0, wideYear: false, score: 0, bytes: 1 },
     gate: (toy, s) => {
       switch (toy) {
         // Each gate asks for the moment the box overflows, never for an answer.
@@ -43,7 +43,6 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
         case 'byte': return s.byteWrapped ? null : 'keep going past 255';
         case 'year': return (s.year as number) >= 3 ? null : 'keep turning the year';
         case 'score': return s.bytes === 2 ? null : 'give it another byte';
-        case 'level': return s.killed ? null : 'let her clear level 255';
         default: return null;
       }
     },
@@ -77,22 +76,8 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
             onChange={(score, bytes) => set({ score, bytes })}
           />
         );
-        case 'level': return (
-          <LevelToy
-            level={s.level as number}
-            killed={s.killed as boolean}
-            onChange={(level, killed) => set({ level, killed })}
-          />
-        );
         default: return null;
       }
-    },
-    played: {
-      pump: { cents: 0, pumpWrapped: true },
-      byte: { byte: 0, byteWrapped: true },
-      year: { year: 3 },
-      score: { score: 300, bytes: 2 },
-      level: { level: 256, killed: true },
     },
   },
 };
