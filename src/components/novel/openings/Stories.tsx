@@ -36,7 +36,7 @@ const Segments: React.FC<{ at: number; tone: 'light' | 'dark' }> = ({ at, tone }
 );
 
 const Stories: React.FC<VariantProps> = ({
-  phase, onAdvance, onEnter, onBack, image, eyebrow, title, paragraphs, handoffLine,
+  phase, onAdvance, onEnter, onBack, image, art, eyebrow, title, paragraphs, handoffLine,
 }) => {
   const [leaving, setLeaving] = useState(false);
   const dragging = useRef(false);
@@ -90,7 +90,7 @@ const Stories: React.FC<VariantProps> = ({
             transition={{ duration: 0.35, ease: 'easeOut' }}
             className="absolute inset-0 flex flex-col justify-end overflow-hidden"
           >
-            <CoverArt image={image} />
+            <CoverArt image={image} art={art} />
             <div className="pb-16"><CoverTitle eyebrow={eyebrow} title={title} /></div>
           </motion.div>
         ) : (

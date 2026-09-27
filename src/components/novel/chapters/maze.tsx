@@ -19,6 +19,7 @@
 // game had sat PAUSED on 255 for two hundred years, which made no sense. The hero is now
 // CATVENTURE's own cat, and the famous real game it echoes is not named.
 import { Cabinet, INITIAL, DOTS, type Stage } from '@/components/novel/maze-toys';
+import MazeCover from '@/components/novel/maze-cover';
 import { MAZE_SCRIPT } from '@/components/novel/chapters/maze-script';
 import type { ChapterDef, ToyState } from '@/components/novel/chapter-def';
 
@@ -31,6 +32,8 @@ export const CHAPTER_MAZE: ChapterDef = {
   exitHref: '/lab',
   opening: {
     image: '/level256/cover.svg',
+    // the cover is the game in attract mode, not snow: see maze-cover.tsx
+    art: <MazeCover />,
     eyebrow: 'Level 256',
     title: 'The Maze Is Made of Numbers',
     paragraphs: [

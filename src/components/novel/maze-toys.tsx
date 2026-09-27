@@ -39,7 +39,7 @@ const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 // 0 nothing · 1 wall · 2 dot. Mirrored left to right, like the real maze.
 const LEFT = ['####', '#...', '#.##', '#...', '##.#', '#...', '#.#.', '####'];
 export const W = 8, H = 8, HALF = 4;
-const FRESH: number[] = LEFT.flatMap((r) => {
+export const FRESH: number[] = LEFT.flatMap((r) => {
   const half = [...r].map((ch) => (ch === '#' ? 1 : 2));
   return [...half, ...[...half].reverse()];
 });
@@ -47,7 +47,7 @@ const FRESH: number[] = LEFT.flatMap((r) => {
 export const DOTS = FRESH.filter((n) => n === 2).length;
 /** how many of those are on the left half — all that survives level 256 */
 export const LEFT_DOTS = FRESH.filter((n, i) => n === 2 && i % W < HALF).length;
-const START = 5 * W + 1;
+export const START = 5 * W + 1;
 
 /** Level 255 — the last level of a week of playing — starts full, like any level. */
 const SHEET_255 = [...FRESH];
@@ -79,7 +79,7 @@ const INK = ['#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#f5f5f4', '#a78bfa', '
 /** Squares the cat can walk into: nothing, or a dot. Walls and junk are solid. */
 const open = (n: number) => n === 0 || n === 2;
 const STEP: Record<number, [number, number]> = { 1: [-1, 0], 2: [0, 1], 3: [1, 0], 4: [0, -1] };
-const move = (pos: number, d: number) => {
+export const move = (pos: number, d: number) => {
   const [dr, dc] = STEP[d] ?? [0, 0];
   const r = Math.floor(pos / W) + dr, c = (pos % W) + dc;
   return r < 0 || r >= H || c < 0 || c >= W ? -1 : r * W + c;
@@ -124,7 +124,7 @@ const endLevel = (s: ToyState): ToyState | null => {
 // CATVENTURE's cat: orange, made of little squares — the same cat as the cover.
 // Drawn as pixels rather than an emoji, so it looks like it lives in the game
 // (and does not depend on a phone's emoji font).
-const CAT = ['.#....#.', '.##..##.', '.######.', '.#.##.#.', '.######.', '..#..#..', '..####..'];
+export const CAT = ['.#....#.', '.##..##.', '.######.', '.#.##.#.', '.######.', '..#..#..', '..####..'];
 export const PixelCat: React.FC<{ size: string }> = ({ size }) => (
   <svg viewBox="0 0 8 7" width={size} height={size} style={{ display: 'block' }} aria-hidden>
     {CAT.flatMap((row, r) => [...row].map((ch, c) => (ch === '#' ? <rect key={`${r},${c}`} x={c} y={r} width={1.02} height={1.02} fill="#ff9933" /> : null)))}

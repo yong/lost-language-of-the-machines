@@ -29,7 +29,7 @@ export type Beat =
 export type ToyValue = number | boolean | number[];
 export type ToyState = Record<string, ToyValue>;
 
-export type OpeningCopy = Pick<OpeningProps, 'image' | 'eyebrow' | 'title' | 'paragraphs' | 'handoffLine'>;
+export type OpeningCopy = Pick<OpeningProps, 'image' | 'art' | 'eyebrow' | 'title' | 'paragraphs' | 'handoffLine'>;
 
 export interface ChapterDef {
   /** localStorage key for this chapter's place and toys. Chapter One keeps the

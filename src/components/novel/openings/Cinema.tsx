@@ -15,7 +15,7 @@ import {
 } from './shared';
 
 const Cinema: React.FC<VariantProps> = ({
-  phase, onAdvance, onEnter, onBack, image, eyebrow, title, paragraphs, handoffLine,
+  phase, onAdvance, onEnter, onBack, image, art, eyebrow, title, paragraphs, handoffLine,
 }) => {
   const [leaving, setLeaving] = useState(false);
   const dragging = useRef(false);
@@ -58,7 +58,7 @@ const Cinema: React.FC<VariantProps> = ({
         }}
         transition={{ duration: leaving ? DARKEN_MS / 1000 : 1.1, ease: 'easeInOut' }}
       >
-        <CoverArt image={image} />
+        <CoverArt image={image} art={art} />
       </motion.div>
 
       <BackArrow onBack={backward} tone="dark" />

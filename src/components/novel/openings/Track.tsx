@@ -14,7 +14,7 @@ import {
 const PAGES: Array<'cover' | 'page'> = ['cover', 'page'];
 
 const Track: React.FC<VariantProps> = ({
-  phase, onAdvance, onEnter, onBack, image, eyebrow, title, paragraphs, handoffLine,
+  phase, onAdvance, onEnter, onBack, image, art, eyebrow, title, paragraphs, handoffLine,
 }) => {
   const [leaving, setLeaving] = useState(false);
   const [h, setH] = useState(0);
@@ -80,7 +80,7 @@ const Track: React.FC<VariantProps> = ({
         className="absolute inset-x-0 top-0"
       >
         <div className="relative flex w-full flex-col justify-end overflow-hidden" style={{ height: h || '100dvh' }}>
-          <CoverArt image={image} />
+          <CoverArt image={image} art={art} />
           <div className="pb-8"><CoverTitle eyebrow={eyebrow} title={title} /></div>
           <div className="relative pb-7"><Hint tone="dark" label="swipe up to begin" /></div>
         </div>

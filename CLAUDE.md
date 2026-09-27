@@ -722,6 +722,13 @@ be surfaced elsewhere, not just play locally.
   they must be real `HTMLImageElement`s, because `Snowflake.draw()` gates on
   `image.complete`, so a canvas fails that check *silently* and every flake
   falls back to a default grey circle.
+- **Snow is Chapter One's, not every chapter's.** Binary snow on every cover
+  stopped meaning anything. A chapter whose subject moves gets its own living
+  cover through `opening.art` (drawn instead of the image, and no snow): the
+  level-256 cover is CATVENTURE in **attract mode** — the cat clears 253 and
+  254 by itself and stops on *LEVEL 255 · READY?*, the premise told before a
+  word is read. It must be deterministic and settle to a still (reduced motion
+  jumps straight to it).
 - Interactive components own their own state and persist to localStorage under
   `gameforge.*` keys.
 

@@ -21,6 +21,10 @@ export const COMMIT_VELOCITY = 450;
 
 export interface Content {
   image: string;
+  /** Live cover art, drawn instead of `image` and the binary snow. Snow is
+   *  Chapter One's; a chapter whose subject moves gets its own motion (the
+   *  level-256 cover is the game in attract mode). */
+  art?: React.ReactNode;
   eyebrow: string;
   title: string;
   paragraphs: string[];
@@ -38,17 +42,17 @@ export interface VariantProps extends Content {
 
 /** The chapter's cover art, with the scrim that keeps the title legible over
  *  whatever the art happens to be doing. */
-export const CoverArt: React.FC<{ image: string; kenBurns?: boolean; snow?: boolean }> = ({
-  image, kenBurns = true, snow = true,
+export const CoverArt: React.FC<{ image: string; art?: React.ReactNode; kenBurns?: boolean; snow?: boolean }> = ({
+  image, art, kenBurns = true, snow = !art,
 }) => (
   <>
     <motion.div
       className="absolute inset-0 bg-cover bg-center"
-      style={{ backgroundImage: `url(${image})` }}
+      style={art ? undefined : { backgroundImage: `url(${image})` }}
       initial={kenBurns ? { scale: 1.08 } : false}
       animate={kenBurns ? { scale: 1 } : undefined}
       transition={{ duration: 6, ease: 'easeOut' }}
-    />
+    >{art}</motion.div>
     {/* under the scrim, so the title stays the brightest thing on the cover */}
     {snow && <BinarySnow />}
     <div
