@@ -1,95 +1,82 @@
 // The chat script for "The Maze Is Made of Numbers" (/lab/level256).
 //
-// ONE sentence, and every line serves it:
-//   the game paints the maze by numbers; on level 256 it scribbled over half
-//   the numbers; so we write them back — and Nova wins.
+// One sentence: the game paints the maze by numbers; on level 256 it scribbles
+// over half the numbers; so we write them back — and Nova wins.
 //
-// The telling leans on something every kid already knows, PAINT-BY-NUMBERS: a
-// sheet of numbers, a key, and you colour it in. Starlax is the one who says
-// it, a beat before Flamey — the reader, flipping the switch, gets there with
-// her (CLAUDE.md: let the kid feel smart). Nothing is explained before the
-// reader has seen it: the numbers appear under their thumb first, and only then
-// does anyone put words to them.
+// PLAY FIRST, THEN LOOK. The reader is handed a real game (Nova fell asleep on
+// level 255, so they finish it for her) and only then flips "what the game
+// sees" — while still playing, so the lesson lands under their own thumb:
+// when she eats a dot, the 2 under her turns into a 0. They are told to keep
+// the numbers on and watch the right side before finishing the level, so the
+// bug happens IN FRONT of them, to numbers they saw healthy a moment ago.
 //
-// Three cards, one per step, in order: the break · the reveal · the fix.
-// Deliberately NOT here any more: memory, colours, hex, "values vs behaviour"
-// — an earlier telling crammed those in and nobody could follow it.
+// Every number a character says comes from the game's data (CLAUDE.md,
+// writing principle 8): the dots a level needs, how many survive on the good
+// side, and the junk Starlax reads off the screen.
 import type { Beat } from '@/components/novel/chapter-def';
-import { JUNK } from '@/components/novel/maze-toys';
+import { JUNK, DOTS, LEFT_DOTS } from '@/components/novel/maze-toys';
 
-// Starlax reads the junk's numbers OFF THE SCREEN. A first draft had her say
-// "203. 67. 148." while the screen showed 229, 97, 249 — a kid would hunt for
-// 203 and never find it. Built from the same numbers the card draws, so the
-// two can never disagree.
 const [J0, J1, J2] = JUNK;
 
 export const MAZE_SCRIPT: Beat[] = [
   { kind: 'msg', who: 'starlax', text: 'flamey' },
-  { kind: 'msg', who: 'starlax', text: 'nova is still playing the cabinet', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'cats cannot play' },
-  { kind: 'msg', who: 'starlax', text: 'she has been on it for three nights. she is really good.' },
-  { kind: 'msg', who: 'flamey', text: 'which level', typing: true },
-  { kind: 'msg', who: 'starlax', text: '255. three dots left.' },
-  { kind: 'msg', who: 'flamey', text: 'oh no' },
-  { kind: 'msg', who: 'starlax', text: 'what' },
-  { kind: 'msg', who: 'flamey', text: 'let her finish. you will see.' },
+  { kind: 'msg', who: 'starlax', text: 'nova fell asleep on the cabinet', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'on it?' },
+  { kind: 'msg', who: 'starlax', text: 'on the controls. she got to level 255 and fell asleep.' },
+  { kind: 'msg', who: 'flamey', text: 'then finish it for her' },
+  { kind: 'msg', who: 'starlax', text: 'I have never played it' },
+  { kind: 'msg', who: 'flamey', text: 'the arrows move her. eat the dots.' },
 
-  { kind: 'toy', toy: 'break', label: 'let her clear level 255' },
+  { kind: 'toy', toy: 'play', label: 'finish it for her — eat two dots' },
 
-  { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'half the maze just turned to junk', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'level 256' },
-  { kind: 'msg', who: 'flamey', text: 'the same thing happened to pac-man, the most famous arcade game ever' },
-  { kind: 'msg', who: 'flamey', text: 'on level 256 the game gets muddled and scribbles over half the maze', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'can she still win' },
-  { kind: 'msg', who: 'flamey', text: 'no. the dots on that side got scribbled over. she can never eat them all.' },
-  { kind: 'msg', who: 'flamey', text: 'nobody has ever beaten level 256. not once.', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'nova is going to be the first' },
-  { kind: 'msg', who: 'nova', text: '🐱', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'ok this is fun', typing: true },
+  { kind: 'msg', who: 'starlax', text: `what does "dots / ${DOTS}" mean`, rush: true },
+  { kind: 'msg', who: 'flamey', text: `a level ends when she has eaten ${DOTS} dots` },
+  { kind: 'msg', who: 'flamey', text: 'want to see what the game sees?' },
+  { kind: 'msg', who: 'starlax', text: 'what does that mean' },
+  { kind: 'msg', who: 'flamey', text: 'flip the switch. keep playing.' },
 
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'wait. how do you scribble over a maze' },
-  { kind: 'msg', who: 'starlax', text: 'it is a picture', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'is it' },
-
-  { kind: 'toy', toy: 'sheet', label: 'look at what the game sees' },
+  { kind: 'toy', toy: 'look', label: 'flip the switch and keep playing' },
 
   { kind: 'msg', who: 'starlax', text: 'IT IS NUMBERS', typing: true },
   { kind: 'msg', who: 'starlax', text: 'the whole maze is numbers', rush: true },
-  { kind: 'msg', who: 'flamey', text: '0 is empty. 1 is a wall. 2 is a dot.' },
-  { kind: 'msg', who: 'starlax', text: 'it is paint-by-numbers!' },
-  { kind: 'msg', who: 'flamey', text: 'exactly paint-by-numbers. the game reads the sheet and paints the maze.' },
-  { kind: 'msg', who: 'flamey', text: 'sixty times a second.', rush: true },
+  { kind: 'msg', who: 'flamey', text: '1 is a wall. 2 is a dot. 0 is nothing.' },
+  { kind: 'msg', who: 'starlax', text: 'and when she eats a dot, the 2 turns into a 0!' },
+  { kind: 'msg', who: 'flamey', text: 'that is all eating is. a 2 becoming a 0.' },
+  { kind: 'msg', who: 'starlax', text: 'so the maze is just a sheet of numbers' },
+  { kind: 'msg', who: 'starlax', text: 'and the picture is the game colouring it in', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'paint-by-numbers. sixty times a second.' },
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'starlax', text: 'and the junk side?' },
-  { kind: 'msg', who: 'flamey', text: 'read its numbers' },
-  { kind: 'msg', who: 'starlax', text: `they are red. and huge. ${J0}. ${J1}. ${J2}.` },
-  { kind: 'msg', who: 'starlax', text: `there is no ${J0} on the key`, rush: true },
-  { kind: 'msg', who: 'flamey', text: 'the game has a picture for every number. letters, fruit, bits of scenery.' },
-  { kind: 'msg', who: 'flamey', text: 'so it paints whatever the number says. it does not know the number is wrong.', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'so the junk is not broken' },
-  { kind: 'msg', who: 'starlax', text: 'it is just the wrong numbers', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'that is all junk ever is.' },
+  { kind: 'msg', who: 'starlax', text: 'ok. finishing level 255 for her.' },
+  { kind: 'msg', who: 'flamey', text: 'keep the numbers on' },
+  { kind: 'msg', who: 'flamey', text: 'and watch the right side', rush: true },
 
-  { kind: 'beat' },
+  { kind: 'toy', toy: 'clear', label: 'finish level 255 — watch the right side' },
 
-  { kind: 'msg', who: 'starlax', text: 'then I am writing the right ones back' },
-  { kind: 'msg', who: 'flamey', text: 'she needs ten dots on that side' },
-  { kind: 'msg', who: 'starlax', text: 'and a dot is a 2' },
+  { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
+  { kind: 'msg', who: 'starlax', text: 'the right side just turned into junk', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'level 256.' },
+  { kind: 'msg', who: 'flamey', text: 'this happens in the real pac-man too. the most famous arcade game ever.' },
+  { kind: 'msg', who: 'flamey', text: 'on level 256 the game gets muddled and scribbles over half the maze’s numbers', rush: true },
+  { kind: 'msg', who: 'starlax', text: `the right side says ${J0}. ${J1}. ${J2}.` },
+  { kind: 'msg', who: 'starlax', text: 'those are not walls or dots', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'the game has a picture for every number. letters, fruit, bits of scenery. so it paints them anyway.' },
+  { kind: 'msg', who: 'starlax', text: 'can she still finish' },
+  { kind: 'msg', who: 'flamey', text: `she needs ${DOTS} dots. there are only ${LEFT_DOTS} left on the good side.` },
+  { kind: 'msg', who: 'flamey', text: 'in pac-man, nobody has ever finished level 256. not once.', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'then I am writing the dots back' },
+  { kind: 'msg', who: 'flamey', text: 'a dot is a 2.' },
 
-  { kind: 'toy', toy: 'fix', label: 'write the dots back' },
+  { kind: 'toy', toy: 'fix', label: 'paint dots over the junk, then eat them' },
 
-  { kind: 'msg', who: 'starlax', text: 'SHE DID IT', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'nova beat level 256', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'LEVEL 256 CLEARED', typing: true },
   { kind: 'msg', who: 'flamey', text: 'the first ever' },
-  { kind: 'msg', who: 'flamey', text: 'with ten 2s', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'the screen says LEVEL 1 now' },
+  { kind: 'msg', who: 'starlax', text: 'nova is still asleep' },
+  { kind: 'msg', who: 'flamey', text: 'she beat the level nobody can beat, and slept through it' },
+  { kind: 'msg', who: 'starlax', text: 'and now it says level 1' },
   { kind: 'msg', who: 'flamey', text: 'the level counter ran out of room and went round again' },
-  { kind: 'msg', who: 'starlax', text: 'she beat the level nobody can beat' },
-  { kind: 'msg', who: 'starlax', text: 'and her prize is level 1', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'that is what winning looks like, on a machine' },
+  { kind: 'msg', who: 'starlax', text: 'her prize for the impossible level is level 1' },
   { kind: 'msg', who: 'nova', text: '🐱', rush: true },
 ];

@@ -183,16 +183,22 @@ their numbers. Mostly about food.
   back — and Nova wins.* Told through **paint-by-numbers**, which every kid
   already knows: a sheet of numbers, a key, and you colour it in. True:
   arcade games drew the maze from a grid of tile numbers.
-- **The want:** help Nova beat the level nobody has ever beaten (the Pac-Man
-  kill screen — true: a one-byte level counter, half the maze scribbled over,
-  never once completed).
-- **Three cards, one per step:** ① *the break* — let her clear 255; half the
-  maze turns to junk · ② *the reveal* — one switch, **what you see ↔ what the
-  game sees**: the good half is 0s, 1s and 2s, the junk is red numbers that
-  are not on the key · ③ *the fix* — tap junk to write 2s (dots) back, 10 of
-  them, then **let her finish**.
-- **The payoff:** *LEVEL 256 — CLEARED*, and the screen says **LEVEL 1**:
-  *"she beat the level nobody can beat, and her prize is level 1."*
+- **The want:** Nova fell asleep on the controls at level 255 — the reader
+  finishes it for her, and then beats the level nobody has ever beaten.
+- **PLAY FIRST, THEN LOOK. One real, playable maze game** (D-pad, eat the
+  dots, a counter showing the level ends at 26), shown across four cards:
+  ① *play* — eat two dots · ② *look* — flip **what you see ↔ what the game
+  sees** and keep playing: when she eats a dot, **the 2 under her turns into
+  a 0** — the whole lesson, under the reader's own thumb · ③ *clear* — "keep
+  the numbers on and watch the right side": level 256 scribbles over the
+  right half's numbers, which the reader saw healthy a moment ago · ④ *fix* —
+  paint 2s over the junk (tap or drag), then eat them all.
+- **The payoff:** *LEVEL 256 — CLEARED*, the screen says **LEVEL 1**, and
+  *"she beat the level nobody can beat, and slept through it."*
+- **True:** the Pac-Man level-256 "split screen" — a one-byte level counter
+  wraps, the fruit-drawing routine writes over the right half of the screen's
+  tile memory, and the level cannot be finished (not enough dots to reach 244);
+  a perfect game ends there at 3,333,360. *Fixing* it is our fiction.
 - **Game piece restored:** ⭐ **the maze** — the reader writes it back.
 - **Why it was retold:** the first telling ("A Glitch Is a Window") crammed in
   memory, colour hacking and "values vs behaviour", dropped its own hook
@@ -200,7 +206,10 @@ their numbers. Mostly about food.
   it. Lesson: **one idea, told through something the reader already knows;
   a character with a want; a win at the end.** Those cut ideas are in the joke
   bank as `cut` so they are not re-pitched here — they belong to the hex-editor
-  chapter.
+  chapter. **Second retelling:** the paint-by-numbers version could not be
+  played, and showed numbers only on a maze that was already broken — so "left"
+  and "right" never meant anything. Now the reader plays a healthy maze, sees it
+  as numbers first, and watches the bug happen.
 
 ---
 

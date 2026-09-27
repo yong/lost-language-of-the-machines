@@ -620,6 +620,11 @@ Nothing about a chapter lives in the engine any more.
   the save against the chapter's own `initial`, so a new chapter gets that
   protection without thinking about it.
 - Each chapter owns a **storage key**; `?restart=1` clears only that one.
+- **One machine across several cards:** `render(toy, s, set, { live })` —
+  `live` is true only for the newest toy card in the thread. A chapter whose
+  cards are all the same game (`/lab/level256`) runs its clock and controls
+  on the live card only and lets older cards step aside, so there is never a
+  second Nova or a second clock. Chapters of different toys can ignore it.
 
 ## Writing principles
 
@@ -644,7 +649,11 @@ Nothing about a chapter lives in the engine any more.
    hook and three ideas (memory, colour hacking, "values vs behaviour"),
    dropped its hook after one card, and ended on a lecture — the author could
    not follow it. Give a character a **want**, let the toys be the steps
-   toward it, and end on a **win**.
+   toward it, and end on a **win**. And when the idea is about a game, **let
+   them play it before you show them how it works** — the second telling of
+   level 256 showed the maze as numbers only once it was already broken, so
+   the reader never saw a healthy one, never played it, and "left" and
+   "right" meant nothing.
 8. **A number a character reads out must be the number on the screen.** Build
    it from the same data the card draws. A draft had Starlax read "203" while
    the screen showed 229 — a kid would hunt for 203 and never find it.

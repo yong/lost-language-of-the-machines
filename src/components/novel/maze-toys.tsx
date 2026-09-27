@@ -1,278 +1,340 @@
-// maze-toys.tsx — the toys for "The Maze Is Made of Numbers" (/lab/level256).
+// maze-toys.tsx — the cabinet for "The Maze Is Made of Numbers" (/lab/level256).
 //
-// ONE IDEA, told the way a kid already knows it: PAINT-BY-NUMBERS. The game
-// keeps a sheet of numbers and a key of little pictures, and paints the maze
-// from the sheet, over and over. On level 256 it scribbles over half the sheet
-// — so the reader writes the numbers back, and Nova wins.
+// A REAL, PLAYABLE little maze game, and the whole chapter happens inside it.
+// The first telling showed the numbers only on a maze that was already broken,
+// so the reader never saw a healthy maze as numbers, never played it, and could
+// not tell why "left" and "right" mattered. Now:
 //
-// Three toys, one per step, and each is the SAME maze so nobody has to ask
-// "which maze is this?":
-//   1. the break   — let Nova clear 255; half the maze turns to junk
-//   2. the reveal  — flip "what you see" ↔ "what the game sees"
-//   3. the fix     — tap junk to write dots (2s) back; then let her finish
+//   play   — Nova fell asleep on level 255; the reader finishes it for her
+//   look   — flip "what the game sees" and KEEP PLAYING: when she eats a dot,
+//            the 2 under her turns into a 0. That is the whole lesson.
+//   clear  — finish 255 and watch level 256 scribble over the right half's
+//            numbers, which the reader saw healthy a moment ago
+//   fix    — paint 2s over the junk, then eat them all; Nova wins
 //
-// Everything a kid touches is a picture AND its number at once, so the link
-// between them is seen, never explained.
+// The game's state IS the number sheet — eating a dot literally writes a 0 —
+// so the picture and the numbers can never disagree.
+//
+// One machine, several cards: every card draws the same live state, but only
+// the newest one runs the clock and has controls. Older cards step aside to a
+// one-line note, so there is never a second Nova or a second clock.
 //
 // Thumb notes (CLAUDE.md): raw px are TAP sizes and stay px on purpose. The
-// fix grid is the broken half only — 6 tiles across, ~50px each on a phone,
-// so it clears the 44px floor without needing the grid exception.
-import { useState } from 'react';
+// maze is 8 squares across, ~38px each on a phone; the D-pad buttons are 44px+.
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
+import type { ToyState } from '@/components/novel/chapter-def';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
-const Push: React.FC<{ onClick: () => void; children: React.ReactNode; tone?: 'amber' | 'ghost'; label?: string; pressed?: boolean }> =
-  ({ onClick, children, tone = 'amber', label, pressed }) => (
-    <button
-      onClick={onClick}
-      aria-label={label}
-      aria-pressed={pressed}
-      className="flex-1 touch-manipulation rounded-lg border px-3 text-[0.9375rem] font-semibold transition-colors active:brightness-125"
-      style={{
-        minHeight: 44,
-        borderColor: tone === 'amber' ? '#fbbf24' : '#3f3a56',
-        background: tone === 'amber' ? 'rgba(251,191,36,.16)' : '#15122a',
-        color: tone === 'amber' ? '#fde68a' : '#a5a1bd',
-      }}
-    >
-      {children}
-    </button>
-  );
-
 // ── the sheet ───────────────────────────────────────────────────────────────
-// 0 empty · 1 wall · 2 dot. The key is the whole lesson, so it is only three
-// entries long.
-
-const LEFT = [
-  '######',
-  '#.....',
-  '#.##.#',
-  '#.....',
-  '#.#.##',
-  '#.#...',
-  '#...#.',
-  '###.#.',
-  '#.....',
-  '######',
-];
-const COLS = 12, ROWS = 10, HALF = 6;
-/** the maze as the game stores it: a sheet of numbers, mirrored left to right */
-const SHEET: number[][] = LEFT.map((r) => {
+// 0 nothing · 1 wall · 2 dot. Mirrored left to right, like the real maze.
+const LEFT = ['####', '#...', '#.##', '#...', '##.#', '#...', '#.#.', '####'];
+export const W = 8, H = 8, HALF = 4;
+const FRESH: number[] = LEFT.flatMap((r) => {
   const half = [...r].map((ch) => (ch === '#' ? 1 : 2));
   return [...half, ...[...half].reverse()];
 });
-/** the nearly-cleared level 255: only these dots are left */
-const LAST_DOTS = new Set(['3,4', '5,8', '8,10']);
+/** a level ends when this many dots have been eaten — the rule the counter shows */
+export const DOTS = FRESH.filter((n) => n === 2).length;
+/** how many of those are on the left half — all that survives level 256 */
+export const LEFT_DOTS = FRESH.filter((n, i) => n === 2 && i % W < HALF).length;
+const START = 5 * W + 1;
 
-// Deterministic junk, so the server and the phone draw the same screen
-// (CLAUDE.md: no Math.random at render).
+/** Level 255 as Nova left it: nearly done, six dots to go. */
+const KEEP_255 = new Set([1 * W + 6, 3 * W + 2, 3 * W + 5, 5 * W + 6, 6 * W + 1, 1 * W + 2]);
+const SHEET_255 = FRESH.map((n, i) => (n === 2 && !KEEP_255.has(i) ? 0 : n));
+
+// Deterministic junk (CLAUDE.md: no Math.random at render).
 const mulberry32 = (a: number) => () => {
   a = (a + 0x6d2b79f5) | 0;
   let t = Math.imul(a ^ (a >>> 15), 1 | a);
   t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
-/** What level 256 left on the right half of the sheet: numbers not on the key. */
+/** What level 256 writes over the right half: numbers that are not on the key. */
 export const JUNK: number[] = (() => {
   const rnd = mulberry32(256);
-  return Array.from({ length: ROWS * HALF }, () => 3 + Math.floor(rnd() * 253));
+  return Array.from({ length: H * HALF }, () => 3 + Math.floor(rnd() * 253));
 })();
+const SHEET_256 = FRESH.map((n, i) => {
+  const c = i % W;
+  return c < HALF ? n : JUNK[Math.floor(i / W) * HALF + (c - HALF)];
+});
 
-// The key the game ACTUALLY paints from has a picture for every number, not
-// just three — letters, fruit, bits of scenery. That is why the junk looks
-// like letters and fruit: the game is still painting by numbers, faithfully,
-// from the wrong numbers.
+// The game has a picture for EVERY number, not just three — letters, fruit,
+// scraps of scenery. That is why the junk looks like letters and fruit: the
+// game is still painting by numbers, faithfully, from the wrong numbers.
 const FRUIT = ['🍒', '🍓', '🍊', '🍎', '🍈', '🔔', '🔑'];
 const BITS = '▓▒░▚▞▙▟◆■▲●◢◣◤◥▌▐▀▄';
 const INK = ['#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#f5f5f4', '#a78bfa', '#f87171'];
-type Pic = { kind: 'empty' | 'wall' | 'dot' | 'glyph'; ch?: string; c?: string };
-const pic = (n: number): Pic => {
-  if (n === 0) return { kind: 'empty' };
-  if (n === 1) return { kind: 'wall' };
-  if (n === 2) return { kind: 'dot' };
-  if (n >= 65 && n <= 90) return { kind: 'glyph', ch: String.fromCharCode(n), c: INK[n % INK.length] };
-  if (n >= 140 && n <= 160) return { kind: 'glyph', ch: FRUIT[n % FRUIT.length] };
-  return { kind: 'glyph', ch: BITS[n % BITS.length], c: INK[n % INK.length] };
+
+/** Squares Nova can walk into: nothing, or a dot. Walls and junk are solid. */
+const open = (n: number) => n === 0 || n === 2;
+const STEP: Record<number, [number, number]> = { 1: [-1, 0], 2: [0, 1], 3: [1, 0], 4: [0, -1] };
+const move = (pos: number, d: number) => {
+  const [dr, dc] = STEP[d] ?? [0, 0];
+  const r = Math.floor(pos / W) + dr, c = (pos % W) + dc;
+  return r < 0 || r >= H || c < 0 || c >= W ? -1 : r * W + c;
 };
 
-/** One square of the maze, drawn from its number — and, if asked, showing it. */
-const Cell: React.FC<{ n: number; nova?: boolean; asNumber?: boolean; size: string }> = ({ n, nova, asNumber, size }) => {
-  if (nova) return <div className="flex items-center justify-center" style={{ fontSize: size }}>🐱</div>;
-  if (asNumber) {
+export const INITIAL: ToyState = {
+  level: 255, sheet: [...SHEET_255], eaten: DOTS - KEEP_255.size, pos: START, dir: 0, want: 0,
+  numbers: false, peeked: false, won: false,
+};
+
+/** One tick of the game: turn if asked and able, step, eat, maybe end the level. */
+const tick = (s: ToyState, allowFinish: boolean): ToyState | null => {
+  const sheet = s.sheet as number[];
+  let dir = s.dir as number;
+  const want = s.want as number;
+  const pos = s.pos as number;
+  if (want) { const t = move(pos, want); if (t >= 0 && open(sheet[t])) dir = want; }
+  const next = dir ? move(pos, dir) : -1;
+  if (next < 0 || !open(sheet[next])) return dir || want ? { ...s, dir: 0 } : null;
+  let out: ToyState = { ...s, pos: next, dir };
+  if (sheet[next] === 2) {
+    const sh = [...sheet]; sh[next] = 0;                 // eating a dot IS writing a 0
+    out = { ...out, sheet: sh, eaten: (s.eaten as number) + 1, peeked: s.peeked || s.numbers };
+  }
+  return endLevel(out, allowFinish) ?? out;
+};
+
+/** The level ends after DOTS dots — and what comes next is the whole chapter. */
+const endLevel = (s: ToyState, allowFinish: boolean): ToyState | null => {
+  if ((s.eaten as number) < DOTS) return null;
+  const level = s.level as number;
+  if (level === 255) {
+    // 255 is not allowed to end until the story has asked for it, so nobody
+    // sees level 256 before they have seen what a healthy maze looks like.
+    if (!allowFinish) return null;
+    return { ...s, level: 256, sheet: [...SHEET_256], eaten: 0, pos: START, dir: 0, want: 0 };
+  }
+  if (level === 256) return { ...s, level: 1, sheet: [...FRESH], eaten: 0, pos: START, dir: 0, want: 0, won: true };
+  return { ...s, level: level + 1, sheet: [...FRESH], eaten: 0, pos: START, dir: 0, want: 0 };
+};
+
+// ── drawing a square ────────────────────────────────────────────────────────
+
+const Square: React.FC<{ n: number; numbers: boolean; nova: boolean }> = ({ n, numbers, nova }) => {
+  const cat = nova && (
+    <span className="absolute inset-0 flex items-center justify-center" style={{ fontSize: numbers ? '5cqw' : '8cqw' }}>🐱</span>
+  );
+  if (numbers) {
     const onKey = n <= 2;
     return (
-      <div className="flex items-center justify-center" style={{
-        fontFamily: MONO, fontSize: `calc(${size} * ${n > 99 ? 0.62 : 0.8})`, lineHeight: 1,
+      <div className="relative flex items-center justify-center" style={{
+        outline: nova ? '2px solid #fbbf24' : 'none', outlineOffset: -2,
+        fontFamily: MONO, lineHeight: 1, fontWeight: onKey ? 500 : 700,
+        fontSize: n > 99 ? '4.2cqw' : '6cqw',
         color: onKey ? (n === 1 ? '#93c5fd' : n === 2 ? '#fef3c7' : '#6b7280') : '#f87171',
-        fontWeight: onKey ? 400 : 700,
-      }}>{n}</div>
+      }}>
+        <span style={{ opacity: nova ? 0.9 : 1, transform: nova ? 'translate(-28%, -28%)' : undefined }}>{n}</span>
+        {nova && <span className="absolute bottom-0 right-0.5" style={{ fontSize: '4.4cqw' }}>🐱</span>}
+      </div>
     );
   }
-  const p = pic(n);
-  if (p.kind === 'wall') return <div className="m-[0.5px] rounded-[2px] bg-blue-800" />;
-  if (p.kind === 'dot') return (
-    <div className="flex items-center justify-center">
-      <span className="rounded-full bg-amber-100" style={{ width: `calc(${size} * 0.25)`, height: `calc(${size} * 0.25)` }} />
+  if (n === 1) return <div className="relative m-[1px] rounded-[3px] bg-blue-800">{cat}</div>;
+  if (n === 2) return (
+    <div className="relative flex items-center justify-center">
+      <span className="rounded-full bg-amber-100" style={{ width: '2.6cqw', height: '2.6cqw' }} />{cat}
     </div>
   );
-  if (p.kind === 'empty') return <div />;
-  return <div className="flex items-center justify-center" style={{ fontFamily: PIXEL_FONT, fontSize: size, color: p.c, lineHeight: 1 }}>{p.ch}</div>;
+  if (n === 0) return <div className="relative">{cat}</div>;
+  const fruit = n >= 140 && n <= 160;
+  return (
+    <div className="relative flex items-center justify-center" style={{
+      fontFamily: PIXEL_FONT, lineHeight: 1, fontSize: fruit ? '7cqw' : '9cqw', color: INK[n % INK.length],
+    }}>
+      {fruit ? FRUIT[n % FRUIT.length] : n >= 65 && n <= 90 ? String.fromCharCode(n) : BITS[n % BITS.length]}
+    </div>
+  );
 };
 
-/** The whole screen: the sheet for the current level, as pictures or as numbers. */
-const Screen: React.FC<{ numbers: (r: number, c: number) => number; nova: string; asNumbers?: boolean; label: string }> =
-  ({ numbers, nova, asNumbers, label }) => (
-    <div
-      className="grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
-      style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)`, aspectRatio: `${COLS} / ${ROWS}`, containerType: 'inline-size' }}
-      role="img" aria-label={label}
-    >
-      {SHEET.flatMap((row, r) => row.map((_, c) => (
-        <Cell key={`${r},${c}`} n={numbers(r, c)} nova={!asNumbers && nova === `${r},${c}`} asNumber={asNumbers} size="5.6cqw" />
-      )))}
+const Pad: React.FC<{ onDir: (d: number) => void }> = ({ onDir }) => (
+  <div className="mt-2 flex gap-2" role="group" aria-label="move nova">
+    {([[4, '◀', 'left'], [1, '▲', 'up'], [3, '▼', 'down'], [2, '▶', 'right']] as const).map(([d, glyph, name]) => (
+      <button
+        key={d}
+        onPointerDown={(e) => { e.preventDefault(); onDir(d); }}
+        onClick={() => onDir(d)}
+        aria-label={`move ${name}`}
+        className="flex-1 touch-manipulation select-none rounded-lg border border-amber-400/70 bg-amber-400/15 text-xl text-amber-200 active:bg-amber-400/35"
+        style={{ minHeight: 48 }}
+      >
+        {glyph}
+      </button>
+    ))}
+  </div>
+);
+
+// ── the cabinet ─────────────────────────────────────────────────────────────
+
+export type Stage = 'play' | 'look' | 'clear' | 'fix';
+
+export const Cabinet: React.FC<{
+  stage: Stage; live: boolean; s: ToyState; set: (patch: ToyState) => void;
+}> = ({ stage, live, s, set }) => {
+  const allowFinish = stage === 'clear' || stage === 'fix';
+  const canPaint = stage === 'fix' && s.level === 256;
+  const sRef = useRef(s); sRef.current = s;
+
+  // One clock, and only on the live card.
+  useEffect(() => {
+    if (!live) return;
+    const id = window.setInterval(() => {
+      const nextState = tick(sRef.current, allowFinish);
+      if (nextState) set(nextState);
+    }, 165);
+    return () => window.clearInterval(id);
+  }, [live, allowFinish, set]);
+
+  // A level that was finished before the story allowed it ends the moment it is.
+  useEffect(() => {
+    if (!live) return;
+    const ended = endLevel(s, allowFinish);
+    if (ended && s.level === 255) set(ended);
+  }, [live, allowFinish, s, set]);
+
+  const steer = useCallback((d: number) => set({ want: d }), [set]);
+
+  // Arrow keys are an accelerator for a keyboard, never the only way (CLAUDE.md).
+  useEffect(() => {
+    if (!live) return;
+    const key: Record<string, number> = { ArrowUp: 1, ArrowRight: 2, ArrowDown: 3, ArrowLeft: 4 };
+    const onKey = (e: KeyboardEvent) => { const d = key[e.key]; if (d) { e.preventDefault(); steer(d); } };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [live, steer]);
+
+  // Painting 2s over the junk: a tap paints one square, a drag paints a stroke.
+  // Same notes as Chapter One's grid: decide the value on the square you START
+  // on, and swallow the click that trails a pointer press.
+  const painting = useRef<number | null>(null);
+  const handled = useRef(false);
+  // A finger's pointer stays pinned to the square it started on, so "entered
+  // the next square" never fires on a phone. Ask what is under the finger.
+  const squareUnder = (x: number, y: number) => {
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const i = el?.closest<HTMLElement>('[data-square]')?.dataset.square;
+    return i === undefined ? null : +i;
+  };
+  const paintAt = (i: number, value: number) => {
+    const sheet = sRef.current.sheet as number[];
+    if (i % W < HALF || i === sRef.current.pos || sheet[i] === value) return;
+    const sh = [...sheet]; sh[i] = value; set({ sheet: sh });
+  };
+
+  if (!live) {
+    return (
+      <p className="py-1 text-center text-[0.8125rem] text-gray-400">
+        🕹 the cabinet is still on — it carries on further down ↓
+      </p>
+    );
+  }
+
+  const sheet = s.sheet as number[];
+  const level = s.level as number;
+  const numbers = s.numbers as boolean;
+  const eaten = s.eaten as number;
+  const reachable = eaten + sheet.filter((n) => n === 2).length;
+  const showSwitch = stage !== 'play';
+
+  return (
+    <div className="select-none">
+      <div className="mb-2 flex min-h-[2.75rem] items-center justify-between gap-2">
+        <span className={level === 256 ? 'text-red-400' : 'text-amber-200'} style={{ fontFamily: PIXEL_FONT, fontSize: '1.5rem' }}>
+          LEVEL {level}
+        </span>
+        <span className="text-[0.8125rem]" style={{ fontFamily: MONO, color: reachable < DOTS && level === 256 ? '#fca5a5' : '#e5e7eb' }}>
+          dots {eaten} / {DOTS}
+        </span>
+      </div>
+
+      {s.won && (
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+          className="mb-2 text-center text-amber-300" style={{ fontFamily: PIXEL_FONT, fontSize: '1.4rem' }}>
+          LEVEL 256 — CLEARED
+        </motion.div>
+      )}
+
+      <div
+        className="grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
+        style={{ gridTemplateColumns: `repeat(${W}, 1fr)`, aspectRatio: `${W} / ${H}`, containerType: 'inline-size', touchAction: canPaint ? 'pan-y' : undefined }}
+        role="img"
+        aria-label={numbers ? 'the maze as the game sees it: a sheet of numbers' : 'the maze'}
+        onPointerDown={canPaint ? (e) => {
+          const i = squareUnder(e.clientX, e.clientY);
+          if (i === null || i % W < HALF) return;
+          handled.current = true;
+          painting.current = sheet[i] === 2 ? 0 : 2;       // decided by the square you start on
+          paintAt(i, painting.current);
+        } : undefined}
+        onPointerMove={canPaint ? (e) => {
+          if (painting.current === null) return;
+          const i = squareUnder(e.clientX, e.clientY);
+          if (i !== null) paintAt(i, painting.current);
+        } : undefined}
+        onPointerUp={() => { painting.current = null; }}
+        onPointerCancel={() => { painting.current = null; }}
+        onPointerLeave={() => { painting.current = null; }}
+      >
+        {sheet.map((n, i) => (canPaint && i % W >= HALF ? (
+          // In paint mode the broken half is real buttons, so a keyboard or a
+          // screen reader can paint too; the drag is an accelerator.
+          <button
+            key={i}
+            data-square={i}
+            className="relative grid touch-manipulation"
+            aria-label={`square ${i}, number ${n}${n === 2 ? ', a dot' : n > 2 ? ', junk' : ''}`}
+            onClick={() => {
+              if (handled.current) { handled.current = false; return; }
+              paintAt(i, n === 2 ? 0 : 2);
+            }}
+          >
+            <Square n={n} numbers={numbers} nova={i === s.pos} />
+          </button>
+        ) : (
+          <div key={i} className="relative grid" data-square={i}>
+            <Square n={n} numbers={numbers} nova={i === s.pos} />
+          </div>
+        )))}
+      </div>
+
+      {showSwitch && (
+        <div className="mt-2 flex gap-2" role="group" aria-label="how to look at the maze">
+          {([[false, 'what you see'], [true, 'what the game sees']] as const).map(([v, name]) => (
+            <button
+              key={name}
+              onClick={() => set({ numbers: v })}
+              aria-pressed={numbers === v}
+              aria-label={name}
+              className="flex-1 touch-manipulation rounded-lg border px-2 text-[0.875rem] font-semibold"
+              style={{
+                minHeight: 44,
+                borderColor: numbers === v ? '#fbbf24' : '#3f3a56',
+                background: numbers === v ? 'rgba(251,191,36,.16)' : '#15122a',
+                color: numbers === v ? '#fde68a' : '#a5a1bd',
+              }}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <Pad onDir={steer} />
+
+      <p className="mt-2 min-h-[2.5rem] text-center text-[0.75rem] text-gray-400">
+        {canPaint
+          ? reachable < DOTS
+            ? `paint dots over the junk — tap or drag. she needs ${DOTS - reachable} more to reach ${DOTS}.`
+            : 'enough dots. now eat them all.'
+          : numbers
+            ? <span><b className="text-gray-500">0</b> nothing · <b className="text-blue-300">1</b> wall · <b className="text-amber-100">2</b> dot{level === 256 ? <span className="text-red-300"> · red: not on the key</span> : null}</span>
+            : level === 256 ? 'the junk is solid — she cannot get to that side.' : 'steer her into the dots.'}
+      </p>
     </div>
   );
-
-/** Level 256's sheet: the left half fresh, the right half as it stands now —
- *  scribbled over, or with whatever numbers the reader has written back. Every
- *  card draws this same sheet, so a 2 the reader writes is a 2 everywhere. */
-const broken = (half: number[]) => (r: number, c: number) => (c < HALF ? SHEET[r][c] : half[r * HALF + (c - HALF)]);
-
-const Readout: React.FC<{ level: number; red?: boolean }> = ({ level, red }) => (
-  <div className="mt-2 flex items-baseline justify-between">
-    <span className={red ? 'text-red-400' : 'text-amber-200'} style={{ fontFamily: PIXEL_FONT, fontSize: '1.5rem' }}>LEVEL {level}</span>
-    <span className="text-[0.75rem] text-gray-500" style={{ fontFamily: MONO }}>counter {(level & 255).toString(2).padStart(8, '0')}</span>
-  </div>
-);
-
-// ── 1. the break ────────────────────────────────────────────────────────────
-
-export const BreakToy: React.FC<{ level: number; broke: boolean; half: number[]; onChange: (level: number, broke: boolean) => void }> =
-  ({ level, broke, half, onChange }) => {
-    const [tried, setTried] = useState(false);
-    const showing = level > 255;
-    return (
-      <div>
-        <Screen
-          label={showing ? 'the maze, with its right half turned to junk' : 'the maze, nearly cleared'}
-          nova={showing ? '8,2' : '8,9'}
-          numbers={(r, c) => (showing ? broken(half)(r, c) : SHEET[r][c] === 2 ? (LAST_DOTS.has(`${r},${c}`) ? 2 : 0) : SHEET[r][c])}
-        />
-        <Readout level={level} red={showing} />
-        <div className="mt-3 flex gap-2">
-          {showing ? (
-            // Not a dead control: a kid who tries deserves to be told why not.
-            <Push onClick={() => setTried(true)} label="try to finish level 256">try to finish it</Push>
-          ) : (
-            <Push onClick={() => onChange(level + 1, broke || level + 1 > 255)} label="let nova clear the level">let her clear it</Push>
-          )}
-          <Push tone="ghost" onClick={() => { setTried(false); onChange(254, broke); }} label="start again at level 254">back to 254</Push>
-        </div>
-        {showing && tried && (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-center text-[0.8125rem] text-red-300">
-            the dots on that side got scribbled over. she can never eat them all.
-          </motion.p>
-        )}
-      </div>
-    );
-  };
-
-// ── 2. the reveal ───────────────────────────────────────────────────────────
-// One switch. The same screen, as the reader sees it and as the game sees it.
-
-export const SheetToy: React.FC<{ game: boolean; half: number[]; onChange: (game: boolean) => void }> = ({ game, half, onChange }) => (
-  <div>
-    <Screen asNumbers={game} nova="8,2" numbers={broken(half)}
-      label={game ? 'the maze as the game sees it: a sheet of numbers' : 'the maze as you see it'} />
-    <div className="mt-3 flex gap-2" role="group" aria-label="how to look at the maze">
-      <Push tone={game ? 'ghost' : 'amber'} pressed={!game} onClick={() => onChange(false)} label="what you see">what you see</Push>
-      <Push tone={game ? 'amber' : 'ghost'} pressed={game} onClick={() => onChange(true)} label="what the game sees">what the game sees</Push>
-    </div>
-    {/* the key — three entries, and the junk's numbers are not on it */}
-    <div className="mt-3 flex items-center justify-center gap-4 text-[0.8125rem] text-gray-400" style={{ fontFamily: MONO }}>
-      <span><b className="text-gray-500">0</b> empty</span>
-      <span><b className="text-blue-300">1</b> wall</span>
-      <span><b className="text-amber-100">2</b> dot</span>
-    </div>
-    {game && (
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-1 text-center text-[0.75rem] text-red-300">
-        red numbers are not on the key
-      </motion.p>
-    )}
-  </div>
-);
-
-// ── 3. the fix, and the win ─────────────────────────────────────────────────
-
-export const DOTS_NEEDED = 10;
-
-export const FixToy: React.FC<{ half: number[]; won: boolean; onChange: (half: number[], won: boolean) => void }> =
-  ({ half, won, onChange }) => {
-    const dots = half.filter((n) => n === 2).length;
-    const ready = dots >= DOTS_NEEDED;
-    if (won) {
-      // The prize: a brand-new level, painted from a clean sheet — and the
-      // counter, one byte, has gone round to 1.
-      return (
-        <div>
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-            className="text-center text-amber-300" style={{ fontFamily: PIXEL_FONT, fontSize: '1.5rem' }}>
-            LEVEL 256 — CLEARED
-          </motion.div>
-          {/* The punchline goes ABOVE the maze: below it, on a phone, it was
-              under the fold and the reader saw "cleared" without the joke. */}
-          <div className="mb-2 -mt-1"><Readout level={1} /></div>
-          <Screen label="a fresh maze: level 1" nova="8,2" numbers={(r, c) => SHEET[r][c]} />
-        </div>
-      );
-    }
-    return (
-      <div>
-        {/* Counter ABOVE the grid, so the number you are chasing stays on
-            screen while your thumb is in the maze (CLAUDE.md rule 10). */}
-        <div className="mb-2 flex min-h-[2.75rem] items-center justify-between gap-2">
-          <span className="text-[0.875rem]" style={{ fontFamily: MONO, color: ready ? '#86efac' : '#e5e7eb' }}>
-            dots {Math.min(dots, DOTS_NEEDED)} / {DOTS_NEEDED}
-          </span>
-          {ready && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1" style={{ maxWidth: '60%' }}>
-              <Push onClick={() => onChange(half, true)} label="let nova finish level 256">let her finish ▸</Push>
-            </motion.div>
-          )}
-        </div>
-        <div
-          className="grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
-          style={{ gridTemplateColumns: `repeat(${HALF}, 1fr)`, containerType: 'inline-size' }}
-        >
-          {half.map((n, i) => {
-            const r = Math.floor(i / HALF), c = i % HALF;
-            const onKey = n <= 2;
-            return (
-              <button
-                key={i}
-                onClick={() => {
-                  // junk → 2 (a dot: what she needs) → 1 → 0 → 2 …
-                  const next = n > 2 ? 2 : n === 2 ? 1 : n === 1 ? 0 : 2;
-                  const out = [...half]; out[i] = next;
-                  onChange(out, false);
-                }}
-                aria-label={`row ${r + 1} square ${c + 1}, number ${n}`}
-                className="relative touch-manipulation"
-                style={{ minHeight: 44, aspectRatio: '5 / 4' }}
-              >
-                <div className="absolute inset-0 grid"><Cell n={n} size="11cqw" /></div>
-                {/* the number, always visible: you are changing THIS, and the picture follows */}
-                <span className="absolute left-0.5 top-0.5 rounded px-0.5" style={{ fontFamily: MONO, fontSize: '0.625rem', color: onKey ? '#9ca3af' : '#f87171', fontWeight: onKey ? 400 : 700, background: 'rgba(0,0,0,.78)' }}>
-                  {n}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-center text-[0.75rem] text-gray-400">tap a red number to write a 2 — a dot</p>
-      </div>
-    );
-  };
-
+};

@@ -46,7 +46,12 @@ export interface ChapterDef {
     initial: ToyState;
     /** what the reader still has to do, or null once the story may go on */
     gate(toy: string, s: ToyState): string | null;
-    render(toy: string, s: ToyState, set: (patch: ToyState) => void): ReactNode;
+    /** `live` is true for the newest toy card in the thread and false for the
+     *  ones above it. A chapter whose cards are all the SAME machine (one game,
+     *  seen at several moments) uses it so only one copy runs — one clock, one
+     *  set of controls — while the older cards step aside. Chapters whose cards
+     *  are different toys can ignore it. */
+    render(toy: string, s: ToyState, set: (patch: ToyState) => void, ctx: { live: boolean }): ReactNode;
     /** per toy, a state that satisfies its gate — what a reader who played it
      *  would have. Only `?from=` uses it, to arrive past toys you skipped
      *  without the story stalling at a gate you never saw. */

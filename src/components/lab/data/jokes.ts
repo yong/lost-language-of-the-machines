@@ -104,6 +104,12 @@ export const JOKES: Joke[] = [
     why: 'True (one-byte level counter; at 256 the fruit routine draws across half the maze; not enough dots to clear it). Its own chapter, not a coda: a first attempt bolted it onto the end of the approved overflow chapter, which crowded a finished chapter and hid the scene 110 messages deep.',
   },
   {
+    id: 'the-2-turns-into-a-0',
+    chapter: null, status: 'live', anchor: true,
+    text: '“IT IS NUMBERS. The whole maze is numbers.” — “1 is a wall. 2 is a dot. 0 is nothing.” — “And when she eats a dot, the 2 turns into a 0!” — “That is all eating is. A 2 becoming a 0.”',
+    why: 'The lesson happens under the reader’s own thumb: they are playing in “what the game sees” when it happens. True — the game’s state really is the sheet.',
+  },
+  {
     id: 'it-is-paint-by-numbers',
     chapter: null, status: 'live', anchor: true,
     text: '“Wait. How do you scribble over a maze? It is a picture.” — “Is it.” [flip: what the game sees] — “IT IS NUMBERS. The whole maze is numbers.” — “0 is empty. 1 is a wall. 2 is a dot.” — “It is paint-by-numbers!” — “Exactly paint-by-numbers. Sixty times a second.”',
@@ -118,7 +124,7 @@ export const JOKES: Joke[] = [
   {
     id: 'her-prize-is-level-1',
     chapter: null, status: 'live', anchor: true,
-    text: '“She beat the level nobody can beat.” — “And her prize is level 1.” — “That is what winning looks like, on a machine.”',
+    text: '“Nova is still asleep.” — “She beat the level nobody can beat, and slept through it.” — “And now it says level 1.” — “Her prize for the impossible level is level 1.”',
     why: 'The reward the reader earned by writing ten 2s — and a wink at the counter running out of room, without re-teaching overflow.',
   },
   {

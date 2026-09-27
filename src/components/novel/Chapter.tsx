@@ -585,21 +585,24 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
   // which is the worst answer a control can give. It is also the same rule we
   // already keep during a hold ("the toy stays live, the story waits"); having
   // it die one beat later was that rule with an expiry date.
-  const renderToy = (b: Extract<Beat, { kind: 'toy' }>) => (
+  // The newest toy card in the thread — the one the reader is playing with now.
+  const liveToyAt = shown.reduce((last, b, i) => (b.kind === 'toy' ? i : last), -1);
+
+  const renderToy = (b: Extract<Beat, { kind: 'toy' }>, i: number) => (
     <div
       onClick={(e) => e.stopPropagation()}
       role="presentation"
       className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
     >
       <div className="mb-2 text-center text-[0.625rem] uppercase tracking-widest text-amber-400/80">{b.label}</div>
-      {TOYS.render(b.toy, toys, setToy)}
+      {TOYS.render(b.toy, toys, setToy, { live: i === liveToyAt })}
     </div>
   );
 
   const renderBeat = (b: Beat, i: number, animated: boolean) => {
     const ref = i === head ? newest : undefined;
     if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" data-mark={b.mark} />;
-    if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b)}</div>;
+    if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b, i)}</div>;
     const w = WHO[b.who];
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
     const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
