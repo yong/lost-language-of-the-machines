@@ -1,11 +1,10 @@
 // "The Maze Is Made of Numbers" — a new chapter, at /lab/level256.
 //
 // One sentence: the game paints the maze by numbers; on level 256 it scribbles
-// over half the numbers; so we write them back, and Nova wins. Told through
-// paint-by-numbers, and through PLAYING: Starlax discovers CATVENTURE PAUSED on
-// level 255 for two hundred years; the reader unpauses it, looks underneath
-// while playing, watches the bug happen to numbers they saw healthy, and wins
-// the level its last player walked away from.
+// over half the numbers; so we write them back. Told through paint-by-numbers,
+// and through PLAYING: Starlax has played CATVENTURE all week and is on its last
+// level; the reader plays it, the strange thing happens to them, they look
+// underneath, and they win the level nobody could.
 //
 // GAME PIECE RESTORED: the maze.
 //
@@ -15,8 +14,9 @@
 // History, so nobody repeats it: a coda on the approved overflow chapter
 // (reverted); "A Glitch Is a Window" (too many ideas); a paint-by-numbers
 // telling you could not play, which showed numbers only on a maze that was
-// already broken — so left and right never meant anything; and a telling where
-// Nova, the museum cat, played the game, which felt strange. The hero is now
+// already broken — so left and right never meant anything; a telling where
+// Nova, the museum cat, played the game, which felt strange; and one where the
+// game had sat PAUSED on 255 for two hundred years, which made no sense. The hero is now
 // CATVENTURE's own cat, and the famous real game it echoes is not named.
 import { Cabinet, INITIAL, DOTS, type Stage } from '@/components/novel/maze-toys';
 import { MAZE_SCRIPT } from '@/components/novel/chapters/maze-script';
@@ -27,15 +27,15 @@ const dotsWithin = (s: ToyState) => (s.eaten as number) + (s.sheet as number[]).
 export const CHAPTER_MAZE: ChapterDef = {
   // v3: each telling saved a different set of toys, and a reader of an old one
   // must not be restored into the middle of a chapter that no longer exists.
-  storageKey: 'gameforge.level256.v5',
+  storageKey: 'gameforge.level256.v6',
   exitHref: '/lab',
   opening: {
     image: '/level256/cover.svg',
     eyebrow: 'Level 256',
     title: 'The Maze Is Made of Numbers',
     paragraphs: [
-      'Behind the boxes in the museum basement, under a sheet nobody had lifted in two hundred years, a screen was still glowing. On it, a cat made of little squares stood in a maze. In the corner it said LEVEL 255, and across the middle, in letters the size of the cat, it said PAUSED.',
-      'Somebody had got all the way to level 255, pressed pause, and never come back.',
+      'On Monday, behind the boxes in the museum basement, Starlax found an old arcade game called CATVENTURE. You are a cat made of little squares. You eat the dots. The dots come back.',
+      'By Thursday she had stopped going to lunch. By Saturday night she had cleared 254 levels, and there was one left.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },

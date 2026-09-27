@@ -100,14 +100,14 @@ export const JOKES: Joke[] = [
   {
     id: 'pacman-kill-screen',
     chapter: null, status: 'live', anchor: true,
-    text: 'Level 256 (/lab/level256): Starlax finds CATVENTURE under a dust sheet, PAUSED on level 255 for two hundred years. “Somebody got to 255 and walked away.” — “Maybe they knew.” — “Knew what?” — “Unpause it and see.” … level 256 scribbles over half the maze: “that is what they knew.”',
-    why: 'Modelled on a real bug in a famous 1980 maze game (a one-byte level counter; level 256 half-scrambled and unwinnable) — kept as CATVENTURE’s own, and the real game is not named, the author’s call. The pause makes it a mystery with an answer the reader earns.',
+    text: 'Level 256 (/lab/level256): Starlax has cleared 254 levels of CATVENTURE in a week. “This is the last level. 255. Then I have beaten it. Watch.” — the reader plays it — “FLAMEY. You have to see this. I finished 255 and there is a level 256. And half of it is junk.”',
+    why: 'Modelled on a real bug in a famous 1980 maze game (a one-byte level counter; level 256 half-scrambled and unwinnable) — kept as CATVENTURE’s own, and the real game is not named, the author’s call. A kid hooked on a game hitting something strange at the very end needs no explaining; it replaced “paused for two hundred years”, which did.'
   },
   {
     id: 'two-hundred-years-for-level-1',
     chapter: null, status: 'live', anchor: true,
-    text: '“Whoever paused it knew they could not win. So they stopped at 255 and walked away.” — “And two hundred years later, you won.” — “And now it says level 1.” — “The level box ran out of room and went round again.” — “Two hundred years of waiting, and my prize is level 1.”',
-    why: 'Pays off the pause. The reader, not a cat, beats the level its last player walked away from.',
+    text: '“And now it says level 1.” — “The level box ran out of room and went round again.” — “A whole week. 256 levels. And my prize is level 1.” — “That is what winning looks like, on a machine.” — “I am going to bed.” — “Good. Level 1 will still be there.”',
+    why: 'Pays off the week of playing. The prize for beating the game is the counter wrapping — the same idea that broke level 256.',
   },
   {
     id: 'the-2-turns-into-a-0',

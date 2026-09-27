@@ -10,13 +10,15 @@
 // Only then: "is it a picture?" — flip what the game sees, eat a dot on the good
 // side, and watch the 2 under the cat turn into a 0.
 //
-// THE STORY IS A DISCOVERY. Starlax finds CATVENTURE — the book's own legacy
-// game, whose hero is a cat in a maze — PAUSED on level 255 for two hundred
-// years. Somebody got that far and never pressed a button again. "Maybe they
-// knew." The reader unpauses it, plays, looks underneath while playing (the 2
-// under the cat turns into a 0), watches level 256 scribble over numbers they
-// saw healthy a moment ago, and wins the level its last player walked away
-// from.
+// THE STORY IS A KID WHO GOT HOOKED. Starlax found CATVENTURE — the book's own
+// legacy game, whose hero is a cat in a maze — in the museum basement, and has
+// played nothing else all week. She has cleared 254 levels; one more and she
+// has beaten it. She texts Flamey to watch. The reader plays that last level,
+// and the strange thing happens to them: level 256 loads with half of it
+// junk, and now she has something to SHOW him. (An earlier telling had the
+// game PAUSED on 255 for two hundred years; nobody leaves a game paused for
+// two hundred years, and a mystery about a stranger is weaker than your own
+// week of playing going wrong at the very end.)
 //
 // The bug is CATVENTURE's own. It is modelled on a real one in a famous 1980
 // maze game, which Flamey mentions once, truthfully, without naming it.
@@ -30,24 +32,22 @@ const [J0, J1, J2] = JUNK;
 
 export const MAZE_SCRIPT: Beat[] = [
   { kind: 'msg', who: 'starlax', text: 'flamey' },
-  { kind: 'msg', who: 'starlax', text: 'I found a game in the museum basement', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'it is still switched on', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'which game' },
-  { kind: 'msg', who: 'starlax', text: 'CATVENTURE. you are a cat in a maze. you eat the dots.' },
-  { kind: 'msg', who: 'starlax', text: 'and it says PAUSED', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'paused since when' },
-  { kind: 'msg', who: 'starlax', text: 'since whoever was playing it walked away. two hundred years ago.' },
-  { kind: 'msg', who: 'starlax', text: 'they got to level 255', rush: true },
-  { kind: 'msg', who: 'flamey', text: '...', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'maybe they knew' },
-  { kind: 'msg', who: 'starlax', text: 'knew what' },
-  { kind: 'msg', who: 'flamey', text: 'unpause it and see. the arrows move the cat.' },
+  { kind: 'msg', who: 'starlax', text: 'are you awake', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'I am always awake. I am a robot.' },
+  { kind: 'msg', who: 'starlax', text: 'I have cleared 254 levels of CATVENTURE this week' },
+  { kind: 'msg', who: 'starlax', text: 'you are the cat. you eat the dots. the dots come back. forever.', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'is that why you did not come to lunch' },
+  { kind: 'msg', who: 'starlax', text: 'this is the last level. 255. then I have beaten it.' },
+  { kind: 'msg', who: 'starlax', text: 'watch', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'go on then. I am watching.' },
+  { kind: 'msg', who: 'flamey', text: 'the arrows move the cat.', rush: true },
 
-  { kind: 'toy', toy: 'play', label: 'unpause it — finish level 255' },
+  { kind: 'toy', toy: 'play', label: 'the last level — finish 255' },
 
   { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'I finished 255 and the right side turned into junk', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'level 256. that is what they knew.' },
+  { kind: 'msg', who: 'starlax', text: 'you have to see this', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'I finished 255 and there is a level 256. and half of it is junk.' },
+  { kind: 'msg', who: 'flamey', text: '...', typing: true },
   { kind: 'msg', who: 'starlax', text: 'what happened to it' },
   { kind: 'msg', who: 'flamey', text: 'the game scribbled over it' },
   { kind: 'msg', who: 'starlax', text: 'you cannot scribble over a maze. it is a picture.' },
@@ -82,12 +82,11 @@ export const MAZE_SCRIPT: Beat[] = [
   { kind: 'toy', toy: 'fix', label: 'paint dots over the junk, then eat them' },
 
   { kind: 'msg', who: 'starlax', text: 'LEVEL 256 CLEARED', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'the first ever' },
-  { kind: 'msg', who: 'starlax', text: 'whoever paused it knew they could not win' },
-  { kind: 'msg', who: 'starlax', text: 'so they stopped at 255 and walked away', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'and two hundred years later, you won' },
+  { kind: 'msg', who: 'flamey', text: 'the first person ever. nobody could, until you wrote the dots back.' },
   { kind: 'msg', who: 'starlax', text: 'and now it says level 1' },
   { kind: 'msg', who: 'flamey', text: 'the level box ran out of room and went round again' },
-  { kind: 'msg', who: 'starlax', text: 'two hundred years of waiting, and my prize is level 1' },
+  { kind: 'msg', who: 'starlax', text: 'a whole week. 256 levels. and my prize is level 1.' },
   { kind: 'msg', who: 'flamey', text: 'that is what winning looks like, on a machine' },
+  { kind: 'msg', who: 'starlax', text: 'I am going to bed' },
+  { kind: 'msg', who: 'flamey', text: 'good. level 1 will still be there.', rush: true },
 ];

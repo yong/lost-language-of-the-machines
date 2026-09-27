@@ -5,8 +5,8 @@
 // so the reader never saw a healthy maze as numbers, never played it, and could
 // not tell why "left" and "right" mattered. Now:
 //
-//   play   — a legacy game, PAUSED on level 255 for two hundred years; the
-//            reader unpauses it and finishes the level — and level 256 loads
+//   play   — Starlax got hooked on CATVENTURE and cleared 254 levels in a
+//            week; the reader plays the last one, 255 — and level 256 loads
 //            with its right half turned to junk, because of what THEY did
 //   look   — flip "what the game sees" and eat a dot: the good side is the
 //            maze they just played, in 1s and 2s, and the 2 under the cat
@@ -49,9 +49,8 @@ export const DOTS = FRESH.filter((n) => n === 2).length;
 export const LEFT_DOTS = FRESH.filter((n, i) => n === 2 && i % W < HALF).length;
 const START = 5 * W + 1;
 
-/** Level 255 as the last player left it, two hundred years ago: six dots to go. */
-const KEEP_255 = new Set([1 * W + 6, 3 * W + 2, 3 * W + 5, 5 * W + 6, 6 * W + 1, 1 * W + 2]);
-const SHEET_255 = FRESH.map((n, i) => (n === 2 && !KEEP_255.has(i) ? 0 : n));
+/** Level 255 — the last level of a week of playing — starts full, like any level. */
+const SHEET_255 = [...FRESH];
 
 // Deterministic junk (CLAUDE.md: no Math.random at render).
 const mulberry32 = (a: number) => () => {
@@ -87,10 +86,10 @@ const move = (pos: number, d: number) => {
 };
 
 export const INITIAL: ToyState = {
-  level: 255, sheet: [...SHEET_255], eaten: DOTS - KEEP_255.size, pos: START, dir: 0, want: 0,
+  level: 255, sheet: [...SHEET_255], eaten: 0, pos: START, dir: 0, want: 0,
   numbers: false, peeked: false, won: false,
-  // Somebody pressed pause on level 255 two hundred years ago and never came
-  // back. The reader's first arrow press is the first input in two centuries.
+  // Every level starts on a READY screen, the way arcade games do; the
+  // reader's first arrow press starts it.
   paused: true,
 };
 
@@ -291,7 +290,7 @@ export const Cabinet: React.FC<{
       >
         {s.paused && (
           <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/55">
-            <span className="text-amber-200" style={{ fontFamily: PIXEL_FONT, fontSize: '12cqw', letterSpacing: '0.08em' }}>PAUSED</span>
+            <span className="text-amber-200" style={{ fontFamily: PIXEL_FONT, fontSize: '12cqw', letterSpacing: '0.08em' }}>READY?</span>
             <span className="text-[0.75rem] text-gray-300">press an arrow</span>
           </div>
         )}

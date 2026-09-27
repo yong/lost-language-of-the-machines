@@ -180,20 +180,22 @@ their numbers. Mostly about food.
 ### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
 - **The idea, in one sentence a kid can hold:** *the game paints the maze by
   numbers; on level 256 it scribbled over half the numbers; so we write them
-  back — and Nova wins.* Told through **paint-by-numbers**, which every kid
+  back.* Told through **paint-by-numbers**, which every kid
   already knows: a sheet of numbers, a key, and you colour it in. True:
   arcade games drew the maze from a grid of tile numbers.
-- **The story is a discovery:** Starlax finds CATVENTURE — the book's own
-  legacy game, whose hero is an orange cat in a maze — under a dust sheet,
-  **PAUSED on level 255 for two hundred years.** Somebody got that far and
-  walked away. *"Maybe they knew."* The reader unpauses it and wins the level
-  its last player gave up on.
+- **The story is a kid who got hooked:** Starlax found CATVENTURE — the
+  book's own legacy game, whose hero is an orange cat in a maze — in the
+  museum basement on Monday, and by Saturday has cleared **254 levels**. One
+  left. She texts Flamey to watch; the reader plays it; and the strange thing
+  happens to *them*, so now she has something to show him. (An earlier
+  telling had the game PAUSED on 255 for two hundred years — the author's
+  note: that does not make sense.)
 - **No real game is named** (the author's call, to steer clear of trademark
   worries): the bug is CATVENTURE's own. Flamey says once, truthfully, that
   "the most famous maze game ever had this exact bug".
 - **PLAY FIRST, THEN LOOK — and the story follows the player.** One real,
   playable maze game (D-pad, eat the dots, a counter showing a level ends at
-  26), across three cards: ① *play* — unpause it and finish level 255; level 256
+  26), across three cards: ① *play* — finish level 255, the last one; level 256
   loads with its right half turned to junk because of what the reader did, and
   Starlax texts *"FLAMEY"* straight away · ② *look* — *"you cannot scribble over
   a maze, it is a picture"* — *"is it?"*: flip **what the game sees** and eat a
@@ -202,7 +204,8 @@ their numbers. Mostly about food.
   paint 2s over the junk (tap or drag), then eat them all. Every gate is a game
   event, so none of them waits on a button.
 - **The payoff:** *LEVEL 256 — CLEARED*, the screen says **LEVEL 1**, and
-  *"two hundred years of waiting, and my prize is level 1."*
+  *"a whole week. 256 levels. and my prize is level 1."* — *"I am going to
+  bed."* — *"good. level 1 will still be there."*
 - **True:** the Pac-Man level-256 "split screen" — a one-byte level counter
   wraps, the fruit-drawing routine writes over the right half of the screen's
   tile memory, and the level cannot be finished (not enough dots to reach 244);
