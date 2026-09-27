@@ -191,14 +191,16 @@ their numbers. Mostly about food.
 - **No real game is named** (the author's call, to steer clear of trademark
   worries): the bug is CATVENTURE's own. Flamey says once, truthfully, that
   "the most famous maze game ever had this exact bug".
-- **PLAY FIRST, THEN LOOK. One real, playable maze game** (D-pad, eat the
-  dots, a counter showing the level ends at 26), shown across four cards:
-  ① *play* — unpause it; eat two dots · ② *look* — flip **what you see ↔ what the game
-  sees** and keep playing: when she eats a dot, **the 2 under her turns into
-  a 0** — the whole lesson, under the reader's own thumb · ③ *clear* — "keep
-  the numbers on and watch the right side": level 256 scribbles over the
-  right half's numbers, which the reader saw healthy a moment ago · ④ *fix* —
-  paint 2s over the junk (tap or drag), then eat them all.
+- **PLAY FIRST, THEN LOOK — and the story follows the player.** One real,
+  playable maze game (D-pad, eat the dots, a counter showing a level ends at
+  26), across three cards: ① *play* — unpause it and finish level 255; level 256
+  loads with its right half turned to junk because of what the reader did, and
+  Starlax texts *"FLAMEY"* straight away · ② *look* — *"you cannot scribble over
+  a maze, it is a picture"* — *"is it?"*: flip **what the game sees** and eat a
+  dot — the good side is the maze they just played in 1s and 2s, the 2 under
+  the cat turns into a 0, the junk side is numbers not on the key · ③ *fix* —
+  paint 2s over the junk (tap or drag), then eat them all. Every gate is a game
+  event, so none of them waits on a button.
 - **The payoff:** *LEVEL 256 — CLEARED*, the screen says **LEVEL 1**, and
   *"two hundred years of waiting, and my prize is level 1."*
 - **True:** the Pac-Man level-256 "split screen" — a one-byte level counter

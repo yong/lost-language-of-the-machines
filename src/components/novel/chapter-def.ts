@@ -56,6 +56,13 @@ export interface ChapterDef {
      *  would have. Only `?from=` uses it, to arrive past toys you skipped
      *  without the story stalling at a gate you never saw. */
     played?: Record<string, ToyState>;
+    /** Toys whose gate is an EVENT in a game — a level ending, a win — rather
+     *  than something the reader fiddles with. When one of these is satisfied
+     *  the story reacts at once instead of holding on "continue when you're
+     *  ready": the reader finished the level expecting something to happen,
+     *  and an empty maze waiting on a button felt broken. Every other toy
+     *  keeps the rule (never start the next thing for the reader). */
+    events?: string[];
   };
 }
 

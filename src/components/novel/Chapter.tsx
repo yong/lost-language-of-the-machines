@@ -491,6 +491,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
   // scrolling the page for them — the machine moving on its own clock.
   // So: hold, and wait to be told.
   const prevGate = useRef<string | null>(null);
+  const prevToy = useRef<string | null>(null);
   const prevMode = useRef<Reveal>(mode);
   useEffect(() => {
     // Changing mode moves `head` between a block's toy and a per-message
@@ -499,11 +500,16 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     // it fired on the very first render, when the page sat in its default mode
     // for one frame before ?reveal= was read.
     const modeChanged = prevMode.current !== mode;
+    // A gate that is an EVENT in a game (the chapter lists it in toys.events)
+    // does not hold: the level ended, and the story reacts, the way a friend
+    // texts you the moment something happens on their screen.
+    const event = (TOYS.events ?? []).includes(prevToy.current ?? '');
     if (modeChanged) setHeld(false);
-    else if (prevGate.current && !gate) setHeld(true);
+    else if (prevGate.current && !gate && !event) setHeld(true);
     prevGate.current = gate ?? null;
+    prevToy.current = pending?.toy ?? null;
     prevMode.current = mode;
-  }, [gate, mode]);
+  }, [gate, mode, pending?.toy, TOYS.events]);
 
   // Playback. Static has no clock at all. Dots and stream play on until a gate,
   // until a hold, or until the fold parks them.

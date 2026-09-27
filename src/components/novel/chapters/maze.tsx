@@ -27,7 +27,7 @@ const dotsWithin = (s: ToyState) => (s.eaten as number) + (s.sheet as number[]).
 export const CHAPTER_MAZE: ChapterDef = {
   // v3: each telling saved a different set of toys, and a reader of an old one
   // must not be restored into the middle of a chapter that no longer exists.
-  storageKey: 'gameforge.level256.v4',
+  storageKey: 'gameforge.level256.v5',
   exitHref: '/lab',
   opening: {
     image: '/level256/cover.svg',
@@ -50,19 +50,22 @@ export const CHAPTER_MAZE: ChapterDef = {
     gate: (toy, s) => {
       const level = s.level as number;
       switch (toy) {
-        case 'play': return level !== 255 || (s.eaten as number) >= DOTS - 4 ? null : 'eat two dots';
-        // A reader who kept playing through the hold may have eaten every dot
-        // on 255 already; then there is nothing left to eat while looking, and
+        case 'play': return level === 255 ? 'finish level 255' : null;
+        // A reader who kept playing may have eaten every dot on the good side
+        // already; then there is nothing left to eat while looking, and
         // flipping the switch has to be enough — or the story could never go on.
         case 'look': {
           const none = !(s.sheet as number[]).includes(2);
           return s.peeked || (s.numbers && none) ? null : s.numbers ? 'eat a dot while you look' : 'flip to what the game sees';
         }
-        case 'clear': return level !== 255 ? null : 'finish level 255';
         case 'fix': return s.won ? null : dotsWithin(s) < DOTS ? 'paint dots over the junk' : 'now eat every dot';
         default: return null;
       }
     },
+    // Every card here is the game, and every gate is something HAPPENING in it
+    // — the level ended, the 2 became a 0, the level was won. The story reacts
+    // straight away instead of holding on a button (see chapter-def `events`).
+    events: ['play', 'look', 'fix'],
     render: (toy, s, set, { live }) => <Cabinet stage={toy as Stage} live={live} s={s} set={set} />,
   },
 };

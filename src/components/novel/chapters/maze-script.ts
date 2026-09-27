@@ -3,6 +3,13 @@
 // One sentence: the game paints the maze by numbers; on level 256 it scribbles
 // over half the numbers; so we write them back.
 //
+// THE STORY FOLLOWS THE PLAYER. The first card is simply the game: finish level
+// 255. When the player does, level 256 loads with its right half turned to junk
+// — because of what they did — and Starlax reacts at once (the chapter lists
+// its game cards as `events`, so a level ending is not held behind a button).
+// Only then: "is it a picture?" — flip what the game sees, eat a dot on the good
+// side, and watch the 2 under the cat turn into a 0.
+//
 // THE STORY IS A DISCOVERY. Starlax finds CATVENTURE — the book's own legacy
 // game, whose hero is a cat in a maze — PAUSED on level 255 for two hundred
 // years. Somebody got that far and never pressed a button again. "Maybe they
@@ -36,44 +43,38 @@ export const MAZE_SCRIPT: Beat[] = [
   { kind: 'msg', who: 'starlax', text: 'knew what' },
   { kind: 'msg', who: 'flamey', text: 'unpause it and see. the arrows move the cat.' },
 
-  { kind: 'toy', toy: 'play', label: 'unpause it — eat two dots' },
+  { kind: 'toy', toy: 'play', label: 'unpause it — finish level 255' },
 
-  { kind: 'msg', who: 'starlax', text: 'ok this is fun', typing: true },
-  { kind: 'msg', who: 'starlax', text: `what does "dots / ${DOTS}" mean`, rush: true },
-  { kind: 'msg', who: 'flamey', text: `a level ends when the cat has eaten ${DOTS} dots` },
-  { kind: 'msg', who: 'flamey', text: 'want to see what the game sees?' },
-  { kind: 'msg', who: 'starlax', text: 'what does that mean' },
-  { kind: 'msg', who: 'flamey', text: 'flip the switch. keep playing.' },
+  { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
+  { kind: 'msg', who: 'starlax', text: 'I finished 255 and the right side turned into junk', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'level 256. that is what they knew.' },
+  { kind: 'msg', who: 'starlax', text: 'what happened to it' },
+  { kind: 'msg', who: 'flamey', text: 'the game scribbled over it' },
+  { kind: 'msg', who: 'starlax', text: 'you cannot scribble over a maze. it is a picture.' },
+  { kind: 'msg', who: 'flamey', text: 'is it?' },
+  { kind: 'msg', who: 'flamey', text: 'flip the switch. eat a dot.', rush: true },
 
-  { kind: 'toy', toy: 'look', label: 'flip the switch and keep playing' },
+  { kind: 'toy', toy: 'look', label: 'flip the switch — eat a dot' },
 
   { kind: 'msg', who: 'starlax', text: 'IT IS NUMBERS', typing: true },
   { kind: 'msg', who: 'starlax', text: 'the whole maze is numbers', rush: true },
   { kind: 'msg', who: 'flamey', text: '1 is a wall. 2 is a dot. 0 is nothing.' },
-  { kind: 'msg', who: 'starlax', text: 'and when the cat eats a dot, the 2 turns into a 0!' },
+  { kind: 'msg', who: 'starlax', text: 'and when the cat ate that dot, the 2 turned into a 0!' },
   { kind: 'msg', who: 'flamey', text: 'that is all eating is. a 2 becoming a 0.' },
-  { kind: 'msg', who: 'starlax', text: 'so the maze is just a sheet of numbers' },
+  { kind: 'msg', who: 'starlax', text: 'so the maze is a sheet of numbers' },
   { kind: 'msg', who: 'starlax', text: 'and the picture is the game colouring it in', rush: true },
   { kind: 'msg', who: 'flamey', text: 'paint-by-numbers. sixty times a second.' },
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'starlax', text: 'ok. finishing level 255.' },
-  { kind: 'msg', who: 'flamey', text: 'keep the numbers on' },
-  { kind: 'msg', who: 'flamey', text: 'and watch the right side', rush: true },
-
-  { kind: 'toy', toy: 'clear', label: 'finish level 255 — watch the right side' },
-
-  { kind: 'msg', who: 'starlax', text: 'FLAMEY', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'the right side just turned into junk', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'level 256. that is what they knew.' },
+  { kind: 'msg', who: 'starlax', text: 'the left side is the maze I just played. walls and dots. 1s and 2s.' },
+  { kind: 'msg', who: 'starlax', text: `the right side says ${J0}. ${J1}. ${J2}.`, rush: true },
+  { kind: 'msg', who: 'starlax', text: 'those are not walls or dots', rush: true },
   { kind: 'msg', who: 'flamey', text: 'the game keeps the level in a box that only counts to 255' },
   { kind: 'msg', who: 'flamey', text: 'at 256 it gets muddled and scribbles over half the maze’s numbers', rush: true },
-  { kind: 'msg', who: 'starlax', text: `the right side says ${J0}. ${J1}. ${J2}.` },
-  { kind: 'msg', who: 'starlax', text: 'those are not walls or dots', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'the game has a picture for every number. letters, fruit, bits of scenery. so it paints them anyway.' },
+  { kind: 'msg', who: 'flamey', text: 'it has a picture for every number. letters, fruit, bits of scenery. so it paints the junk anyway.' },
   { kind: 'msg', who: 'starlax', text: 'can I still finish' },
-  { kind: 'msg', who: 'flamey', text: `you need ${DOTS} dots. there are only ${LEFT_DOTS} left on the good side.` },
+  { kind: 'msg', who: 'flamey', text: `you need ${DOTS} dots. there are only ${LEFT_DOTS} on the good side.` },
   { kind: 'msg', who: 'flamey', text: 'the most famous maze game ever had this exact bug. nobody has ever beaten its level 256.', rush: true },
   { kind: 'msg', who: 'starlax', text: 'then I am writing the dots back' },
   { kind: 'msg', who: 'flamey', text: 'a dot is a 2.' },

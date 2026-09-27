@@ -425,6 +425,16 @@ you're ready →". A reader who just flipped a switch may want to keep flipping
 it; the story barging in half a second later is the same violation as scrolling
 for them.
 
+**The exception: an EVENT in a game.** When a gate is something *happening* —
+a level ending, a win — rather than something the reader fiddles with, the
+story reacts at once (list the toy in the chapter's `toys.events`). Found the
+hard way: level 256's first playable version would not let level 255 end until
+the story had caught up, so a reader who just played on ate every dot and was
+left in an empty maze, nothing happening, waiting on a button — *"it is
+unnatural to stick here and wait for user to click a button."* **The story
+follows the player; the game is never held back for the story.** (The fold rule
+still applies: a reply that lands below the screen parks on *keep reading ↓*.)
+
 **Anchor the thread to the bottom** (`flex min-h-full flex-col justify-end`).
 A conversation shorter than the screen must sit just above the footer, not at
 the top under a screenful of blank — unscrollable emptiness still reads as
@@ -624,7 +634,7 @@ Nothing about a chapter lives in the engine any more.
   `live` is true only for the newest toy card in the thread. A chapter whose
   cards are all the same game (`/lab/level256`) runs its clock and controls
   on the live card only and lets older cards step aside, so there is never a
-  second Nova or a second clock. Chapters of different toys can ignore it.
+  second cat or a second clock. Chapters of different toys can ignore it.
 
 ## Writing principles
 

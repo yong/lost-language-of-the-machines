@@ -5,13 +5,19 @@
 // so the reader never saw a healthy maze as numbers, never played it, and could
 // not tell why "left" and "right" mattered. Now:
 //
-//   play   — a legacy game, PAUSED on level 255 for two hundred years;
-//            the reader unpauses it and plays on
-//   look   — flip "what the game sees" and KEEP PLAYING: when she eats a dot,
-//            the 2 under her turns into a 0. That is the whole lesson.
-//   clear  — finish 255 and watch level 256 scribble over the right half's
-//            numbers, which the reader saw healthy a moment ago
+//   play   — a legacy game, PAUSED on level 255 for two hundred years; the
+//            reader unpauses it and finishes the level — and level 256 loads
+//            with its right half turned to junk, because of what THEY did
+//   look   — flip "what the game sees" and eat a dot: the good side is the
+//            maze they just played, in 1s and 2s, and the 2 under the cat
+//            turns into a 0. The junk side is numbers that are not on the key.
 //   fix    — paint 2s over the junk, then eat them all; level 256 is beaten
+//
+// THE GAME IS NEVER HELD BACK FOR THE STORY. An earlier version would not let
+// level 255 end until the story had shown the numbers — so a player who simply
+// played on ate every dot and then stood in an empty maze with nothing
+// happening, waiting on a button. The story follows the player now: the level
+// ends when they finish it, and the chapter reacts.
 //
 // The game's state IS the number sheet — eating a dot literally writes a 0 —
 // so the picture and the numbers can never disagree.
@@ -89,7 +95,7 @@ export const INITIAL: ToyState = {
 };
 
 /** One tick of the game: turn if asked and able, step, eat, maybe end the level. */
-const tick = (s: ToyState, allowFinish: boolean): ToyState | null => {
+const tick = (s: ToyState): ToyState | null => {
   if (s.paused) return null;
   const sheet = s.sheet as number[];
   let dir = s.dir as number;
@@ -103,19 +109,14 @@ const tick = (s: ToyState, allowFinish: boolean): ToyState | null => {
     const sh = [...sheet]; sh[next] = 0;                 // eating a dot IS writing a 0
     out = { ...out, sheet: sh, eaten: (s.eaten as number) + 1, peeked: s.peeked || s.numbers };
   }
-  return endLevel(out, allowFinish) ?? out;
+  return endLevel(out) ?? out;
 };
 
 /** The level ends after DOTS dots — and what comes next is the whole chapter. */
-const endLevel = (s: ToyState, allowFinish: boolean): ToyState | null => {
+const endLevel = (s: ToyState): ToyState | null => {
   if ((s.eaten as number) < DOTS) return null;
   const level = s.level as number;
-  if (level === 255) {
-    // 255 is not allowed to end until the story has asked for it, so nobody
-    // sees level 256 before they have seen what a healthy maze looks like.
-    if (!allowFinish) return null;
-    return { ...s, level: 256, sheet: [...SHEET_256], eaten: 0, pos: START, dir: 0, want: 0 };
-  }
+  if (level === 255) return { ...s, level: 256, sheet: [...SHEET_256], eaten: 0, pos: START, dir: 0, want: 0 };
   if (level === 256) return { ...s, level: 1, sheet: [...FRESH], eaten: 0, pos: START, dir: 0, want: 0, won: true };
   return { ...s, level: level + 1, sheet: [...FRESH], eaten: 0, pos: START, dir: 0, want: 0 };
 };
@@ -187,12 +188,11 @@ const Pad: React.FC<{ onDir: (d: number) => void }> = ({ onDir }) => (
 
 // ── the cabinet ─────────────────────────────────────────────────────────────
 
-export type Stage = 'play' | 'look' | 'clear' | 'fix';
+export type Stage = 'play' | 'look' | 'fix';
 
 export const Cabinet: React.FC<{
   stage: Stage; live: boolean; s: ToyState; set: (patch: ToyState) => void;
 }> = ({ stage, live, s, set }) => {
-  const allowFinish = stage === 'clear' || stage === 'fix';
   const canPaint = stage === 'fix' && s.level === 256;
   const sRef = useRef(s); sRef.current = s;
 
@@ -200,18 +200,11 @@ export const Cabinet: React.FC<{
   useEffect(() => {
     if (!live) return;
     const id = window.setInterval(() => {
-      const nextState = tick(sRef.current, allowFinish);
+      const nextState = tick(sRef.current);
       if (nextState) set(nextState);
     }, 165);
     return () => window.clearInterval(id);
-  }, [live, allowFinish, set]);
-
-  // A level that was finished before the story allowed it ends the moment it is.
-  useEffect(() => {
-    if (!live) return;
-    const ended = endLevel(s, allowFinish);
-    if (ended && s.level === 255) set(ended);
-  }, [live, allowFinish, s, set]);
+  }, [live, set]);
 
   const steer = useCallback((d: number) => set({ want: d, paused: false }), [set]);
 
