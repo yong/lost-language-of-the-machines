@@ -183,18 +183,24 @@ their numbers. Mostly about food.
   back — and Nova wins.* Told through **paint-by-numbers**, which every kid
   already knows: a sheet of numbers, a key, and you colour it in. True:
   arcade games drew the maze from a grid of tile numbers.
-- **The want:** Nova fell asleep on the controls at level 255 — the reader
-  finishes it for her, and then beats the level nobody has ever beaten.
+- **The story is a discovery:** Starlax finds CATVENTURE — the book's own
+  legacy game, whose hero is an orange cat in a maze — under a dust sheet,
+  **PAUSED on level 255 for two hundred years.** Somebody got that far and
+  walked away. *"Maybe they knew."* The reader unpauses it and wins the level
+  its last player gave up on.
+- **No real game is named** (the author's call, to steer clear of trademark
+  worries): the bug is CATVENTURE's own. Flamey says once, truthfully, that
+  "the most famous maze game ever had this exact bug".
 - **PLAY FIRST, THEN LOOK. One real, playable maze game** (D-pad, eat the
   dots, a counter showing the level ends at 26), shown across four cards:
-  ① *play* — eat two dots · ② *look* — flip **what you see ↔ what the game
+  ① *play* — unpause it; eat two dots · ② *look* — flip **what you see ↔ what the game
   sees** and keep playing: when she eats a dot, **the 2 under her turns into
   a 0** — the whole lesson, under the reader's own thumb · ③ *clear* — "keep
   the numbers on and watch the right side": level 256 scribbles over the
   right half's numbers, which the reader saw healthy a moment ago · ④ *fix* —
   paint 2s over the junk (tap or drag), then eat them all.
 - **The payoff:** *LEVEL 256 — CLEARED*, the screen says **LEVEL 1**, and
-  *"she beat the level nobody can beat, and slept through it."*
+  *"two hundred years of waiting, and my prize is level 1."*
 - **True:** the Pac-Man level-256 "split screen" — a one-byte level counter
   wraps, the fruit-drawing routine writes over the right half of the screen's
   tile memory, and the level cannot be finished (not enough dots to reach 244);
@@ -209,7 +215,9 @@ their numbers. Mostly about food.
   chapter. **Second retelling:** the paint-by-numbers version could not be
   played, and showed numbers only on a maze that was already broken — so "left"
   and "right" never meant anything. Now the reader plays a healthy maze, sees it
-  as numbers first, and watches the bug happen.
+  as numbers first, and watches the bug happen. **Third:** Nova, the museum cat,
+  was the one playing, which felt strange; the hero is now CATVENTURE's cat and
+  the story is Starlax's discovery.
 
 ---
 

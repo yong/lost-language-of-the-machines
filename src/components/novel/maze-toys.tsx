@@ -5,19 +5,20 @@
 // so the reader never saw a healthy maze as numbers, never played it, and could
 // not tell why "left" and "right" mattered. Now:
 //
-//   play   — Nova fell asleep on level 255; the reader finishes it for her
+//   play   — a legacy game, PAUSED on level 255 for two hundred years;
+//            the reader unpauses it and plays on
 //   look   — flip "what the game sees" and KEEP PLAYING: when she eats a dot,
 //            the 2 under her turns into a 0. That is the whole lesson.
 //   clear  — finish 255 and watch level 256 scribble over the right half's
 //            numbers, which the reader saw healthy a moment ago
-//   fix    — paint 2s over the junk, then eat them all; Nova wins
+//   fix    — paint 2s over the junk, then eat them all; level 256 is beaten
 //
 // The game's state IS the number sheet — eating a dot literally writes a 0 —
 // so the picture and the numbers can never disagree.
 //
 // One machine, several cards: every card draws the same live state, but only
 // the newest one runs the clock and has controls. Older cards step aside to a
-// one-line note, so there is never a second Nova or a second clock.
+// one-line note, so there is never a second cat or a second clock.
 //
 // Thumb notes (CLAUDE.md): raw px are TAP sizes and stay px on purpose. The
 // maze is 8 squares across, ~38px each on a phone; the D-pad buttons are 44px+.
@@ -42,7 +43,7 @@ export const DOTS = FRESH.filter((n) => n === 2).length;
 export const LEFT_DOTS = FRESH.filter((n, i) => n === 2 && i % W < HALF).length;
 const START = 5 * W + 1;
 
-/** Level 255 as Nova left it: nearly done, six dots to go. */
+/** Level 255 as the last player left it, two hundred years ago: six dots to go. */
 const KEEP_255 = new Set([1 * W + 6, 3 * W + 2, 3 * W + 5, 5 * W + 6, 6 * W + 1, 1 * W + 2]);
 const SHEET_255 = FRESH.map((n, i) => (n === 2 && !KEEP_255.has(i) ? 0 : n));
 
@@ -70,7 +71,7 @@ const FRUIT = ['🍒', '🍓', '🍊', '🍎', '🍈', '🔔', '🔑'];
 const BITS = '▓▒░▚▞▙▟◆■▲●◢◣◤◥▌▐▀▄';
 const INK = ['#fbbf24', '#f472b6', '#22d3ee', '#60a5fa', '#f5f5f4', '#a78bfa', '#f87171'];
 
-/** Squares Nova can walk into: nothing, or a dot. Walls and junk are solid. */
+/** Squares the cat can walk into: nothing, or a dot. Walls and junk are solid. */
 const open = (n: number) => n === 0 || n === 2;
 const STEP: Record<number, [number, number]> = { 1: [-1, 0], 2: [0, 1], 3: [1, 0], 4: [0, -1] };
 const move = (pos: number, d: number) => {
@@ -82,10 +83,14 @@ const move = (pos: number, d: number) => {
 export const INITIAL: ToyState = {
   level: 255, sheet: [...SHEET_255], eaten: DOTS - KEEP_255.size, pos: START, dir: 0, want: 0,
   numbers: false, peeked: false, won: false,
+  // Somebody pressed pause on level 255 two hundred years ago and never came
+  // back. The reader's first arrow press is the first input in two centuries.
+  paused: true,
 };
 
 /** One tick of the game: turn if asked and able, step, eat, maybe end the level. */
 const tick = (s: ToyState, allowFinish: boolean): ToyState | null => {
+  if (s.paused) return null;
   const sheet = s.sheet as number[];
   let dir = s.dir as number;
   const want = s.want as number;
@@ -115,23 +120,34 @@ const endLevel = (s: ToyState, allowFinish: boolean): ToyState | null => {
   return { ...s, level: level + 1, sheet: [...FRESH], eaten: 0, pos: START, dir: 0, want: 0 };
 };
 
+// ── the hero ────────────────────────────────────────────────────────────────
+// CATVENTURE's cat: orange, made of little squares — the same cat as the cover.
+// Drawn as pixels rather than an emoji, so it looks like it lives in the game
+// (and does not depend on a phone's emoji font).
+const CAT = ['.#....#.', '.##..##.', '.######.', '.#.##.#.', '.######.', '..#..#..', '..####..'];
+export const PixelCat: React.FC<{ size: string }> = ({ size }) => (
+  <svg viewBox="0 0 8 7" width={size} height={size} style={{ display: 'block' }} aria-hidden>
+    {CAT.flatMap((row, r) => [...row].map((ch, c) => (ch === '#' ? <rect key={`${r},${c}`} x={c} y={r} width={1.02} height={1.02} fill="#ff9933" /> : null)))}
+  </svg>
+);
+
 // ── drawing a square ────────────────────────────────────────────────────────
 
-const Square: React.FC<{ n: number; numbers: boolean; nova: boolean }> = ({ n, numbers, nova }) => {
-  const cat = nova && (
-    <span className="absolute inset-0 flex items-center justify-center" style={{ fontSize: numbers ? '5cqw' : '8cqw' }}>🐱</span>
+const Square: React.FC<{ n: number; numbers: boolean; hero: boolean }> = ({ n, numbers, hero }) => {
+  const cat = hero && (
+    <span className="absolute inset-0 flex items-center justify-center"><PixelCat size="9cqw" /></span>
   );
   if (numbers) {
     const onKey = n <= 2;
     return (
       <div className="relative flex items-center justify-center" style={{
-        outline: nova ? '2px solid #fbbf24' : 'none', outlineOffset: -2,
+        outline: hero ? '2px solid #fbbf24' : 'none', outlineOffset: -2,
         fontFamily: MONO, lineHeight: 1, fontWeight: onKey ? 500 : 700,
         fontSize: n > 99 ? '4.2cqw' : '6cqw',
         color: onKey ? (n === 1 ? '#93c5fd' : n === 2 ? '#fef3c7' : '#6b7280') : '#f87171',
       }}>
-        <span style={{ opacity: nova ? 0.9 : 1, transform: nova ? 'translate(-28%, -28%)' : undefined }}>{n}</span>
-        {nova && <span className="absolute bottom-0 right-0.5" style={{ fontSize: '4.4cqw' }}>🐱</span>}
+        <span style={{ opacity: hero ? 0.9 : 1, transform: hero ? 'translate(-28%, -28%)' : undefined }}>{n}</span>
+        {hero && <span className="absolute bottom-0.5 right-0.5"><PixelCat size="4.6cqw" /></span>}
       </div>
     );
   }
@@ -153,7 +169,7 @@ const Square: React.FC<{ n: number; numbers: boolean; nova: boolean }> = ({ n, n
 };
 
 const Pad: React.FC<{ onDir: (d: number) => void }> = ({ onDir }) => (
-  <div className="mt-2 flex gap-2" role="group" aria-label="move nova">
+  <div className="mt-2 flex gap-2" role="group" aria-label="move the cat">
     {([[4, '◀', 'left'], [1, '▲', 'up'], [3, '▼', 'down'], [2, '▶', 'right']] as const).map(([d, glyph, name]) => (
       <button
         key={d}
@@ -197,7 +213,7 @@ export const Cabinet: React.FC<{
     if (ended && s.level === 255) set(ended);
   }, [live, allowFinish, s, set]);
 
-  const steer = useCallback((d: number) => set({ want: d }), [set]);
+  const steer = useCallback((d: number) => set({ want: d, paused: false }), [set]);
 
   // Arrow keys are an accelerator for a keyboard, never the only way (CLAUDE.md).
   useEffect(() => {
@@ -260,7 +276,7 @@ export const Cabinet: React.FC<{
       )}
 
       <div
-        className="grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
+        className="relative grid w-full overflow-hidden rounded-md border border-blue-900 bg-black"
         style={{ gridTemplateColumns: `repeat(${W}, 1fr)`, aspectRatio: `${W} / ${H}`, containerType: 'inline-size', touchAction: canPaint ? 'pan-y' : undefined }}
         role="img"
         aria-label={numbers ? 'the maze as the game sees it: a sheet of numbers' : 'the maze'}
@@ -280,6 +296,12 @@ export const Cabinet: React.FC<{
         onPointerCancel={() => { painting.current = null; }}
         onPointerLeave={() => { painting.current = null; }}
       >
+        {s.paused && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/55">
+            <span className="text-amber-200" style={{ fontFamily: PIXEL_FONT, fontSize: '12cqw', letterSpacing: '0.08em' }}>PAUSED</span>
+            <span className="text-[0.75rem] text-gray-300">press an arrow</span>
+          </div>
+        )}
         {sheet.map((n, i) => (canPaint && i % W >= HALF ? (
           // In paint mode the broken half is real buttons, so a keyboard or a
           // screen reader can paint too; the drag is an accelerator.
@@ -293,11 +315,11 @@ export const Cabinet: React.FC<{
               paintAt(i, n === 2 ? 0 : 2);
             }}
           >
-            <Square n={n} numbers={numbers} nova={i === s.pos} />
+            <Square n={n} numbers={numbers} hero={i === s.pos} />
           </button>
         ) : (
           <div key={i} className="relative grid" data-square={i}>
-            <Square n={n} numbers={numbers} nova={i === s.pos} />
+            <Square n={n} numbers={numbers} hero={i === s.pos} />
           </div>
         )))}
       </div>
@@ -333,7 +355,7 @@ export const Cabinet: React.FC<{
             : 'enough dots. now eat them all.'
           : numbers
             ? <span><b className="text-gray-500">0</b> nothing · <b className="text-blue-300">1</b> wall · <b className="text-amber-100">2</b> dot{level === 256 ? <span className="text-red-300"> · red: not on the key</span> : null}</span>
-            : level === 256 ? 'the junk is solid — she cannot get to that side.' : 'steer her into the dots.'}
+            : level === 256 ? 'the junk is solid — the cat cannot get to that side.' : 'steer the cat into the dots.'}
       </p>
     </div>
   );

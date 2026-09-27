@@ -100,13 +100,19 @@ export const JOKES: Joke[] = [
   {
     id: 'pacman-kill-screen',
     chapter: null, status: 'live', anchor: true,
-    text: 'Level 256 (/lab/level256): Nova has played the cabinet for three nights and is on level 255, three dots left. “Oh no.” — “What?” — “Let her finish. You will see.” One tap and half the maze turns to junk: the Pac-Man kill screen. “Nobody has ever beaten level 256. Not once.” — “Nova is going to be the first.”',
-    why: 'True (one-byte level counter; at 256 the fruit routine draws across half the maze; not enough dots to clear it). Its own chapter, not a coda: a first attempt bolted it onto the end of the approved overflow chapter, which crowded a finished chapter and hid the scene 110 messages deep.',
+    text: 'Level 256 (/lab/level256): Starlax finds CATVENTURE under a dust sheet, PAUSED on level 255 for two hundred years. “Somebody got to 255 and walked away.” — “Maybe they knew.” — “Knew what?” — “Unpause it and see.” … level 256 scribbles over half the maze: “that is what they knew.”',
+    why: 'Modelled on a real bug in a famous 1980 maze game (a one-byte level counter; level 256 half-scrambled and unwinnable) — kept as CATVENTURE’s own, and the real game is not named, the author’s call. The pause makes it a mystery with an answer the reader earns.',
+  },
+  {
+    id: 'two-hundred-years-for-level-1',
+    chapter: null, status: 'live', anchor: true,
+    text: '“Whoever paused it knew they could not win. So they stopped at 255 and walked away.” — “And two hundred years later, you won.” — “And now it says level 1.” — “The level box ran out of room and went round again.” — “Two hundred years of waiting, and my prize is level 1.”',
+    why: 'Pays off the pause. The reader, not a cat, beats the level its last player walked away from.',
   },
   {
     id: 'the-2-turns-into-a-0',
     chapter: null, status: 'live', anchor: true,
-    text: '“IT IS NUMBERS. The whole maze is numbers.” — “1 is a wall. 2 is a dot. 0 is nothing.” — “And when she eats a dot, the 2 turns into a 0!” — “That is all eating is. A 2 becoming a 0.”',
+    text: '“IT IS NUMBERS. The whole maze is numbers.” — “1 is a wall. 2 is a dot. 0 is nothing.” — “And when the cat eats a dot, the 2 turns into a 0!” — “That is all eating is. A 2 becoming a 0.”',
     why: 'The lesson happens under the reader’s own thumb: they are playing in “what the game sees” when it happens. True — the game’s state really is the sheet.',
   },
   {
@@ -123,8 +129,10 @@ export const JOKES: Joke[] = [
   },
   {
     id: 'her-prize-is-level-1',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'cut', anchor: true,
     text: '“Nova is still asleep.” — “She beat the level nobody can beat, and slept through it.” — “And now it says level 1.” — “Her prize for the impossible level is level 1.”',
+    // CUT: Nova, the museum cat, playing the game felt strange. The hero is now
+    // CATVENTURE's own cat, and the reader plays.
     why: 'The reward the reader earned by writing ten 2s — and a wink at the counter running out of room, without re-teaching overflow.',
   },
   {

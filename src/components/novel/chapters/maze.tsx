@@ -2,19 +2,22 @@
 //
 // One sentence: the game paints the maze by numbers; on level 256 it scribbles
 // over half the numbers; so we write them back, and Nova wins. Told through
-// paint-by-numbers — and, since the third telling, through PLAYING: the reader
-// finishes Nova's level for her, looks underneath while playing, watches the
-// bug happen to numbers they saw healthy, and fixes it.
+// paint-by-numbers, and through PLAYING: Starlax discovers CATVENTURE PAUSED on
+// level 255 for two hundred years; the reader unpauses it, looks underneath
+// while playing, watches the bug happen to numbers they saw healthy, and wins
+// the level its last player walked away from.
 //
 // GAME PIECE RESTORED: the maze.
 //
 // All four cards are the same cabinet (see maze-toys.tsx): one live game, and
-// the older cards step aside so there is only ever one Nova and one clock.
+// the older cards step aside so there is only ever one cat and one clock.
 //
 // History, so nobody repeats it: a coda on the approved overflow chapter
 // (reverted); "A Glitch Is a Window" (too many ideas); a paint-by-numbers
 // telling you could not play, which showed numbers only on a maze that was
-// already broken — so left and right never meant anything.
+// already broken — so left and right never meant anything; and a telling where
+// Nova, the museum cat, played the game, which felt strange. The hero is now
+// CATVENTURE's own cat, and the famous real game it echoes is not named.
 import { Cabinet, INITIAL, DOTS, type Stage } from '@/components/novel/maze-toys';
 import { MAZE_SCRIPT } from '@/components/novel/chapters/maze-script';
 import type { ChapterDef, ToyState } from '@/components/novel/chapter-def';
@@ -24,15 +27,15 @@ const dotsWithin = (s: ToyState) => (s.eaten as number) + (s.sheet as number[]).
 export const CHAPTER_MAZE: ChapterDef = {
   // v3: each telling saved a different set of toys, and a reader of an old one
   // must not be restored into the middle of a chapter that no longer exists.
-  storageKey: 'gameforge.level256.v3',
+  storageKey: 'gameforge.level256.v4',
   exitHref: '/lab',
   opening: {
     image: '/level256/cover.svg',
     eyebrow: 'Level 256',
     title: 'The Maze Is Made of Numbers',
     paragraphs: [
-      'It was past midnight, and the only light in the museum basement was the cabinet. Nova had found it three nights ago. She did not know what a level was, but the dots made a small noise when she stepped on them, and she had been stepping on them ever since.',
-      'The counter in the corner of the screen said 255, and Nova was asleep on the controls.',
+      'Behind the boxes in the museum basement, under a sheet nobody had lifted in two hundred years, a screen was still glowing. On it, a cat made of little squares stood in a maze. In the corner it said LEVEL 255, and across the middle, in letters the size of the cat, it said PAUSED.',
+      'Somebody had got all the way to level 255, pressed pause, and never come back.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },

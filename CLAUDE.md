@@ -654,7 +654,13 @@ Nothing about a chapter lives in the engine any more.
    level 256 showed the maze as numbers only once it was already broken, so
    the reader never saw a healthy one, never played it, and "left" and
    "right" meant nothing.
-8. **A number a character reads out must be the number on the screen.** Build
+8. **Model on real games; do not name them.** The author's call, to steer
+   clear of trademark worries: a bug borrowed from a famous game becomes
+   CATVENTURE's own, and a true line may say "the most famous maze game ever
+   had this exact bug" without naming it. And the book's cats are not players —
+   a cat *in* the game is a hero; a cat *playing* it (Nova at the controls)
+   read as strange.
+9. **A number a character reads out must be the number on the screen.** Build
    it from the same data the card draws. A draft had Starlax read "203" while
    the screen showed 229 — a kid would hunt for 203 and never find it.
 
