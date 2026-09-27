@@ -177,27 +177,30 @@ their numbers. Mostly about food.
   falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything
   after it along) is a call to make deliberately, so nothing is renumbered here.
 
-### "Level 256" — "A Glitch Is a Window" 🆕 **BUILT: `/lab/level256`** (unnumbered)
-- **Learning goal:** everything on the screen is memory. When the Pac-Man level
-  counter runs out of room, the game draws whatever it finds next — its own
-  memory — across half the maze. The kill screen is not the lesson, it is the
-  **door**: the first time anyone has seen the cartridge's insides.
-- **Game piece restored:** ⭐ **the cat's colour.** The reader finds `FF 99 33`
-  in the leaked memory and changes it until the cat is green — Act 1's first
-  move ("find the orange, make it green") arriving through a glitch.
-- **The wall (the ending):** the reader tries the same trick on level 256 and
-  it fails: *"you can change what a number IS. you cannot change what the game
-  DOES with it."* The gate is passed by failing. This is the ceiling
-  CLAUDE.md says must not be fixed — values, not behaviour — and it points at
-  the language.
-- **Toys:** level 255 → 256 (the split) · find the cat's orange in the memory ·
-  make her green (three bytes) · fix level 256 (it cannot be done).
-- **True things:** the one-byte Pac-Man level counter and the unwinnable level
-  256; the garbage being memory drawn as tiles; Game Genie ("they sold a whole
-  machine for it").
-- **Not a rerun of the overflow chapter:** that one teaches 255 + 1 = 0; this
-  one starts where it stops. Eyebrow reads *LEVEL 256* where a chapter number
-  would go — numbering is still unresolved.
+### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
+- **The idea, in one sentence a kid can hold:** *the game paints the maze by
+  numbers; on level 256 it scribbled over half the numbers; so we write them
+  back — and Nova wins.* Told through **paint-by-numbers**, which every kid
+  already knows: a sheet of numbers, a key, and you colour it in. True:
+  arcade games drew the maze from a grid of tile numbers.
+- **The want:** help Nova beat the level nobody has ever beaten (the Pac-Man
+  kill screen — true: a one-byte level counter, half the maze scribbled over,
+  never once completed).
+- **Three cards, one per step:** ① *the break* — let her clear 255; half the
+  maze turns to junk · ② *the reveal* — one switch, **what you see ↔ what the
+  game sees**: the good half is 0s, 1s and 2s, the junk is red numbers that
+  are not on the key · ③ *the fix* — tap junk to write 2s (dots) back, 10 of
+  them, then **let her finish**.
+- **The payoff:** *LEVEL 256 — CLEARED*, and the screen says **LEVEL 1**:
+  *"she beat the level nobody can beat, and her prize is level 1."*
+- **Game piece restored:** ⭐ **the maze** — the reader writes it back.
+- **Why it was retold:** the first telling ("A Glitch Is a Window") crammed in
+  memory, colour hacking and "values vs behaviour", dropped its own hook
+  after the first card, and ended on a lecture. The author could not follow
+  it. Lesson: **one idea, told through something the reader already knows;
+  a character with a want; a win at the end.** Those cut ideas are in the joke
+  bank as `cut` so they are not re-pitched here — they belong to the hex-editor
+  chapter.
 
 ---
 

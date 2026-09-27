@@ -100,44 +100,65 @@ export const JOKES: Joke[] = [
   {
     id: 'pacman-kill-screen',
     chapter: null, status: 'live', anchor: true,
-    text: 'Level 256 (/lab/level256): Nova has played the cabinet for three nights and is on level 255. “How many levels fit in one byte?” — “Do not let her finish that level.” One tap and the right half of the maze is garbage: the Pac-Man kill screen, which nobody has ever finished and nobody built on purpose.',
+    text: 'Level 256 (/lab/level256): Nova has played the cabinet for three nights and is on level 255, three dots left. “Oh no.” — “What?” — “Let her finish. You will see.” One tap and half the maze turns to junk: the Pac-Man kill screen. “Nobody has ever beaten level 256. Not once.” — “Nova is going to be the first.”',
     why: 'True (one-byte level counter; at 256 the fruit routine draws across half the maze; not enough dots to clear it). Its own chapter, not a coda: a first attempt bolted it onto the end of the approved overflow chapter, which crowded a finished chapter and hid the scene 110 messages deep.',
   },
   {
-    id: 'garbage-is-memory',
+    id: 'it-is-paint-by-numbers',
     chapter: null, status: 'live', anchor: true,
+    text: '“Wait. How do you scribble over a maze? It is a picture.” — “Is it.” [flip: what the game sees] — “IT IS NUMBERS. The whole maze is numbers.” — “0 is empty. 1 is a wall. 2 is a dot.” — “It is paint-by-numbers!” — “Exactly paint-by-numbers. Sixty times a second.”',
+    why: 'The whole chapter in the one metaphor every kid already owns. Starlax says it a beat before Flamey, so the reader — who just flipped the switch — gets there with her. True: arcade games drew the maze from a grid of tile numbers.',
+  },
+  {
+    id: 'junk-is-just-wrong-numbers',
+    chapter: null, status: 'live', anchor: true,
+    text: '“There is no 229 on the key.” — “The game has a picture for every number. Letters, fruit, bits of scenery. So it paints whatever the number says. It does not know the number is wrong.” — “So the junk is not broken. It is just the wrong numbers.” — “That is all junk ever is.”',
+    why: 'Explains the kill screen without a word about memory or bytes: the game is still doing paint-by-numbers, faithfully, from the wrong sheet. Starlax reads the numbers straight off the screen.',
+  },
+  {
+    id: 'her-prize-is-level-1',
+    chapter: null, status: 'live', anchor: true,
+    text: '“She beat the level nobody can beat.” — “And her prize is level 1.” — “That is what winning looks like, on a machine.”',
+    why: 'The reward the reader earned by writing ten 2s — and a wink at the counter running out of room, without re-teaching overflow.',
+  },
+  {
+    id: 'garbage-is-memory',
+    chapter: null, status: 'cut',
     text: '“It is garbage.” — “It is not. When the game ran out of room it drew whatever it found next. That is its memory.” — “So we are looking at the inside of the cabinet.” — “By accident. The first time anyone has in two hundred years.”',
     why: 'The chapter’s concept, and the book’s premise seen through a crack: the lost language’s machine, visible only when something breaks.',
   },
   {
     id: 'catven',
-    chapter: null, status: 'live',
+    chapter: null, status: 'cut',
     text: '“Wait. That says CATVEN.” — “The rest of the word fell off the edge.”',
     why: 'A fixed width, cutting a word in half, inside a chapter about what spills when a fixed width runs out.',
   },
   {
     id: 'ff9933-is-a-cat',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'cut',
     text: '“FF 99 33.” — “That is her.” — “That is a CAT?” — “That is her colour.” … “SHE IS GREEN. I changed a number and the cat changed.”',
     why: 'Act 1’s first move (find the orange, make it green) arriving through a glitch instead of a hex editor. Search for a value you can see — how Game Genie codes were found.',
   },
   {
     id: 'is-this-how-people-cheated',
-    chapter: null, status: 'live',
+    chapter: null, status: 'cut',
     text: '“Is this how people used to cheat at games?” — “Exactly this. Find a value you can see, and change it. They sold a whole machine for it — you plugged it in between the game and the console.”',
     why: 'True (Game Genie, 1990). Kids love that cheating had hardware.',
   },
   {
     id: 'values-not-behaviour',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'cut',
     text: '“I changed the numbers and it is just different garbage.” — “You can change what a number IS. You cannot change what the game DOES with it.” — “The one nobody speaks.” — “The one nobody speaks.”',
     why: 'The wall the whole book is built on (CLAUDE.md: the wall is the plot). A gate the reader passes by FAILING.',
   },
   {
     id: 'warm-half-of-the-screen',
-    chapter: null, status: 'live',
+    chapter: null, status: 'cut',
     text: '“Nova has given up.” — “Finally.” — “On the dots. She is lying on the warm half of the screen.”',
     why: 'The last line goes to the cat, and a CRT really is warm.',
+    // CUT with the rest of "A Glitch Is a Window": that telling crammed in memory,
+    // colour hacking and "values vs behaviour", and nobody could follow it. The
+    // chapter was retold around ONE idea — the maze is paint-by-numbers.
   },
 
   // ——— Chapter 1 ———

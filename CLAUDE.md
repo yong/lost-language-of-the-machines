@@ -636,6 +636,18 @@ Nothing about a chapter lives in the engine any more.
    the concept clicks. Failure should always be funny.
 6. **Say true things.** Grace Hopper's moth, silicon being sand, 1024-not-1000 —
    kids love that these are real. Never fake a fact for a gag.
+7. **One idea per chapter, told through something the kid already knows.**
+   Write the chapter as one sentence a kid can hold before writing a line of
+   it — *"the game paints the maze by numbers; on level 256 it scribbled over
+   half; so we write them back."* Then find the thing they already own that
+   carries it (paint-by-numbers). The first telling of level 256 had a great
+   hook and three ideas (memory, colour hacking, "values vs behaviour"),
+   dropped its hook after one card, and ended on a lecture — the author could
+   not follow it. Give a character a **want**, let the toys be the steps
+   toward it, and end on a **win**.
+8. **A number a character reads out must be the number on the screen.** Build
+   it from the same data the card draws. A draft had Starlax read "203" while
+   the screen showed 229 — a kid would hunt for 203 and never find it.
 
 ## How content is represented
 

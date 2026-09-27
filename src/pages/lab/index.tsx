@@ -30,7 +30,7 @@ const EXPERIMENTS: Entry[] = [
   { href: '/chapter1', name: '⭐ Chapter One — THE OFFICIAL READ', note: 'track + typing + binary snow; no switches' },
   { href: '/lab/novel', name: 'Chapter One · with the switches on', note: 'same component, experiment harness enabled' },
   { href: '/lab/overflow', name: '⭐ Chapter Six · A Number Can Run Out of Room', note: 'APPROVED — the keeper, eligible to graduate. integer overflow: the price sign, the byte, Y2K' },
-  { href: '/lab/level256', name: '🆕 Level 256 · A Glitch Is a Window', note: 'new chapter — the Pac-Man kill screen spills the game’s memory; find the cat, make her green, hit the wall' },
+  { href: '/lab/level256', name: '🆕 Level 256 · The Maze Is Made of Numbers', note: 'new chapter — the Pac-Man kill screen, told as paint-by-numbers: help Nova beat the level nobody has beaten' },
   { href: '/lab/openings', name: '★ Ways into a chapter', note: 'cover → paragraph → chat — transitions to pick between' },
   { href: '/lab/proto-bit', name: 'The opening · A bit is a light', note: 'binary you draw with — no hex needed' },
   { href: '/lab/proto-rom', name: '⭐ F · No source, just bytes', note: 'THE DIRECTION — hack the cartridge' },
