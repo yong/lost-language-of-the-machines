@@ -444,7 +444,7 @@ the story had caught up, so a reader who just played on ate every dot and was
 left in an empty maze, nothing happening, waiting on a button — *"it is
 unnatural to stick here and wait for user to click a button."* **The story
 follows the player; the game is never held back for the story.** (The fold rule
-still applies: a reply that lands below the screen parks on *keep reading ↓*.)
+still applies: a reply that lands below the screen parks until it is scrolled to.)
 
 **Anchor the thread to the bottom** (`flex min-h-full flex-col justify-end`).
 A conversation shorter than the screen must sit just above the footer, not at
@@ -460,10 +460,19 @@ perpetually, or it becomes a moving tap target.
 
 **Never scroll the page for the reader.** A reader's speed and a playback clock
 cannot be kept in sync, so the machine must not try: when the newest message
-falls below the fold, playback **stops** and waits. Continuing is a page turn
-the reader asked for, not a conveyor belt. (Needs a bottom spacer of ~a
-viewport, or the newest message can only be brought to the bottom of the view
-rather than the top.) User experience matters as much as the content.
+falls below the fold, playback **stops** and waits. **The reader scrolls, and
+that is the whole mechanism — no "keep reading" button.** The author's call:
+*"with chat, you do not need a read more button, scroll to reveal more is
+natural and save space. Just do not auto scroll."* The moment the newest
+message is on screen, the story carries on; the cue that there is more is the
+next bubble peeking up from under a soft fade on the thread's bottom edge (not
+a button), and a tap on the thread still turns the page for anyone who taps.
+Verified by leaving a parked chapter untouched for 3s (scrollTop and bubble
+count identical) and then scrolling once with a real touch (11 → 16 bubbles).
+Tests scroll with a thumb when `[data-waiting]` is on the thread; they must
+never look for a button. (Needs a bottom spacer of ~a viewport, or the newest
+message can only be brought to the bottom of the view rather than the top.)
+User experience matters as much as the content.
 
 Three modes ship — `?reveal=static|dots|stream` in the lab; anything else falls
 back to **`dots`, the winner**. Only **"whole bubble" was dropped**: a bubble

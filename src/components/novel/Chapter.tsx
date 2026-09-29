@@ -33,8 +33,11 @@
 // THE PAGE IS NEVER SCROLLED FOR THE READER. A reader's speed and a playback
 // clock cannot be kept in sync, so the machine must not try: when the newest
 // message would fall below the fold, playback STOPS and waits. The reader
-// continues when they are ready, and only then does the view move — a page
-// turn they asked for, not an interruption.
+// scrolls down when they are ready — the way you read any chat — and the
+// moment the newest message is on screen, the story carries on. There is no
+// "keep reading" button: scrolling already means "more", and the button only
+// cost a footer's worth of space to say so. (A tap on the thread still turns
+// the page, for anyone who taps.)
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -750,6 +753,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
         {/* the only thing that scrolls, and only the reader moves it */}
         <div
           ref={scroller}
+          data-waiting={waiting ? '' : undefined}
           onScroll={onScroll}
           onClick={tap}
           onPointerDown={pullDown}
@@ -817,6 +821,18 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
             {mode !== 'static' && !done && !gate && !held && <div style={{ height: '62dvh' }} />}
           </div>
         </div>
+        {/* Parked below the fold: a soft fade along the bottom edge says "the
+            conversation goes on down there", the way any scroll view does. Not
+            a button — scrolling is the gesture, and the story carries on the
+            moment the newest message is on screen. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20"
+          style={{
+            background: 'linear-gradient(to top, rgba(13,11,23,.95), rgba(13,11,23,0))',
+            opacity: waiting ? 1 : 0, transition: 'opacity .3s ease',
+          }}
+        />
         </div>
 
         {/* The footer is a CONTROL, not part of the conversation, so it needs
@@ -883,18 +899,6 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
                     transition={{ duration: 1.4, repeat: 2, ease: 'easeInOut' }}
                   >
                     continue when you&rsquo;re ready →
-                  </motion.button>
-                ) : waiting ? (
-                  <motion.button
-                    onClick={turnPage}
-                    className="min-h-11 rounded-full bg-sky-700 px-5 py-1.5 text-center text-sm leading-tight text-white"
-                    animate={{ scale: [1, 1.045, 1] }}
-                    // A few pulses to catch the eye, then still. Motion that
-                    // never stops is both a moving tap target and the exact
-                    // distraction the static decision removed.
-                    transition={{ duration: 1.4, repeat: 2, ease: 'easeInOut' }}
-                  >
-                    keep reading ↓
                   </motion.button>
                 ) : (
                   <div className="h-0.5 w-full overflow-hidden rounded bg-gray-800">
