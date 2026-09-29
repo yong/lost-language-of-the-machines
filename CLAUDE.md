@@ -268,6 +268,17 @@ typing pays a real tax on a phone**, and anything driven by tapping does not.
      **Safari's own back gesture** and is left alone; one starting on the pixel
      grid is a **brush stroke** (verified: a 163px drag across the grid paints
      six cells and does not navigate).
+   - **Parallax: the paper is a sheet laid OVER the cover.** A flat track read
+     as two screenshots swapping. The art moves at half the thumb's speed and
+     dims as it recedes, the title lifts and is gone by a fifth of the way (any
+     later and it slides across the art at a different speed — *"CHAPTER SIX"*
+     tangled over *"PREMIUM GASOLINE"* at 25%), and the paper is **opaque** with
+     a shadow on its top edge. Every layer is a `useTransform` of the one `y`
+     the finger drives, so it tracks the thumb frame for frame with no React
+     re-render, springs back with a short swipe and runs in reverse on the way
+     back. Test it by **holding** a real touch mid-swipe and screenshotting —
+     the start and end states look identical to the flat version. Reduced
+     motion gets the flat slide.
    - Tap and the arrow keys still work as unadvertised fallbacks, so a
      keyboard, a screen reader, or a reader who does not think to swipe is
      never stuck — but nothing on screen is a pill.
