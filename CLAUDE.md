@@ -596,7 +596,9 @@ Rules this establishes:
 far that is approved to keep, and the only one eligible to graduate out of the
 lab.** That is the author's call, in their words. It is **locked as it stands**
 (its script ends on *"nova is asleep under it"* 🐱): no additions, no
-"improvements", no codas, without their explicit sign-off.
+"improvements", no codas, without their explicit sign-off. (Signed-off change
+so far: its cover twinkles instead of snowing — *"the snow screen is
+overused"*. Script and toys are unchanged since 3bb58ce.)
 
 **An approved chapter is finished — a new idea gets a new chapter.** This rule
 exists because it was broken: the Pac-Man level-256 scene was bolted onto the
@@ -728,7 +730,12 @@ be surfaced elsewhere, not just play locally.
   level-256 cover is CATVENTURE in **attract mode** — the cat clears 253 and
   254 by itself and stops on *LEVEL 255 · READY?*, the premise told before a
   word is read. It must be deterministic and settle to a still (reduced motion
-  jumps straight to it).
+  jumps straight to it). A night cover whose art should stay the thing you
+  look at gets **twinkling stars** (`openings/TwinkleCover.tsx`) — the overflow
+  chapter's. Stars go only in open sky (`sky` / `avoid` rectangles in the
+  art's own 1024×1400 space), and the sky a *phone* shows is listed first:
+  its crop is x 188–836, so on a cover with a sign down the middle the first
+  try put 13 of 44 stars on screen.
 - Interactive components own their own state and persist to localStorage under
   `gameforge.*` keys.
 
