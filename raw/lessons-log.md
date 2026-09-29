@@ -1,0 +1,713 @@
+# Lessons log — the incidents behind the rules
+
+**Archived verbatim from `CLAUDE.md` on 2026-09-29**, when that file was
+rewritten around the reader. It had grown to 893 lines, most of them war
+stories written as rules, and the rules had started causing the bad UX they
+were written to prevent ("no pills" left a tappable-looking hint dead, "never
+perpetual motion" kept the next button from glowing, "never scroll for the
+reader" invented a "keep reading" button nobody needed).
+
+`CLAUDE.md` now holds the principles and the gotchas; this file holds *why*.
+Read the relevant section here before overturning a rule — the incident is
+usually the argument. Some passages describe things since changed (the
+"keep reading ↓" button is gone; the reader scrolls). Where this log and
+`CLAUDE.md` disagree, `CLAUDE.md` is current.
+
+---
+
+## 📱 Mobile first — not mobile *also*
+
+**A kid reads this on a phone.** Assume a 390×844 screen held in one hand, with
+no keyboard, no hover, and a thumb for a cursor. Desktop is the bonus case, and
+a layout that only works at 1200px wide is not done — it is broken.
+
+This is a hard constraint on the game design, not just the CSS. It is also the
+strongest argument in the prototype evaluation below: **anything that requires
+typing pays a real tax on a phone**, and anything driven by tapping does not.
+
+1. **Never require a keyboard for a core action.** Arrow keys, Enter-to-submit
+   and keyboard shortcuts are *accelerators*, never the only way through. Every
+   one needs an on-screen equivalent — a D-pad, a button, a tap target in the
+   world. If a page says "arrow keys to move", it is unplayable on the device
+   most readers hold. **The same goes for a gesture:** a swipe is invisible, so
+   it can accelerate but never carry a core action on its own.
+2. **Reading is never one-way.** Every forward step needs a step back, and the
+   back has to be *in the reading*, not an exit from it. This was wrong for a
+   long time and did not look wrong: the chapter ran cover → paragraph → phone
+   → chat with no way back at any point, and the header's ← did not go back at
+   all, it **left the book** for `/lab`. So the prose a reader had just read
+   became unreachable the moment the thread opened. **Back costs no extra
+   space** — the arrow was already there, pointing at the wrong thing. It now
+   steps back one beat at a time and only leaves the book from the cover, which
+   is where leaving belongs. Stepping back must never cost progress: go back
+   into the prose, come forward, and the thread is where you left it.
+3. **The opening is a VERTICAL PAGER: swipe up for the next page.** This is
+   the idiom every phone-native reader already knows (Reels, Shorts, Stories),
+   and **a tap target is not a substitute** — an invisible full-screen button
+   is still a button, and making it bigger does not make it a swipe. Getting
+   here took three rounds of arguing the wrong question: "should we use swipe?"
+   was never about *horizontal* swipe, it was about vertical paging.
+   - **Drag, don't detect, and show what is coming.** Both pages live on one
+     track that moves with the thumb, so the next page is already rising from
+     below before the reader commits. An `AnimatePresence` slide looks the same
+     in a screenshot and feels nothing like it: the outgoing page moves but the
+     space it leaves is *empty*, because the next page does not mount until you
+     commit. Release past ~18% of the screen or with real velocity commits;
+     less springs back.
+   - **Swallow the click that trails a drag.** A swipe fires a click on release,
+     so every swipe down also fired the tap fallback and went straight forward
+     again. Same shape as the grid's `pointerdown`/`click` collision.
+   - **A scroll box inside a drag surface is a dead zone.** The prose was
+     permanently `overflow-y-auto`, so on a 390×844 screen — where it fits — a
+     swipe starting on the words scrolled nothing and the page did not turn,
+     right where a thumb lands. Make it scrollable **only when it actually
+     overflows**, measured, not assumed.
+   - **The page cannot scroll, so nothing may fall off it.** Removing the
+     page's own scrolling to get the drag put the phone — the way out — off
+     screen entirely at 320×568 (1293px of content in a 568px page at 24px
+     root). Anything load-bearing gets its own non-shrinking slot.
+   - Back is **swipe down**: to the page before, and out of the thread by
+     pulling down at the top (armed only at `scrollTop 0`, so scrolling still
+     belongs to the reader). **A gesture that leaves somewhere must be
+     revealed, not detected** — leaving the thread is the riskiest back in the
+     chapter, because `scrollTop 0` is exactly where a *re-reading* reader sits
+     and a pull at the top means "refresh" in most apps. So it works like
+     pull-to-refresh: the thread follows the finger (damped, capped), a pill
+     reads *"pull to go back"* and only flips to *"release to go back"* once
+     the gesture has committed. Nothing happens by surprise.
+   - **A drag selects the text it crosses.** Any drag surface needs
+     `select-none`, or the gesture leaves the page smeared in highlight.
+   - **Pointer events cannot hold a gesture the browser wants.** Traced on a
+     real touch sequence: the browser claims a vertical drag after ~27px and
+     fires `pointercancel` with `clientY: 0`, so a pull built on pointer events
+     worked with a mouse and **never once worked on a phone**. Anything that
+     fights the browser for a scroll direction has to be **touch events with a
+     non-passive `touchmove` calling `preventDefault()`** — which also replaces
+     the browser's own overscroll. Keep the pointer path for the mouse and bail
+     on `pointerType === 'touch'`, or both fire.
+   - **Test gestures with real touch events, not mouse drags.** Playwright's
+     `mouse.*` passes cases that a thumb fails. Dispatch through CDP
+     (`Input.dispatchTouchEvent`), or the test is measuring a device nobody
+     reads on.
+   - **The story must not run while the reader is still in the opening.**
+     Playback is gated on being in the thread. Without it the conversation
+     played out behind the cover, saved its progress, and the *next* load saw
+     that progress and skipped the opening. This was masked for a while by a
+     different bug — the visibility check wrongly parked playback whenever the
+     thread was hidden, which happened to act as a brake — so fixing that one
+     exposed this one.
+   - **A pager must be under the right page BEFORE its first paint.** Measuring
+     the page height in a `useEffect` left the track at `-i*0` for one frame —
+     the cover — and it then animated down to where it belonged. Measured at
+     +150ms the track was at -633 heading for -844: a visible flash of the
+     cover every time a reader came back out of the thread, which reads as
+     "swiping back goes to the cover". `useLayoutEffect`, and make the first
+     positioning a jump rather than an animation. A swipe starting within 24px of the left edge is
+     **Safari's own back gesture** and is left alone; one starting on the pixel
+     grid is a **brush stroke** (verified: a 163px drag across the grid paints
+     six cells and does not navigate).
+   - **Parallax: the paper is a sheet laid OVER the cover.** A flat track read
+     as two screenshots swapping. The art moves at half the thumb's speed and
+     dims as it recedes, the title lifts and is gone by a fifth of the way (any
+     later and it slides across the art at a different speed — *"CHAPTER SIX"*
+     tangled over *"PREMIUM GASOLINE"* at 25%), and the paper is **opaque** with
+     a shadow on its top edge. Every layer is a `useTransform` of the one `y`
+     the finger drives, so it tracks the thumb frame for frame with no React
+     re-render, springs back with a short swipe and runs in reverse on the way
+     back. Test it by **holding** a real touch mid-swipe and screenshotting —
+     the start and end states look identical to the flat version. Reduced
+     motion gets the flat slide.
+   - Tap and the arrow keys still work as unadvertised fallbacks, so a
+     keyboard, a screen reader, or a reader who does not think to swipe is
+     never stuck — but nothing on screen is a pill.
+4. **The other gesture that earns its place: dragging to draw.** Painting the 8×8 grid
+   cost eight separate taps on 29px cells; one stroke now does it. That is
+   *drawing*, not navigating — the test for a gesture is whether the motion
+   itself means something. Notes that cost debugging: use `touch-action: pan-y`
+   so a horizontal drag is a stroke while a vertical one still scrolls the
+   thread (`none` would strand the reader, the grid is 305px of a 390px
+   screen); paint a **value** decided by the cell you start on rather than
+   toggling, or a wobbling finger flickers cells on and off; and swallow one
+   `click` per pointer press, because `pointerdown` paints the cell and the
+   click that follows would toggle it straight back — making a plain tap do
+   nothing. Keyboard activation fires `click` with no `pointerdown`, so that
+   check is also what keeps Enter/Space working.
+5. **Boards and stages scale; they are never fixed pixels.** Size a world with
+   `width: min(100%, …)` plus `aspect-ratio`, and position things inside it in
+   **percentages**, not `px`. A hard-coded `CELL = 52` overflows a phone.
+6. **Tap targets are at least 44px.** Fine for a mouse is not fine for a thumb.
+   Colour swatches, steppers and rule toggles all need real hit area.
+   **The one exception is a row that must stay a row.** Eight switches at 44px
+   needs 380px; a card on a 390px phone gives 334px, so a byte laid out as one
+   row lands at 38px and an 8×8 grid at 29px. Splitting it into two rows of
+   four would fit the rule and destroy the lesson — *a byte is one row* is the
+   whole point. Take the smaller target there, and nowhere else: a back arrow
+   at 10×16px has no such excuse.
+7. **Text inputs use ≥16px font.** Below that, iOS Safari zooms the whole page
+   on focus and the reader loses the layout.
+8. **No hover-only affordances.** Anything revealed by `:hover` or a `title`
+   attribute does not exist on a touch screen.
+9. **The page never scrolls sideways.** Wide things (code, grids, tables) get
+   their own `overflow-x: auto` container.
+10. **The thing you change and the thing that changes must be visible together.**
+   No horizontal overflow is not enough — if a control is 2000px of scroll away
+   from the effect it produces, the mechanic is broken even though every metric
+   passes. On a phone, pin the stage (`sticky top-0`) and let the controls
+   scroll under it. Measure it: with a byte selected, the console and its slider
+   must both return `onScreen`.
+11. **px for thumbs, rem for text.** A 44px tap target is a *physical* size and
+   must not move with the reader's font setting; a 15px bubble is *text* and
+   must. So tap floors stay px (with a comment saying why) and every font size
+   is `rem` — `text-[15px]` ignores a reader who has bumped their type size.
+12. **Reserve a height, never freeze one.** A bar that must not change height
+   between states gets `min-h-[Nrem]` sized to its *tallest* state, not a fixed
+   `h-10`. A frozen height clips as soon as text scales; a rem reservation keeps
+   every state identical at every text size. Sweep the **root font size**
+   (16/20/24px) as well as the viewport — a width sweep passes clean while a
+   footer is clipping.
+13. **Size text inside a scalable stage off the stage, not the viewport.** The
+   same console renders 200px wide on a phone and 340px on desktop, so `vw`
+   units make the small one cramped. Use `container-type: inline-size` plus
+   `cqw`.
+
+**Then look at it as a reader, not as a test.** Every automated check passed
+on a footer whose button read as the next chat bubble, because "does it clip?"
+and "does this look right?" are different questions and only one of them was
+being asked. So after the measurements, screenshot it and go through this list —
+it is where the real bugs were hiding:
+
+- **contrast**, computed against the *rendered* background (Tailwind v4 emits
+  `oklch()`, so a naive `rgb()` parser silently returns garbage — resolve colours
+  through a canvas). White on `sky-600` is 4.10:1 and fails AA.
+- **dead controls.** Anything at full opacity with pointer events on had better
+  do something. A silent no-op is the worst answer a control can give a kid.
+- **what a reload costs.** Persist the reader's *place*, not just their artwork —
+  a phone call four blocks in must not restart the chapter. Restore HELD, or the
+  restored toy state satisfies the gate and the story plays itself on load.
+- **spacing as meaning.** A control 16px from a message reads as a message.
+
+**Verify at 390px before calling any visual work done** — not by resizing a
+desktop window, but with a real mobile viewport (see Browser Automation below).
+Checking `document.documentElement.scrollWidth > clientWidth` catches overflow
+in one line.
+
+## 💬 Chat-novel pacing — ⭐ SETTLED: typing (`dots`)
+
+**The words type themselves in, one message at a time, with "typing…" in the
+header.** Both doors — `/chapter1` and `/lab/novel` — open on it; the other two
+modes stay behind the lab's toggle and `?reveal=`. **Do not change the default
+away from typing**, and do not read the paragraphs below as licence to: they
+record what the *pacing* experiment measured, and the reading that followed
+overruled its conclusion (the log now says so at the top). A chat novel whose
+messages do not arrive is a wall of text pretending to be a conversation.
+
+**Three things make that a rule rather than a preference**, because a default
+can be lost without anyone choosing to lose it:
+
+- **`dots` is first in `MODES`**, so anything reaching for the head of the list
+  reaches for typing.
+- **The mode is not remembered between loads.** It used to be: toggle the chip
+  once to compare, and every visit after that opened in whatever you last
+  looked at — months later, on a device whose owner had forgotten. A preference
+  that outlives the visit quietly becomes the default. The old
+  `gameforge.novel.reveal` key is *removed on sight*, because a leftover
+  outlives the build that wrote it.
+- **The lab is not an exception.** `/lab/novel` is the link that gets handed
+  out, so a "lab convenience" default is just the default with extra steps.
+
+**Full experiment log and measurements: `raw/chat-novel-pacing-experiment.md`.**
+Four reveal modes were built and read end to end; read that before proposing a
+different one.
+
+**What the experiment found, and why it did not win.** *Animation competes with
+the content*: motion pulls the eye to the arrival of the words rather than to
+the words, which for a book about comprehension sounds like the wrong trade.
+Static blocks were adopted on that basis. Reading whole chapters then said
+otherwise — typing is what makes the thread read as a conversation rather than
+a transcript, and it also measured the **fastest** mode (75s vs 88s for
+popping bubbles into silence). The structural findings below are what survive:
+they are about **blocks and gates**, and they hold in every mode.
+
+**⚠️ ONE SYMPTOM, FOUR CAUSES — the most expensive bug in this project so far.**
+"Everything arrives at once" was reported three times over three rounds, and
+each round had a *different* cause. **The mode was correct every single time.**
+
+| What the reader saw | What it actually was |
+|---|---|
+| block one complete and silent | playback ran behind the cover and saved `at: 6` |
+| still complete, after that fix | the **leftover** `at: 6` already on the device |
+| whole thread dumped on arrival | a **returning reader** — resume paints your history, and typing only happens ahead of your place |
+| (and, in the lab) six bubbles | `/lab/novel` defaulted to `static`, plus a remembered mode preference |
+
+The trap is that "everything at once" is *exactly what `static` looks like*, so
+every round began by checking the mode, finding it right, and concluding the
+report was mistaken. **Checking the mode does not answer the question.** Before
+touching anything, count the ways this symptom can be produced — at least four
+— and rule them out on the reader's own terms: the build they load, with the
+saved state they have. A fresh-reader test on the dev server is the one test
+that cannot fail for any of these.
+
+**When a report repeats after a fix, assume a new cause, not a confused
+reporter.** Three times the report was literally accurate and the explanation
+offered back was wrong.
+
+**Structure, in every mode:**
+
+1. **Blocks, gated by the toys.** Cut the script into segments at each
+   interactive beat. A segment ends at its toy, and playing the toy releases the
+   next one. Attention goes: words → hands → words. Never a contest. (In
+   `static` the segment also renders whole and still; in `dots` it types itself
+   out. The gating is the part that matters.)
+2. **Land the reader at the TOP of a new block,** not the bottom. You follow the
+   tail of a live conversation, but you read a block from its start.
+3. **One quick fade per block, never per message.** Staggered bubbles are the
+   distraction being removed.
+4. **A gate reveals the next block and nothing else moves.** No clock at all.
+5. **Keep bubbles to one or two sentences,** and end beats on a question or a
+   surprise.
+6. Give each character a consistent voice signature — punctuation habits, emoji,
+   message length — so the reader knows who is speaking without labels.
+
+**Never start the next thing for the reader.** Satisfying a gate does not
+launch the next block — the toy stays live and the footer offers "continue when
+you're ready →". A reader who just flipped a switch may want to keep flipping
+it; the story barging in half a second later is the same violation as scrolling
+for them.
+
+**The exception: an EVENT in a game.** When a gate is something *happening* —
+a level ending, a win — rather than something the reader fiddles with, the
+story reacts at once (list the toy in the chapter's `toys.events`). Found the
+hard way: level 256's first playable version would not let level 255 end until
+the story had caught up, so a reader who just played on ate every dot and was
+left in an empty maze, nothing happening, waiting on a button — *"it is
+unnatural to stick here and wait for user to click a button."* **The story
+follows the player; the game is never held back for the story.** (The fold rule
+still applies: a reply that lands below the screen parks until it is scrolled to.)
+
+**Anchor the thread to the bottom** (`flex min-h-full flex-col justify-end`).
+A conversation shorter than the screen must sit just above the footer, not at
+the top under a screenful of blank — unscrollable emptiness still reads as
+broken, and "can you scroll into it?" is not the same question as "does it look
+stranded?".
+
+**When the story waits, leave nowhere pointless to scroll.** No page-turn
+spacer during a gate or a hold, so the thread ends at the toy and downward
+scrolling is bounded. Make the waiting affordance a pill that pulses twice and
+then stops — motion belongs here (nothing is competing with reading) but never
+perpetually, or it becomes a moving tap target.
+
+**Never scroll the page for the reader.** A reader's speed and a playback clock
+cannot be kept in sync, so the machine must not try: when the newest message
+falls below the fold, playback **stops** and waits. **The reader scrolls, and
+that is the whole mechanism — no "keep reading" button.** The author's call:
+*"with chat, you do not need a read more button, scroll to reveal more is
+natural and save space. Just do not auto scroll."* The moment the newest
+message is on screen, the story carries on; the cue that there is more is the
+next bubble peeking up from under a soft fade on the thread's bottom edge (not
+a button), and a tap on the thread still turns the page for anyone who taps.
+Verified by leaving a parked chapter untouched for 3s (scrollTop and bubble
+count identical) and then scrolling once with a real touch (11 → 16 bubbles).
+Tests scroll with a thumb when `[data-waiting]` is on the thread; they must
+never look for a button. (Needs a bottom spacer of ~a viewport, or the newest
+message can only be brought to the bottom of the view rather than the top.)
+User experience matters as much as the content.
+
+Three modes ship — `?reveal=static|dots|stream` in the lab; anything else falls
+back to **`dots`, the winner**. Only **"whole bubble" was dropped**: a bubble
+popping into silence is dead air, and it measured slowest. `stream` is kept because **combining it with
+the dots** is the one unexplored idea still worth trying.
+
+**Layout rules that cost real debugging** (details in the log): the page must
+not scroll — only the thread; pin to `scrollHeight` inside
+`requestAnimationFrame`; give the footer a fixed height; never `setState` inside
+another `setState` updater; never yank a reader who scrolled up.
+
+## 📖 Getting into a chat chapter: cover → paragraph → phone
+
+**`src/components/lab/novel/ChapterOpening.tsx`; live at `/lab/novel`.**
+
+> ⭐ **SETTLED.** The official Chapter One is **`/chapter1`**: the **Track** way
+> in, the conversation in **typing** (`dots`), and **binary snow** on the
+> cover. Log and the case for each: `raw/opening-transition-experiment.md`.
+> Stories and Cinema stay switchable in the lab (`depth` was built, read and
+> **cut**).
+>
+> **One implementation, two doors.** `/chapter1` and `/lab/novel` render the
+> same `@/components/novel/Chapter` with a `lab` flag — a forked "official"
+> copy would drift from the thing that was actually tested. `lab` turns on the
+> variant chip, the reveal-mode toggle, `?open=`, `?reveal=` and `noindex`; a
+> reader should never be handed a different experience because of something
+> poked at in an experiment.
+>
+> The chat UI is unchanged and is staying. Back is **swipe down** — on the
+> paper to the cover, and by pulling down at the top of the thread to the
+> paper. The arrow is a visible fallback, not the mechanism.
+
+Some scenes cannot be established in dialogue. *"The museum basement smelled of
+dust and old electricity"* is not a text message, and faking it as one (*"omg
+this basement smells insane"*) buys atmosphere by making a character stupid. So
+prose keeps the establishing beat — and the problem becomes the handoff, which
+must not read as a format change.
+
+**The answer was already in the palette.** `theme.ts` calls `PAGE` *"the warm
+page you read on"*; the chat is a lit screen in a dark room. So the transition is
+literal and needs no explaining: **the paper darkens, a phone lights up on it,
+and the conversation is already on the phone.** Three taps, no typing, and the
+reader ends up holding what Starlax is holding.
+
+**Two pages, one tap each, and no buttons anywhere.**
+
+- **Cover** — art, chapter, title, and `tap to begin` as a *hint*, not a pill.
+- **Paper** — the paragraph, drop cap, warm ground. Keep it *short*: anything
+  stated here is something the toys no longer get to reveal. It ends on the line
+  that puts the phone in her hand — **and then the phone is lying there on the
+  page.** Tapping it takes the room to `#08070f`, leaves the phone the only lit
+  thing, and morphs it open, all in one motion (~1.2s).
+
+**The phone was a whole page of its own and should not have been.** It appeared,
+sat for 1.2s and left again without the reader doing anything — 2.3 seconds of
+watching on every single read. The morph already carries the meaning, so the
+dwell bought nothing but a wait. Defending it as "a transition, not a screen"
+was the tell: if it is a transition it has no business being a page.
+
+**Putting it on the paper is what gives it a job — it is the SIGN.** A sign says
+what happens next, which a gesture never can, and an *object* says it better
+than a pill does: a phone under "Starlax got out her phone" needs no label. The
+whole screen is still the tap target, so nobody has to aim at it, and both the
+cover's hint and the phone are real `<button>`s underneath so a keyboard or
+screen reader has something to press. **No pills in the opening.**
+
+**The morph is a real shared element, and the header is the right one to share.**
+The phone card's header and the chat's own header have the same `layoutId`, so
+one *becomes* the other. Not the first bubble — the reader **is** Starlax, so a
+notification of her own message would be a lie.
+
+Rules this establishes:
+
+1. **A screen the reader does not act on should not be a screen.** Ask it of
+   anything that appears and leaves on its own: what is it *for*? If the answer
+   is "it looks nice on the way past", fold it into the transition it is
+   decorating. Two taps of reading now cost 1.2s of animation instead of 2.3s,
+   and nothing was lost — the morph was always the part that meant something.
+2. **Prefer an object to a label.** A phone drawn on the page says "open this"
+   better than a pill saying *open it →*, and it belongs to the story rather
+   than to the interface.
+3. **Warm is the story, blue is the machine.** The cover and paper pills are
+   amber and ink; blue arrives only when the phone does.
+4. **Reconcile the two cursors on restore, and block 0 is not progress.**
+   Static counts in **blocks**, the timed modes count in **beats**, and a saved
+   place only ever fills in one of them — so a reader four blocks into the
+   chapter in `static` who opened it in `dots` restored with `at: 0` and landed
+   on ONE bubble, frozen on "continue when you're ready". It looked like a dead
+   chat rather than a typing one. Take whichever cursor is furthest and derive
+   the other. But `BLOCK_ENDS[0]` is **6, not 0**, so a saved block of `0` must
+   count as *no* progress — otherwise a brand-new reader is "restored" past the
+   first block and never sees the opening at all. React double-invokes effects
+   in development, so the restore effect sees the empty `{block: 0, at: 0}` its
+   own save effect just wrote; the maths has to be idempotent.
+5. **Progress is proven by the toys, not by the clock — and fixing the writer
+   does not fix what it already wrote.** The build whose playback ran behind
+   the cover saved `{block: 0, at: 6}` on every device that loaded it, so after
+   the fix those readers *still* restored past the first block and watched it
+   arrive complete and silent instead of typing itself out — the bug report
+   was a screenshot of six bubbles and "flip the switch ↑". A cursor is only a
+   number some earlier build wrote; the **toys** are the record of what the
+   reader actually did. So a save with every toy untouched counts as no
+   progress, whatever its cursor says, and the next plain load rewrites it
+   clean — nobody has to clear their site data. Distrust **only** that case: a
+   reader who erased their drawing after passing its gate is genuinely further
+   on than their toys can prove, and clamping them to it would cost real
+   progress.
+6. **A returning reader never sees the opening** — but `?opening=1` replays it.
+   Mid-chapter means coming back, not arriving, so the restore skips the cover;
+   without a door back that is a **one-way trapdoor**, and once anyone has read
+   a line of the chapter the opening becomes impossible to see again — to
+   review, to show someone, or to re-read from the top. `?opening=1` forces the
+   whole sequence and does **not** wipe progress: you replay the way in and land
+   back where you were. It beats `?reveal=` too.
+7. **`?restart=1` reads it again from the top — and without it the chapter can
+   only be read once.** Resuming is right for a reader coming back to a book,
+   and wrong for every other reason anyone opens the page: to review it, to
+   show it to someone, to check a change. For those, "your place" is a wall of
+   already-read messages dumped on arrival — **growing with every chapter you
+   get through, and never typing a word, because typing only happens ahead of
+   your place.** That is what "it is still dumping everything together" meant,
+   three reports running, while every fresh-reader test passed. `?opening=1` is
+   not this door: it deliberately keeps your place. `?restart=1` clears the
+   save outright, toys included, because reading from the top means playing
+   them again.
+8. **`?reveal=` skips it.** That URL is a direct link to one thread mode: a lab
+   entry point, not a reader's first arrival.
+9. **Let the morph land before the thread paints,** or there is nothing to see it
+   against. ~430ms. Use a **CSS transition driven by state, not framer's
+   `animate`** — inside the `LayoutGroup` that drives the morph, an opacity
+   animation on the same subtree gets overridden and the thread stays invisible
+   for good. (`initial` is no use either: `main` is *hidden*, not unmounted.)
+10. **Scene transitions are exempt from "animation competes with content."** That
+   rule is about messages arriving *while you read*. Nothing is being read here —
+   this motion carries meaning rather than competing with it. Every movement
+   still waits for a tap.
+
+### ⭐ Approved to keep: the overflow chapter — and nothing else yet
+
+**`/lab/overflow` ("A Number Can Run Out of Room") is the only thing built so
+far that is approved to keep, and the only one eligible to graduate out of the
+lab.** That is the author's call, in their words. It is **locked as it stands**
+(its script ends on *"nova is asleep under it"* 🐱): no additions, no
+"improvements", no codas, without their explicit sign-off. (Signed-off change
+so far: its cover twinkles instead of snowing — *"the snow screen is
+overused"* — and the four "1"s drifting off the diesel price are gone from
+the art: a trail of copies of one digit read as *"lots of 1s, they look
+strange"*, and it gave away the first toy's punchline. And, at the author's
+suggestion, the price sign shows its leading digit **overflowing** as the
+nursery song *Ten in the Bed*: 9.99 + 1¢ is ten dollars, "roll over", and
+the 1 tips out of the sign and lies on the floor under it; the chat adds the
+song and Flamey's true coda that engineers really call it a rollover. Then
+**shortened**, at the author's request after a kid read it: *"too long and
+gets repetitive soon"* — 109 messages and four toys became 44 and three.)
+
+**Keep every chapter short — one idea, each costume gets ONE joke and moves
+on.** The overflow chapter was approved at 109 messages, and a kid reading it
+found it long and repetitive, which the adults reading it had not. Showing the
+same shape four times, each followed by a history lesson, is what an adult
+finds thorough and a kid finds done-already. Three costumes is plenty; a
+fact that is true and funny but is the *fourth* example of the same thing is
+a cut, not a keeper (it goes in the joke list as `cut`).
+
+**The button the story waits on glows.** A kid did not realise the +1¢
+button was something to press — an amber box beside two others says nothing.
+`Push` takes `beckon`: it breathes a glow until it has done its job, only one
+button beckons at a time, and it stops the moment it is pressed (reduced
+motion: a steady glow). This is the one perpetual motion allowed on a toy,
+because it ends when the reader acts — and it is **glow only, never size**: a
+swelling version made the button a moving target, which the walkthrough test
+caught as "element is not stable" before any thumb did.
+
+**The footer's gate hint is a BUTTON, and it names the button to press.**
+"push it above 9.99 does not work" was a kid tapping the footer: an amber
+*"push it past 9.99 ↑"* sitting where a thumb rests looked exactly like the
+thing to press, and it was a `<p>` — a dead control. Now tapping it brings the
+live toy (`[data-live-toy]`) into view and flashes the button that is
+beckoning, or the whole card if none is. And every gate says what to TOUCH,
+not what to achieve: *"tap +1¢"*, not *"push it past 9.99"*. Ruled out on the
+way, so nobody chases them again: the +1¢ button itself worked under a real
+touch tap on the production build, on screen, every time. Two smaller traps
+found beside it — after the roll-over the sign sat at 0.00 and the only reset
+was 9.90, so seeing it twice cost 999 taps (it is **↺ 9.99** now); and the
+lab's reveal-mode chip read *"••• typing"* in the header, where a chat app
+shows status, while the story was actually waiting on the reader (it reads
+*"reveal: typing"* now).
+
+**Emoji are part of each voice.** The chats read flat without them. Starlax
+texts like a kid (⛽😳😂🤯); Flamey is a dry robot and uses one when he is
+being dramatic (🤖😬🙄🙃); Nova only ever says 🐱. A handful per block, on
+the line that has a feeling in it — not one on every bubble.
+
+**An approved chapter is finished — a new idea gets a new chapter.** This rule
+exists because it was broken: the Pac-Man level-256 scene was bolted onto the
+end of the approved overflow chapter as a surprise coda. It crowded a chapter
+the author already liked ("do not ruin it"), and it buried the new scene 110
+messages deep, where it was never found. It now lives at `/lab/level256` as
+its own chapter, and the overflow chapter was restored byte for byte.
+
+**When you offer a choice, say which one you took.** "Here, or in a later
+chapter?" answered with "surprise me" is still a choice — and choosing "here"
+silently meant the author spent three rounds looking for a chapter that did
+not exist.
+
+### A chapter is data; `Chapter.tsx` is the engine
+
+**`src/components/novel/chapters/*` — one `ChapterDef` per chapter, handed to
+`@/components/novel/Chapter`.** A chapter is its `opening` copy, its `script`,
+its `ending`, and a `toys` module: the starting state, a `gate(toy, state)`
+that says what the reader still has to do, and a `render(toy, state, set)`.
+Nothing about a chapter lives in the engine any more.
+
+- **Never fork the reader to add a chapter.** This is the same rule as "one
+  implementation, two doors", one level up: a copied `Chapter.tsx` inherits
+  today's bug fixes and none of tomorrow's. Every hard-coded thing found during
+  the second chapter — the exit href, the `<title>`, the end-of-chapter line —
+  was invisible until there were two.
+- **Toys are saved flat, beside the cursor** (`{...toys, block, at}`), so the
+  shape Chapter One has been writing since it shipped still reads back. Adding
+  a chapter must never orphan a reader's progress or their drawing.
+- **"Progress is proven by the toys" is generic now:** `toysTouched` compares
+  the save against the chapter's own `initial`, so a new chapter gets that
+  protection without thinking about it.
+- Each chapter owns a **storage key**; `?restart=1` clears only that one.
+- **One machine across several cards:** `render(toy, s, set, { live })` —
+  `live` is true only for the newest toy card in the thread. A chapter whose
+  cards are all the same game (`/lab/level256`) runs its clock and controls
+  on the live card only and lets older cards step aside, so there is never a
+  second cat or a second clock. Chapters of different toys can ignore it.
+
+## Writing principles
+
+1. **The joke IS the lesson.** The best material teaches while it's being funny —
+   "*If they have eggs, buy a dozen*" returning twelve loaves of bread *is* the
+   conditionals lesson. Prefer load-bearing jokes to decorative puns.
+2. **Let the kid feel smart.** The reader should get there a beat before the
+   character does. Flamey being one step behind Starlax is the delivery mechanism.
+3. **Never explain a joke.** If it needs explaining, let the mini-game explain it
+   by accident. A `<Beat />` — white space — is how a punchline gets its timing.
+4. **Callbacks over one-liners.** A gag planted in Chapter 1 that pays off in
+   Chapter 7 makes the book feel like a world instead of a textbook with stickers.
+5. **The story never quizzes.** The door doesn't open, or Boxy won't move, until
+   the concept clicks. Failure should always be funny.
+6. **Say true things.** Grace Hopper's moth, silicon being sand, 1024-not-1000 —
+   kids love that these are real. Never fake a fact for a gag.
+7. **One idea per chapter, told through something the kid already knows.**
+   Write the chapter as one sentence a kid can hold before writing a line of
+   it — *"the game paints the maze by numbers; on level 256 it scribbled over
+   half; so we write them back."* Then find the thing they already own that
+   carries it (paint-by-numbers). The first telling of level 256 had a great
+   hook and three ideas (memory, colour hacking, "values vs behaviour"),
+   dropped its hook after one card, and ended on a lecture — the author could
+   not follow it. Give a character a **want**, let the toys be the steps
+   toward it, and end on a **win**. And when the idea is about a game, **let
+   them play it before you show them how it works** — the second telling of
+   level 256 showed the maze as numbers only once it was already broken, so
+   the reader never saw a healthy one, never played it, and "left" and
+   "right" meant nothing.
+8. **Model on real games; do not name them.** The author's call, to steer
+   clear of trademark worries: a bug borrowed from a famous game becomes
+   CATVENTURE's own, and a true line may say "the most famous maze game ever
+   had this exact bug" without naming it. And the book's cats are not players —
+   a cat *in* the game is a hero; a cat *playing* it (Nova at the controls)
+   read as strange.
+9. **A number a character reads out must be the number on the screen.** Build
+   it from the same data the card draws. A draft had Starlax read "203" while
+   the screen showed 229 — a kid would hunt for 203 and never find it.
+
+## How content is represented
+
+Content types have distinct shapes on the page so a kid can tell them apart
+without being told. Use these primitives from `src/components/world/prose.tsx`
+rather than raw `<p>` tags:
+
+| Primitive | For |
+|---|---|
+| `<Story>` | narration (`opening` adds the drop cap) |
+| `<Line who="flamey\|starlax\|evergreen\|boxy\|nova">` | dialogue, colour-coded per speaker |
+| `<Slide>` | anything Evergreen projects — this is where rules live |
+| `<Beat>` | the pause before a punchline |
+| `<Play>` | something to fiddle with |
+| `<Forge>` | a mini-game that repairs the reader's real cartridge |
+| `<TrueStory>` | real history |
+
+**The Game Forge is the reward loop.** Each Forge stage produces a real,
+persisted piece of the reader's own copy of CATVENTURE (localStorage). The sprite
+they paint in Chapter 4 shows up in the map's HUD and in Chapter 0's cabinet.
+Their game visibly assembles as they read — so new Forge stages must persist and
+be surfaced elsewhere, not just play locally.
+
+## Architecture
+
+- `src/components/world/` — the shared world: `theme.ts` (palette/fonts),
+  `buildings.tsx`, `prose.tsx`, `ChapterShell.tsx`, `CampusMap.tsx`, `CartridgeHud.tsx`
+- **`CHAPTERS` in `buildings.tsx` is the single source of truth** for what exists,
+  what's readable, where it sits on the map and what it restores. The map, chapter
+  headers and next-chapter nav all read from it — adding a chapter is one entry
+  plus a page.
+- `src/pages/chapterN/index.tsx` wraps its chapter component in `<ChapterShell id="chapterN">`.
+- Chapters not yet written stay in `CHAPTERS` with `open: false` — they render on
+  the map behind "under restoration" tape. The roadmap is part of the fiction.
+- `src/pages/chapterN/chat.tsx` holds the evening texting scene (`ChatRoom`).
+
+## Conventions
+
+- Pixel font is `VT323` (`PIXEL_FONT` in `theme.ts`), loaded in `_document.tsx`.
+- Animation is `framer-motion`. Any generated art (stars, etc.) must be
+  **deterministic** — no `Math.random()` at render, it causes hydration mismatch.
+- **Falling things use the book's own `react-snowfall`** (`src/react-snowfall/`),
+  the engine already on the deployed cover — see `BinarySnow.tsx`. A CSS
+  reimplementation was tried and binned: linear `translateY` loops read as a
+  screensaver, because what makes snow look real is that no two flakes agree
+  about anything. **Feed it different images rather than rewriting it** — and
+  they must be real `HTMLImageElement`s, because `Snowflake.draw()` gates on
+  `image.complete`, so a canvas fails that check *silently* and every flake
+  falls back to a default grey circle.
+- **Snow is Chapter One's, not every chapter's.** Binary snow on every cover
+  stopped meaning anything. A chapter whose subject moves gets its own living
+  cover through `opening.art` (drawn instead of the image, and no snow): the
+  level-256 cover is CATVENTURE in **attract mode** — the cat clears 253 and
+  254 by itself and stops on *LEVEL 255 · READY?*, the premise told before a
+  word is read. It must be deterministic and settle to a still (reduced motion
+  jumps straight to it). A night cover whose art should stay the thing you
+  look at gets **twinkling stars** (`openings/TwinkleCover.tsx`) — the overflow
+  chapter's. Stars go only in open sky (`sky` / `avoid` rectangles in the
+  art's own 1024×1400 space), and the sky a *phone* shows is listed first:
+  its crop is x 188–836, so on a cover with a sign down the middle the first
+  try put 13 of 44 stars on screen.
+- Interactive components own their own state and persist to localStorage under
+  `gameforge.*` keys.
+
+## Working agreements
+
+- Temp files (screenshots, dev logs, scratch scripts) go in the repo's `tmp/`
+  folder — e.g. `agent-browser screenshot tmp/foo.png`, `npm run dev > tmp/dev.log`.
+  Never `/tmp` or a system scratchpad. `tmp/` is gitignored.
+- Use relative paths in bash commands — absolute paths trigger permission prompts
+  via the iMessage bridge.
+- Verify visual work in a real browser (`agent-browser`) before calling it done.
+- **Hand back with the link, and nothing after it.** Any reply that finishes a
+  piece of work and waits for it to be looked at **ends with the URL** —
+  literally the last thing, with **no trailing sentence, caveat or sign-off
+  after it**. Putting the link first in a closing paragraph and then explaining
+  it still breaks this rule: everything the reader needs to know goes *above*
+  the link, and the link goes last so a thumb finds it without scrolling back.
+  - **Deep link to the page that changed** (`…/lab/novel`), never the site root.
+    Nobody should have to navigate to the thing they were just told about.
+  - **Say how to open it above the link** when it matters — and remember the
+    person checking has read the page before, so a plain link lands them on
+    their **saved place**, not on the thing that changed. To review the opening
+    the link must carry **`?opening=1`**; `?reveal=` picks a thread mode and
+    skips the opening. Handing over a plain `/lab/novel` to review the cover is
+    a broken hand-off: it worked once, on a device that had never seen it.
+  - **To review the CHAPTER, the link is `?restart=1`.** A reviewer is never a
+    first-time reader — they have read it before, by definition — so a plain
+    link resumes and dumps their history on them instead of showing the thing
+    you just changed. Three separate reports of "it dumps everything" were this
+    hand-off, not the code under discussion.
+  - **To review a MOMENT deep in a chapter, the link is `?from=<mark>`.** A
+    chapter's top is the wrong door for a scene 110 messages in: the Pac-Man
+    level-256 coda was handed over as `/lab/overflow`, never reached, and came
+    back as "where is the pac man one?". Name the moment with a
+    `{ kind: 'beat', mark: '…' }` in the script and give each toy a `played`
+    state in its `ChapterDef`; `?from=` (lab only) plays every earlier toy,
+    makes the thread before the mark history, and types on from there. It
+    replaces that chapter's saved place. Anything worth showing someone gets a
+    mark **and** its own row on the `/lab` index. (That scene has since moved
+    to its own chapter, `/lab/level256` — the better fix. A link into the
+    middle of a chapter is for reviewing a moment, not a substitute for a
+    scene that deserved its own door.)
+  - **Arriving at the right index is not landing on the moment.** The first
+    `?from=` set the cursor correctly and every automated check passed — while
+    the thread opened at its *top*, 101 messages above, showing the chapter's
+    first line, which read as a link to the start. The test had clicked "keep
+    reading" for the reader. So after measuring, **open the link and touch
+    nothing**, then look at what is on screen.
+  - **Test what they will run, not what is convenient.** Every check was
+    against `npm run dev` while the report was about the deployed build, and
+    every check was of a *fresh* reader while the reporter had saved progress.
+    Both gaps hid the same bug for three rounds. Build it, serve it
+    (`npx next start`), and seed the reader state the reporter actually has.
+  - **A dev-server number is not a baseline.** React StrictMode runs every
+    effect twice in dev, and the doubled restore nudged playback one beat past
+    a saved place: the restore test read 38 bubbles on dev and 37 on the
+    production build for identical code. Production is what readers get, and
+    it was the one doing what the design says (come back HELD).
+  - **Never `pkill -f` a pattern your own command contains.** `-f` matches the
+    whole command line, so `pkill -f "next dev"` inside a script that says
+    "next dev" kills the script. Match the server's process (`next-server`).
+  - **A seeded test can be a lie.** Writing localStorage from a page that is
+    already running the component lets its own save effect overwrite the seed
+    before the next navigation — the run then "passes" while measuring a fresh
+    reader. Seed from a page that does not mount the thing under test, and
+    assert the seed stuck before measuring.
+  - **Never claim the deploy succeeded.** Pushing to `main` only *triggers* the
+    Amplify build, and this environment cannot reach `amplifyapp.com` — the
+    egress proxy answers 403 to CONNECT, so the live page cannot be fetched from
+    here to check. Say what was verified locally, and how to tell the new build
+    apart from the old — above the link.
+
