@@ -625,6 +625,21 @@ because it ends when the reader acts — and it is **glow only, never size**: a
 swelling version made the button a moving target, which the walkthrough test
 caught as "element is not stable" before any thumb did.
 
+**The footer's gate hint is a BUTTON, and it names the button to press.**
+"push it above 9.99 does not work" was a kid tapping the footer: an amber
+*"push it past 9.99 ↑"* sitting where a thumb rests looked exactly like the
+thing to press, and it was a `<p>` — a dead control. Now tapping it brings the
+live toy (`[data-live-toy]`) into view and flashes the button that is
+beckoning, or the whole card if none is. And every gate says what to TOUCH,
+not what to achieve: *"tap +1¢"*, not *"push it past 9.99"*. Ruled out on the
+way, so nobody chases them again: the +1¢ button itself worked under a real
+touch tap on the production build, on screen, every time. Two smaller traps
+found beside it — after the roll-over the sign sat at 0.00 and the only reset
+was 9.90, so seeing it twice cost 999 taps (it is **↺ 9.99** now); and the
+lab's reveal-mode chip read *"••• typing"* in the header, where a chat app
+shows status, while the story was actually waiting on the reader (it reads
+*"reveal: typing"* now).
+
 **Emoji are part of each voice.** The chats read flat without them. Starlax
 texts like a kid (⛽😳😂🤯); Flamey is a dry robot and uses one when he is
 being dramatic (🤖😬🙄🙃); Nova only ever says 🐱. A handful per block, on

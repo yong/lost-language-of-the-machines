@@ -56,11 +56,13 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
     initial: { cents: 999, pumpWrapped: false, year: 0, wideYear: false, score: 230, bytes: 1 },
     gate: (toy, s) => {
       switch (toy) {
+        // Each gate NAMES THE BUTTON to press. "push it past 9.99" told a kid
+        // what to achieve but not what to touch, and they tapped the hint.
         // Each gate asks for the moment the box overflows, never for an answer.
         // Failing is impossible; only stalling. (CLAUDE.md: the story never quizzes.)
-        case 'pump': return s.pumpWrapped ? null : 'push it past 9.99';
-        case 'year': return (s.year as number) >= 3 ? null : 'keep turning the year';
-        case 'score': return (s.score as number) < 256 ? 'score past 255' : s.bytes === 2 ? null : 'give it another byte';
+        case 'pump': return s.pumpWrapped ? null : 'tap +1¢';
+        case 'year': return (s.year as number) >= 3 ? null : 'tap next year';
+        case 'score': return (s.score as number) < 256 ? 'tap +50 points' : s.bytes === 2 ? null : 'tap add a byte';
         default: return null;
       }
     },

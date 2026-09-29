@@ -55,10 +55,13 @@ type Reveal = 'static' | 'dots' | 'stream';
 /** `dots` first: the winner leads, so anything that reaches for the head of
  *  this list reaches for typing. The lab's chip cycles in this order. */
 const MODES: Reveal[] = ['dots', 'static', 'stream'];
+// Says what it is: a lab switch. "••• typing" sat in the header exactly where
+// a chat app shows STATUS, so it read as Flamey typing while the story was
+// really waiting on the reader to press something.
 const MODE_LABEL: Record<Reveal, string> = {
-  static: 'static',
-  dots: '••• typing',
-  stream: 'word by word',
+  static: 'reveal: static',
+  dots: 'reveal: typing',
+  stream: 'reveal: word by word',
 };
 
 const WORD_MS = 55;
@@ -591,6 +594,22 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
   // which is the worst answer a control can give. It is also the same rule we
   // already keep during a hold ("the toy stays live, the story waits"); having
   // it die one beat later was that rule with an expiry date.
+  /** The footer's gate hint, tapped: bring the live toy into view and flash
+   *  the button it is waiting on (a toy marks it `.beckon`), or the whole card
+   *  if it has none. Web Animations, so nothing re-renders. */
+  const pointAtToy = () => {
+    const card = scroller.current?.querySelector<HTMLElement>('[data-live-toy]');
+    if (!card) return;
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const target = card.querySelector<HTMLElement>('.beckon') ?? card;
+    target.animate(
+      [{ transform: 'translateX(0)', filter: 'brightness(1)' }, { transform: 'translateX(-5px)', filter: 'brightness(1.6)' },
+       { transform: 'translateX(5px)', filter: 'brightness(1.6)' }, { transform: 'translateX(-3px)', filter: 'brightness(1.3)' },
+       { transform: 'translateX(0)', filter: 'brightness(1)' }],
+      { duration: 520, delay: 250, easing: 'ease-in-out' },
+    );
+  };
+
   // The newest toy card in the thread — the one the reader is playing with now.
   const liveToyAt = shown.reduce((last, b, i) => (b.kind === 'toy' ? i : last), -1);
 
@@ -598,6 +617,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     <div
       onClick={(e) => e.stopPropagation()}
       role="presentation"
+      data-live-toy={i === liveToyAt ? '' : undefined}
       className="my-3 cursor-auto rounded-2xl border border-amber-500/30 bg-[#181528] p-3"
     >
       <div className="mb-2 text-center text-[0.625rem] uppercase tracking-widest text-amber-400/80">{b.label}</div>
@@ -833,13 +853,23 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
                     waiting on the reader, so nothing is competing with reading.
                     A still line of small text here got missed. */}
                 {gate ? (
-                  <p className="flex items-center gap-1.5 text-center text-sm text-amber-300">
+                  // A BUTTON, not a caption. It was a <p>: amber, at the
+                  // bottom where a thumb rests, and a kid tapped it — "push it
+                  // above 9.99 does not work" — because it looked exactly like
+                  // the thing to press and did nothing. Now it shows the way:
+                  // the live toy comes into view (the reader asked, so this is
+                  // not scrolling FOR them) and the button it is waiting on
+                  // flashes.
+                  <button
+                    onClick={pointAtToy}
+                    className="flex min-h-11 items-center gap-1.5 px-3 text-center text-sm text-amber-300"
+                  >
                     {gate}
                     <motion.span
                       animate={{ y: [0, -4, 0] }}
                       transition={{ duration: 1.1, repeat: 3, ease: 'easeInOut' }}
                     >↑</motion.span>
-                  </p>
+                  </button>
                 ) : held ? (
                   // The toy above is still live. Play with it as long as you
                   // like; the story waits.
