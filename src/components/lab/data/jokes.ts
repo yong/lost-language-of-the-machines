@@ -50,6 +50,12 @@ export const JOKES: Joke[] = [
     why: 'The whole chapter in one image, and it is the cover. A price pinned at the top of its display is more unsettling than a wrong one, and it poses the question instead of answering it: the reader finds out what the next cent does by pressing it.',
   },
   {
+    id: 'ten-in-the-bed',
+    chapter: 6, status: 'live', anchor: true,
+    text: '9.99 and one more cent is TEN dollars, and the leading 1 tips out of the sign onto the floor. “Where did the ten go?” — “It fell out of bed. Ten in the bed, and the little one said roll over. So they all rolled over, and one fell out.” — “That is a song for babies.” — “…It is also what engineers really call it. A rollover.”',
+    why: 'The author’s idea: show the leading digit OVERFLOWING with one picture every kid already owns. Ten in the bed is literally ten, and "roll over" is the real word (odometers roll over) — so the nursery song is the lesson, not a decoration. The toy draws it: the 1 squeezes in at the edge, falls out, and stays lying under the sign.',
+  },
+  {
     id: 'they-lied-to-the-sign',
     chapter: 6, status: 'live', anchor: true,
     text: '“In 2008 the price of fuel went past 3.99 and the pumps could not print a 4.” — “What did they do?” — “Sold it half a gallon at a time, so the number stayed small.” — “They LIED to the sign.” — “They lied to the sign.”',

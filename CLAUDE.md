@@ -600,8 +600,12 @@ lab.** That is the author's call, in their words. It is **locked as it stands**
 so far: its cover twinkles instead of snowing — *"the snow screen is
 overused"* — and the four "1"s drifting off the diesel price are gone from
 the art: a trail of copies of one digit read as *"lots of 1s, they look
-strange"*, and it gave away the first toy's punchline. Script and toys are
-unchanged since 3bb58ce.)
+strange"*, and it gave away the first toy's punchline. And, at the author's
+suggestion, the price sign shows its leading digit **overflowing** as the
+nursery song *Ten in the Bed*: 9.99 + 1¢ is ten dollars, "roll over", and
+the 1 tips out of the sign and lies on the floor under it; the chat adds the
+song and Flamey's true coda that engineers really call it a rollover.
+Nothing else in the script or toys has changed since 3bb58ce.)
 
 **An approved chapter is finished — a new idea gets a new chapter.** This rule
 exists because it was broken: the Pac-Man level-256 scene was bolted onto the

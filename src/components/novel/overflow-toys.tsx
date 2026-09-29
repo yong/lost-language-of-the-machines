@@ -7,7 +7,8 @@
 // Thumb notes (CLAUDE.md): the raw px below are TAP sizes and stay px on
 // purpose — a 44px target is a physical dimension and must not move with the
 // reader's font setting. Everything carrying text is rem or cqw.
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
@@ -47,20 +48,48 @@ const Window: React.FC<{ text: string; colour: string; size?: number }> = ({ tex
 
 // ── 1. the price sign ───────────────────────────────────────────────────────
 // Four windows. Nine dollars ninety-nine is the largest thought it can have.
+//
+// One more cent is TEN dollars, and ten needs a window the sign does not have.
+// So the picture is the nursery song: ten in the bed, the little one said
+// "roll over", they all rolled over and one fell out. The leading 1 squeezes
+// in at the edge, tips over and drops out of the sign, and it stays lying on
+// the floor under it — the lost digit is something you can SEE, not a
+// sentence. ("Roll over" is also what engineers really call this.)
 
 export const PumpToy: React.FC<{
   cents: number; wrapped: boolean; onChange: (cents: number, wrapped: boolean) => void;
 }> = ({ cents, wrapped, onChange }) => {
+  // Counts roll-overs seen in THIS visit, so each one replays the fall. A
+  // restored reader who already rolled it over finds the 1 lying there, still.
+  const [falls, setFalls] = useState(0);
+  const still = useReducedMotion();
   const bump = (n: number) => {
     const next = cents + n;
+    if (next > 999) setFalls((f) => f + 1);
     onChange(next % 1000, wrapped || next > 999);
   };
   const shown = `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`;
   const rolled = cents < 100 && wrapped;
   return (
     <div>
-      <div className="mx-auto max-w-[260px]">
+      {/* the floor under the sign is always reserved, so nothing jumps when
+          the 1 lands on it */}
+      <div className="relative mx-auto max-w-[260px] pb-[16cqw]" style={{ containerType: 'inline-size' }}>
         <Window text={shown} colour={rolled ? GREEN : RED} size={30} />
+        <div className="absolute inset-x-2 bottom-[5cqw] h-px bg-white/10" />
+        {wrapped && (
+          <motion.span
+            key={falls}
+            aria-hidden
+            className="pointer-events-none absolute"
+            style={{ left: '2cqw', top: '1cqw', fontFamily: PIXEL_FONT, fontSize: '30cqw', lineHeight: 1, color: '#fbbf24', transformOrigin: '50% 90%' }}
+            initial={falls === 0 || still ? false : { x: '0cqw', y: '0cqw', rotate: 0 }}
+            animate={{ x: ['0cqw', '-1cqw', '1cqw', '14cqw'], y: ['0cqw', '-3cqw', '-3cqw', '28cqw'], rotate: [0, -6, -14, -90] }}
+            transition={{ duration: 1.1, times: [0, 0.2, 0.45, 1], ease: 'easeIn' }}
+          >
+            1
+          </motion.span>
+        )}
       </div>
       <div className="mt-2 flex items-center justify-between text-[0.6875rem] text-gray-500">
         <span>four windows: 9 · 9 · 9 and a dot</span>
@@ -73,7 +102,7 @@ export const PumpToy: React.FC<{
       </div>
       {wrapped && (
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 text-center text-[0.8125rem] text-amber-300">
-          a <span style={{ fontFamily: MONO }}>1</span> fell off the end. there was no window for it.
+          roll over! the <span style={{ fontFamily: MONO }}>1</span> fell out. there was no window for it.
         </motion.p>
       )}
     </div>
