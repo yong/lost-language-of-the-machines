@@ -7,7 +7,7 @@
 //
 // The cover is the real hook: a fuel price sign with four windows, photographed
 // at 9.99, one cent from having nowhere to put the answer. `public/overflow/
-// cover.svg` draws it mid-roll, with the carry climbing off the top.
+// cover.svg` draws it with nothing yet gone wrong: the cover asks the question.
 import { PumpToy, ByteToy, YearToy, ScoreToy } from '@/components/novel/overflow-toys';
 import TwinkleCover from '@/components/novel/openings/TwinkleCover';
 import { OVERFLOW_SCRIPT } from '@/components/novel/chapters/overflow-script';
@@ -19,8 +19,7 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
   opening: {
     image: '/overflow/cover.svg',
     // Twinkling stars, not snow — the author's call ("the snow screen is
-    // overused"). Only in open sky: never over the sign, the drifting 1s or
-    // the palms.
+    // overused"). Only in open sky: never over the sign or the palms.
     art: (
       <TwinkleCover
         image="/overflow/cover.svg"
@@ -28,7 +27,7 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
         // two strips beside the sign and a band above it; fill those first
         sky={[[150, 0, 290, 900], [740, 0, 880, 680], [150, 0, 880, 60], [0, 0, 1024, 900]]}
         count={56}
-        avoid={[[285, 50, 750, 1020], [680, 230, 840, 960], [740, 670, 1024, 1400], [80, 880, 290, 1400]]}
+        avoid={[[285, 50, 750, 1020], [740, 670, 1024, 1400], [80, 880, 290, 1400]]}
       />
     ),
     eyebrow: 'Chapter Six',
