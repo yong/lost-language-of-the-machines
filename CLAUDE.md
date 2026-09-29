@@ -604,8 +604,31 @@ strange"*, and it gave away the first toy's punchline. And, at the author's
 suggestion, the price sign shows its leading digit **overflowing** as the
 nursery song *Ten in the Bed*: 9.99 + 1¢ is ten dollars, "roll over", and
 the 1 tips out of the sign and lies on the floor under it; the chat adds the
-song and Flamey's true coda that engineers really call it a rollover.
-Nothing else in the script or toys has changed since 3bb58ce.)
+song and Flamey's true coda that engineers really call it a rollover. Then
+**shortened**, at the author's request after a kid read it: *"too long and
+gets repetitive soon"* — 109 messages and four toys became 44 and three.)
+
+**Keep every chapter short — one idea, each costume gets ONE joke and moves
+on.** The overflow chapter was approved at 109 messages, and a kid reading it
+found it long and repetitive, which the adults reading it had not. Showing the
+same shape four times, each followed by a history lesson, is what an adult
+finds thorough and a kid finds done-already. Three costumes is plenty; a
+fact that is true and funny but is the *fourth* example of the same thing is
+a cut, not a keeper (it goes in the joke list as `cut`).
+
+**The button the story waits on glows.** A kid did not realise the +1¢
+button was something to press — an amber box beside two others says nothing.
+`Push` takes `beckon`: it breathes a glow until it has done its job, only one
+button beckons at a time, and it stops the moment it is pressed (reduced
+motion: a steady glow). This is the one perpetual motion allowed on a toy,
+because it ends when the reader acts — and it is **glow only, never size**: a
+swelling version made the button a moving target, which the walkthrough test
+caught as "element is not stable" before any thumb did.
+
+**Emoji are part of each voice.** The chats read flat without them. Starlax
+texts like a kid (⛽😳😂🤯); Flamey is a dry robot and uses one when he is
+being dramatic (🤖😬🙄🙃); Nova only ever says 🐱. A handful per block, on
+the line that has a feeling in it — not one on every bubble.
 
 **An approved chapter is finished — a new idea gets a new chapter.** This rule
 exists because it was broken: the Pac-Man level-256 scene was bolted onto the

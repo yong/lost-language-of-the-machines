@@ -5,16 +5,21 @@
 // giving it a second byte — so the concept and the restoration are the same
 // action, which is the book's spine.
 //
+// Three toys, 44 messages: the sign, the year 2000, the score. It was four
+// toys and 109 messages, and a kid who read it found it long and repetitive.
+//
 // The cover is the real hook: a fuel price sign with four windows, photographed
 // at 9.99, one cent from having nowhere to put the answer. `public/overflow/
 // cover.svg` draws it with nothing yet gone wrong: the cover asks the question.
-import { PumpToy, ByteToy, YearToy, ScoreToy } from '@/components/novel/overflow-toys';
+import { PumpToy, YearToy, ScoreToy } from '@/components/novel/overflow-toys';
 import TwinkleCover from '@/components/novel/openings/TwinkleCover';
 import { OVERFLOW_SCRIPT } from '@/components/novel/chapters/overflow-script';
 import type { ChapterDef } from '@/components/novel/chapter-def';
 
 export const CHAPTER_OVERFLOW: ChapterDef = {
-  storageKey: 'gameforge.overflow.v1',
+  // v2: the chapter was cut from 109 messages and four toys to 44 and three,
+  // so an old place in it points at a different line.
+  storageKey: 'gameforge.overflow.v2',
   exitHref: '/lab',
   opening: {
     image: '/overflow/cover.svg',
@@ -41,21 +46,21 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
     handoffLine: 'Starlax got out her phone.',
   },
   ending: {
-    line: 'end of chapter six. the score counter holds 65535 now — and the clocks have until 2038.',
+    line: 'end of chapter six. the score holds 65535 now — a box the cat will not fall out of.',
     next: 'back to the lab →',
     href: '/lab',
   },
   script: OVERFLOW_SCRIPT,
   toys: {
-    initial: { cents: 999, pumpWrapped: false, byte: 250, byteWrapped: false, year: 0, wideYear: false, score: 0, bytes: 1 },
+    // the score starts one press from the edge: 230 + 50 does not fit in a byte
+    initial: { cents: 999, pumpWrapped: false, year: 0, wideYear: false, score: 230, bytes: 1 },
     gate: (toy, s) => {
       switch (toy) {
         // Each gate asks for the moment the box overflows, never for an answer.
         // Failing is impossible; only stalling. (CLAUDE.md: the story never quizzes.)
         case 'pump': return s.pumpWrapped ? null : 'push it past 9.99';
-        case 'byte': return s.byteWrapped ? null : 'keep going past 255';
         case 'year': return (s.year as number) >= 3 ? null : 'keep turning the year';
-        case 'score': return s.bytes === 2 ? null : 'give it another byte';
+        case 'score': return (s.score as number) < 256 ? 'score past 255' : s.bytes === 2 ? null : 'give it another byte';
         default: return null;
       }
     },
@@ -66,13 +71,6 @@ export const CHAPTER_OVERFLOW: ChapterDef = {
             cents={s.cents as number}
             wrapped={s.pumpWrapped as boolean}
             onChange={(cents, pumpWrapped) => set({ cents, pumpWrapped })}
-          />
-        );
-        case 'byte': return (
-          <ByteToy
-            value={s.byte as number}
-            wrapped={s.byteWrapped as boolean}
-            onChange={(byte, byteWrapped) => set({ byte, byteWrapped })}
           />
         );
         case 'year': return (

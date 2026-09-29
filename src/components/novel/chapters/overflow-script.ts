@@ -1,9 +1,17 @@
 // The chat script for "A Number Can Run Out of Room".
 //
-// The chapter has one idea and shows it four times in four costumes: a price
-// sign, a byte, a year, and the cartridge's own score. Nobody ever says the
-// words "integer overflow" — by the fourth costume the reader has met the shape
-// often enough that naming it would be a spoiler of their own conclusion.
+// One idea, three costumes: a price sign, a year, and the cartridge's own
+// score. Nobody ever says "integer overflow".
+//
+// SHORT ON PURPOSE. The first version showed the same trick four times in 109
+// messages, with a history lecture after each; a kid who read it said it was
+// too long and got repetitive fast. Now: the sign (the hook — the 1 falls out
+// of bed), the year 2000 (the famous one, and the best joke), and the score
+// (the repair, and the win). Each costume gets its joke and moves on.
+//
+// Emoji are part of the voice: Starlax texts like a kid (⛽😳😂🤯), Flamey
+// is a dry robot who uses one when he is being dramatic about it (🤖😬🙄),
+// and Nova only ever says 🐱.
 //
 // Voice, per CLAUDE.md: Starlax has her hands on the thing and gets there a
 // beat before Flamey, so the reader (on her side of the glass) gets there
@@ -13,157 +21,66 @@
 import type { Beat } from '@/components/novel/chapter-def';
 
 export const OVERFLOW_SCRIPT: Beat[] = [
-  { kind: 'msg', who: 'starlax', text: 'the price sign on the forecourt' },
+  { kind: 'msg', who: 'starlax', text: 'flamey look at the price sign ⛽' },
   { kind: 'msg', who: 'starlax', text: 'regular 8.99. plus 9.19. premium 9.39.', rush: true },
   { kind: 'msg', who: 'starlax', text: 'diesel 9.99.', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'diesel is dearest. that is normal.' },
-  { kind: 'msg', who: 'starlax', text: 'diesel has been 9.99 since before I was born' },
-  { kind: 'msg', who: 'flamey', text: 'nothing holds still that long' },
-  { kind: 'msg', who: 'starlax', text: 'the other three move every week. that one has never moved once.' },
+  { kind: 'msg', who: 'flamey', text: 'diesel is the dearest. that is normal 🤖' },
+  { kind: 'msg', who: 'starlax', text: 'diesel has been 9.99 since before I was born 😳' },
   { kind: 'msg', who: 'flamey', text: 'so the sign is broken' },
-  { kind: 'msg', who: 'starlax', text: 'that is the thing. I think it is working perfectly.' },
+  { kind: 'msg', who: 'starlax', text: 'I think it is working perfectly. watch 👀' },
 
-  { kind: 'toy', toy: 'pump', label: 'put the price up' },
+  { kind: 'toy', toy: 'pump', label: 'put the price up one cent' },
 
   { kind: 'msg', who: 'flamey', text: 'what did you do', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'I put it up one penny' },
-  { kind: 'msg', who: 'starlax', text: 'nine ninety-nine, and one more cent', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'ten dollars' },
-  { kind: 'msg', who: 'starlax', text: '0.00' },
-  { kind: 'msg', who: 'flamey', text: 'that is not ten dollars' },
-
-  { kind: 'beat' },
-
+  { kind: 'msg', who: 'starlax', text: 'one more cent. that is TEN dollars 💵' },
+  { kind: 'msg', who: 'starlax', text: 'and it says 0.00 😂', rush: true },
   { kind: 'msg', who: 'flamey', text: 'where did the ten go' },
-  { kind: 'msg', who: 'starlax', text: 'it fell out of bed' },
+  { kind: 'msg', who: 'starlax', text: 'it fell out of bed 🛏️' },
   { kind: 'msg', who: 'flamey', text: 'what' },
-  { kind: 'msg', who: 'starlax', text: 'ten in the bed, and the little one said roll over' },
+  { kind: 'msg', who: 'starlax', text: 'ten in the bed, and the little one said roll over 🎶' },
   { kind: 'msg', who: 'starlax', text: 'so they all rolled over, and one fell out', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'that is a song for babies' },
+  { kind: 'msg', who: 'flamey', text: 'that is a song for babies 🙄' },
   { kind: 'msg', who: 'flamey', text: '...it is also what engineers really call it. a rollover.', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'count the windows. nine. nine. nine. and a dot.' },
-  { kind: 'msg', who: 'starlax', text: 'there is no window for a ten.', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'so it cannot think a bigger number' },
-  { kind: 'msg', who: 'starlax', text: 'it can think it' },
-  { kind: 'msg', who: 'starlax', text: 'it cannot HOLD it', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'three windows. 9. 9. 9. no window for a ten.' },
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'flamey', text: 'oh no', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'I know this one', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'in 2008 the price of fuel went past 3.99 and the pumps could not print a 4' },
-  { kind: 'msg', who: 'flamey', text: 'two windows for the dollars. nobody had ever needed a third.' },
-  { kind: 'msg', who: 'starlax', text: 'what did they do' },
-  { kind: 'msg', who: 'flamey', text: 'sold it half a gallon at a time, so the number stayed small' },
-  { kind: 'msg', who: 'starlax', text: 'they LIED to the sign' },
-  { kind: 'msg', who: 'flamey', text: 'they lied to the sign.' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'ok but the cabinet is not a sign' },
-  { kind: 'msg', who: 'flamey', text: 'the cabinet is a row of eight switches' },
-  { kind: 'msg', who: 'flamey', text: 'what is the biggest number that row can hold', rush: true },
-  { kind: 'msg', who: 'starlax', text: '255. all eight up.' },
-  { kind: 'msg', who: 'flamey', text: 'add one.' },
-
-  { kind: 'toy', toy: 'byte', label: 'count it up past 255' },
-
-  { kind: 'msg', who: 'starlax', text: 'they all went out', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'ALL of them. at once.', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'each one carried into the next' },
-  { kind: 'msg', who: 'flamey', text: 'and the last one carried into nothing', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'because there is no ninth switch' },
-  { kind: 'msg', who: 'flamey', text: 'there is never a ninth switch. that is what a byte IS.' },
-  { kind: 'msg', who: 'starlax', text: 'so 255 and one more is zero' },
-  { kind: 'msg', who: 'flamey', text: 'in a box that size, yes.' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'that seems like it would cause problems' },
-  { kind: 'msg', who: 'flamey', text: 'it caused the year 2000' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'the whole year??' },
-  { kind: 'msg', who: 'flamey', text: 'for about forty years people wrote the year with two digits', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'why' },
-  { kind: 'msg', who: 'flamey', text: 'because two cost half as much as four, and there are a lot of years to keep' },
-  { kind: 'msg', who: 'starlax', text: 'ok so 97. 98. 99.' },
-  { kind: 'msg', who: 'starlax', text: 'oh', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'OH', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'people did this with YEARS 😬' },
+  { kind: 'msg', who: 'starlax', text: 'what??' },
+  { kind: 'msg', who: 'flamey', text: 'for forty years computers wrote the year with two digits. 97. 98. 99.' },
+  { kind: 'msg', who: 'starlax', text: 'and after 99...', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'oh no 👀', rush: true },
 
   { kind: 'toy', toy: 'year', label: 'turn it to the year 2000' },
 
-  { kind: 'msg', who: 'starlax', text: 'she is minus eighty-five years old', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'she is not born yet. technically.' },
-  { kind: 'msg', who: 'starlax', text: 'she is NINETY ONE' },
-  { kind: 'msg', who: 'flamey', text: 'the machine disagrees, and the machine is the one doing the paperwork' },
+  { kind: 'msg', who: 'starlax', text: 'she was born in 85 and now she is minus eighty-five 😂', typing: true },
+  { kind: 'msg', who: 'flamey', text: 'not born yet. technically.' },
+  { kind: 'msg', who: 'flamey', text: 'the computer disagrees, and the computer does the paperwork 📄', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'so what happened in the real year 2000' },
+  { kind: 'msg', who: 'flamey', text: 'people spent years fixing every computer on earth first 💸' },
+  { kind: 'msg', who: 'flamey', text: 'and on new year’s day almost nothing broke 🎆', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'so it was never a problem' },
+  { kind: 'msg', who: 'flamey', text: 'that is exactly what everybody said 🙃' },
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'starlax', text: 'what happened' },
-  { kind: 'msg', who: 'flamey', text: 'everybody spent about five years going through every machine on the planet' },
-  { kind: 'msg', who: 'flamey', text: 'hundreds of billions of dollars. giving the year two more digits.', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'did it work' },
-  { kind: 'msg', who: 'flamey', text: 'almost nothing broke' },
-  { kind: 'msg', who: 'starlax', text: 'so there was never a problem' },
-  { kind: 'msg', who: 'flamey', text: 'that is exactly what everyone said.' },
+  { kind: 'msg', who: 'starlax', text: 'wait. CATVENTURE has a score 🕹️' },
+  { kind: 'msg', who: 'flamey', text: 'one byte. eight switches. the most it can hold is 255.' },
+  { kind: 'msg', who: 'starlax', text: 'I have 230 😬', rush: true },
+
+  { kind: 'toy', toy: 'score', label: 'score past 255 — then give it room' },
+
+  { kind: 'msg', who: 'starlax', text: 'it went back to zero and said NEW RECORD 😂', typing: true },
+  { kind: 'msg', who: 'flamey', text: 'it was very proud of itself' },
+  { kind: 'msg', who: 'starlax', text: 'and with two bytes it holds 65535 🤯' },
+  { kind: 'msg', who: 'flamey', text: 'eight switches, and eight more. a box the cat will not fall out of 📦' },
 
   { kind: 'beat' },
 
-  { kind: 'msg', who: 'flamey', text: 'do the work and it looks like there was nothing to do' },
-  { kind: 'msg', who: 'starlax', text: 'that is the worst prize I have ever heard of' },
-  { kind: 'msg', who: 'flamey', text: 'it is the only prize this job gives out' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'ok. the cabinet is doing the sign thing.' },
-  { kind: 'msg', who: 'flamey', text: 'doing it where' },
-  { kind: 'msg', who: 'starlax', text: 'the score. I got 255 points and it said 000.' },
-  { kind: 'msg', who: 'starlax', text: 'and then it said NEW RECORD', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'the score is one byte' },
-  { kind: 'msg', who: 'starlax', text: 'so give it another one' },
-
-  { kind: 'toy', toy: 'score', label: 'give the score another byte' },
-
-  { kind: 'msg', who: 'starlax', text: '65535', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'two bytes. eight switches, and then eight more.' },
-  { kind: 'msg', who: 'starlax', text: 'that is a lot of cat' },
-  { kind: 'msg', who: 'flamey', text: 'it is not forever though' },
-  { kind: 'msg', who: 'starlax', text: 'nothing is' },
-  { kind: 'msg', who: 'flamey', text: 'nothing is. you pick a box you will not fall out of.' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'flamey', text: 'true one. a song called Gangnam Style broke a video counter in 2014.' },
-  { kind: 'msg', who: 'flamey', text: 'it went past 2,147,483,647 views and the number gave up', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'what kind of number is that' },
-  { kind: 'msg', who: 'flamey', text: 'the biggest one that fits in four bytes when a switch is spent on the minus sign' },
-  { kind: 'msg', who: 'starlax', text: 'so they gave it more switches' },
-  { kind: 'msg', who: 'flamey', text: 'eight bytes. that one holds nine quintillion.' },
-  { kind: 'msg', who: 'starlax', text: 'is nine quintillion enough' },
-  { kind: 'msg', who: 'flamey', text: 'for a song, yes.' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'is anything still counting toward an edge' },
-  { kind: 'msg', who: 'flamey', text: 'the clocks' },
-  { kind: 'msg', who: 'starlax', text: 'which clocks' },
-  { kind: 'msg', who: 'flamey', text: 'most of them counted seconds in four bytes', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'they run out on the 19th of January, 2038', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'that is soon' },
-  { kind: 'msg', who: 'flamey', text: 'it was always soon. that is the job.' },
-
-  { kind: 'beat' },
-
-  { kind: 'msg', who: 'starlax', text: 'hey' },
-  { kind: 'msg', who: 'starlax', text: 'so what does diesel actually cost', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'hey. so what does diesel REALLY cost ⛽' },
   { kind: 'msg', who: 'flamey', text: 'more than the sign can say' },
-  { kind: 'msg', who: 'starlax', text: 'how much more' },
-  { kind: 'msg', who: 'flamey', text: 'nobody has checked in two hundred years', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'the sign kept saying 9.99 and everybody believed it', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'nobody has checked in two hundred years. it says 9.99, so everybody believes it 😬', rush: true },
   { kind: 'msg', who: 'starlax', text: 'that is the scariest thing you have said all night' },
-  { kind: 'msg', who: 'flamey', text: 'that is the other half of the job.' },
   { kind: 'msg', who: 'starlax', text: 'nova is asleep under it' },
   { kind: 'msg', who: 'nova', text: '🐱', rush: true },
 ];

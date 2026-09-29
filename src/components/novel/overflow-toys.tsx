@@ -1,4 +1,4 @@
-// overflow-toys.tsx — the four toys for "A Number Can Run Out of Room".
+// overflow-toys.tsx — the three toys for "A Number Can Run Out of Room".
 //
 // Every one of them is the same move in a different costume: a box with a fixed
 // number of windows, and a number pushed one past what fits. The reader never
@@ -15,20 +15,34 @@ const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 const RED = '#ff4d4d';
 const GREEN = '#37f08a';
 
-/** A push button big enough for a thumb. */
-const Push: React.FC<{ onClick: () => void; children: React.ReactNode; tone?: 'amber' | 'ghost'; label?: string }> =
-  ({ onClick, children, tone = 'amber', label }) => (
+/** A push button big enough for a thumb.
+ *
+ *  `beckon` makes it GLOW until it has been pressed — the button the story is
+ *  waiting on. A kid who tried the chapter did not realise the +1¢ button was
+ *  something to press: an amber box sitting beside two others says nothing.
+ *  Only one button beckons at a time, and it stops the moment it has done its
+ *  job, so it never becomes a moving target. Reduced motion: a steady glow. */
+const Push: React.FC<{ onClick: () => void; children: React.ReactNode; tone?: 'amber' | 'ghost'; label?: string; beckon?: boolean }> =
+  ({ onClick, children, tone = 'amber', label, beckon = false }) => (
     <button
       onClick={onClick}
       aria-label={label}
-      className="flex-1 touch-manipulation rounded-lg border px-3 text-[0.9375rem] font-semibold transition-colors active:brightness-125"
+      className={`flex-1 touch-manipulation rounded-lg border px-3 text-[0.9375rem] font-semibold transition-colors active:brightness-125 ${beckon ? 'beckon' : ''}`}
       style={{
         minHeight: 44,
         borderColor: tone === 'amber' ? '#fbbf24' : '#3f3a56',
-        background: tone === 'amber' ? 'rgba(251,191,36,.16)' : '#15122a',
+        background: beckon ? 'rgba(251,191,36,.30)' : tone === 'amber' ? 'rgba(251,191,36,.16)' : '#15122a',
         color: tone === 'amber' ? '#fde68a' : '#a5a1bd',
       }}
     >
+      {beckon && (
+        <style>{`
+          @keyframes beckon { 0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.0), 0 0 8px 2px rgba(251,191,36,.45) }
+                              50% { box-shadow: 0 0 0 5px rgba(251,191,36,.4), 0 0 28px 10px rgba(251,191,36,.75) } }
+          .beckon { animation: beckon 1.4s ease-in-out infinite }
+          @media (prefers-reduced-motion: reduce) { .beckon { animation: none; box-shadow: 0 0 14px 4px rgba(251,191,36,.5) } }
+        `}</style>
+      )}
       {children}
     </button>
   );
@@ -96,7 +110,7 @@ export const PumpToy: React.FC<{
         <span style={{ fontFamily: MONO }}>{cents}¢</span>
       </div>
       <div className="mt-3 flex gap-2">
-        <Push onClick={() => bump(1)} label="put the price up one cent">+1¢</Push>
+        <Push onClick={() => bump(1)} label="put the price up one cent" beckon={!wrapped}>+1¢</Push>
         <Push onClick={() => bump(10)} label="put the price up ten cents">+10¢</Push>
         <Push tone="ghost" onClick={() => onChange(990, wrapped)} label="set the price back to 9.90">9.90</Push>
       </div>
@@ -109,59 +123,7 @@ export const PumpToy: React.FC<{
   );
 };
 
-// ── 2. the byte at the top of its range ─────────────────────────────────────
-// Chapter One's row of eight, one tap from the edge of the world.
-
-export const ByteToy: React.FC<{ value: number; wrapped: boolean; onChange: (v: number, wrapped: boolean) => void }> =
-  ({ value, wrapped, onChange }) => {
-    const carry = value === 0 && wrapped;
-    return (
-      <div>
-        <div className="flex items-stretch gap-2">
-          <div className="flex flex-1 gap-1">
-            {[7, 6, 5, 4, 3, 2, 1, 0].map((bit) => {
-              const on = ((value >> bit) & 1) === 1;
-              return (
-                <div
-                  key={bit}
-                  aria-label={`bit ${7 - bit} ${on ? 'on' : 'off'}`}
-                  className="aspect-square flex-1 rounded border transition-colors"
-                  style={{ minHeight: 30, background: on ? '#fbbf24' : '#0f0d1c', borderColor: on ? '#fbbf24' : '#374151' }}
-                />
-              );
-            })}
-          </div>
-          {/* the switch that is not there. every byte has this missing ninth. */}
-          <div
-            className="flex w-8 items-center justify-center rounded border border-dashed"
-            style={{ borderColor: carry ? '#f87171' : '#2b2740', background: carry ? 'rgba(248,113,113,.14)' : 'transparent' }}
-          >
-            <motion.span
-              animate={carry ? { opacity: [0, 1, 0], y: [0, -14] } : { opacity: 0.25 }}
-              transition={carry ? { duration: 1.1 } : undefined}
-              className="text-[0.75rem]"
-              style={{ fontFamily: MONO, color: carry ? '#f87171' : '#4b5563' }}
-            >
-              1
-            </motion.span>
-          </div>
-        </div>
-        <div className="mt-2 flex items-baseline justify-between" style={{ fontFamily: MONO }}>
-          <span className="text-amber-200">{value.toString(2).padStart(8, '0')}</span>
-          <span className={`text-lg ${carry ? 'text-red-400' : 'text-gray-300'}`}>{value}</span>
-        </div>
-        <div className="mt-3 flex gap-2">
-          <Push onClick={() => onChange((value + 1) & 255, wrapped || value === 255)} label="add one">+1</Push>
-          <Push tone="ghost" onClick={() => onChange(250, wrapped)} label="go back to 250">back to 250</Push>
-        </div>
-        <p className="mt-2 text-center text-[0.6875rem] text-gray-500">
-          eight switches, and no ninth to carry into
-        </p>
-      </div>
-    );
-  };
-
-// ── 3. two digits for a year ────────────────────────────────────────────────
+// ── 2. two digits for a year ────────────────────────────────────────────────
 // The same box, wearing the most expensive costume in computing history.
 
 const YEARS = [97, 98, 99, 0];
@@ -185,7 +147,7 @@ export const YearToy: React.FC<{ at: number; wide: boolean; onChange: (at: numbe
           </div>
         </div>
         <div className="mt-3 flex gap-2">
-          <Push onClick={() => onChange(Math.min(at + 1, YEARS.length - 1), wide)} label="next year">next year →</Push>
+          <Push onClick={() => onChange(Math.min(at + 1, YEARS.length - 1), wide)} label="next year" beckon={at < YEARS.length - 1}>next year →</Push>
           <Push tone="ghost" onClick={() => onChange(0, false)} label="back to 1997">back to &rsquo;97</Push>
         </div>
         {at >= YEARS.length - 1 && (
@@ -201,7 +163,7 @@ export const YearToy: React.FC<{ at: number; wide: boolean; onChange: (at: numbe
     );
   };
 
-// ── 4. the cartridge's score ────────────────────────────────────────────────
+// ── 3. the cartridge's score ────────────────────────────────────────────────
 // The repair. Same bug, and this time the reader owns the machine.
 
 export const ScoreToy: React.FC<{ score: number; bytes: number; onChange: (score: number, bytes: number) => void }> =
@@ -227,9 +189,10 @@ export const ScoreToy: React.FC<{ score: number; bytes: number; onChange: (score
           <span style={{ fontFamily: MONO }}>holds up to {cap - 1}</span>
         </div>
         <div className="mt-3 flex gap-2">
-          <Push onClick={() => onChange(score + 50, bytes)} label="score fifty points">+50 points</Push>
+          <Push onClick={() => onChange(score + 50, bytes)} label="score fifty points" beckon={score < 256}>+50 points</Push>
           <Push
             tone={bytes === 1 ? 'amber' : 'ghost'}
+            beckon={score >= 256 && bytes === 1}
             onClick={() => onChange(score, bytes === 1 ? 2 : 1)}
             label={bytes === 1 ? 'give the score a second byte' : 'take the second byte away'}
           >
