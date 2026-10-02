@@ -184,6 +184,24 @@ their numbers. Mostly about food.
   falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything
   after it along) is a call to make deliberately, so nothing is renumbered here.
 
+### "Two Doors Can Add" 🆕 **BUILT: `/lab/adder`** (logic gates, unnumbered)
+- **The message: logic IS maths.** A machine cannot count, but two doors can
+  add — XOR writes the digit, AND carries the one — and the carries ripple
+  from column to column like dominoes. Told through **carrying the one**, which
+  every kid already does in school sums. Replaces the Ch7 plan below as the
+  way gates are taught: that plan showed what gates *are* (collision) and never
+  what they *do*.
+- **Toys:** the AND door (two chutes; both, or nothing) · the XOR door (one, not
+  both) · CATVENTURE's score as four columns of two doors each — feed the cat a
+  fish, watch each column's XOR and AND decide, and the carry roll on
+  (0111 + 1 is the chain reaction; 1111 + 1 drops the carry off the end, the
+  overflow chapter's roll-over seen from the inside). Each door fills in the
+  four ways in as they are tried — a truth table the reader made.
+- **Jokes:** ice cream AND · XOR pizza · "you just had a pencil" · the true
+  domino adder ("once. then somebody had to stand all 10,000 back up").
+- **Cover:** the score adding to itself in attract mode, stopping on 0111 with
+  the next fish waiting — it asks the question.
+
 ### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
 - **The idea, in one sentence a kid can hold:** *the game paints the maze by
   numbers; on level 256 it scribbled over half the numbers; so we write them

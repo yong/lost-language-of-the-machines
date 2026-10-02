@@ -30,6 +30,7 @@ const EXPERIMENTS: Entry[] = [
   { href: '/chapter1', name: '⭐ Chapter One — THE OFFICIAL READ', note: 'track + typing + binary snow; no switches' },
   { href: '/lab/novel', name: 'Chapter One · with the switches on', note: 'same component, experiment harness enabled' },
   { href: '/lab/overflow', name: '⭐ Chapter Six · A Number Can Run Out of Room', note: 'APPROVED — the keeper, eligible to graduate. integer overflow: the price sign, the byte, Y2K' },
+  { href: '/lab/adder', name: '🆕 Logic Gates · Two Doors Can Add', note: 'new chapter — who does the adding inside CATVENTURE? an AND door, an XOR door, and the carry rolling column to column like dominoes' },
   { href: '/lab/level256', name: '🆕 Level 256 · The Maze Is Made of Numbers', note: 'new chapter — Starlax has played CATVENTURE all week and is on the last level. play it, see it as numbers, beat level 256' },
   { href: '/lab/openings', name: '★ Ways into a chapter', note: 'cover → paragraph → chat — transitions to pick between' },
   { href: '/lab/proto-bit', name: 'The opening · A bit is a light', note: 'binary you draw with — no hex needed' },

@@ -325,7 +325,7 @@ export const JOKES: Joke[] = [
   // ——— Chapter 7 ———
   {
     id: 'ice-cream-and-gate',
-    chapter: 7, status: 'drafted', anchor: true,
+    chapter: 7, status: 'live', anchor: true,
     text: '“Do ALL THREE of you want ice cream?” Bot 1: “I don’t know.” Bot 2: “I don’t know.” Bot 3: “YES!”',
     why: 'The classic three-logicians joke, made kid-legible. Teaches a 3-input AND gate in one beat.',
   },
@@ -343,8 +343,28 @@ export const JOKES: Joke[] = [
   },
   {
     id: 'xor-pizza',
-    chapter: 7, status: 'spare',
+    chapter: 7, status: 'live',
     text: 'XOR can’t handle agreement: “You BOTH want pizza? Then nobody gets pizza.”',
+  },
+
+  // ——— Logic gates · Two Doors Can Add (new, /lab/adder) ———
+  {
+    id: 'you-just-had-a-pencil',
+    chapter: null, status: 'live', anchor: true,
+    text: '1 + 1 in two doors: XOR shuts (the digit is 0), AND opens (carry the one) — 10. “It CARRIED THE ONE.” — “You have done that since second grade. You just had a pencil.”',
+    why: 'The whole message — logic IS maths — landed on the thing every kid already owns: carrying the one in a school sum.',
+  },
+  {
+    id: 'domino-adder-stand-them-back-up',
+    chapter: null, status: 'live', anchor: true,
+    text: '“People once built an adding machine out of 10,000 real dominoes.” — “Did it work?” — “Once. Then somebody had to stand all 10,000 back up.”',
+    why: 'True (a domino binary adder, Manchester Science Festival, 2014). The carry ripple the reader just watched, done at full size — and the joke is the reset.',
+  },
+  {
+    id: 'doors-that-can-count',
+    chapter: null, status: 'live',
+    text: '“You are mostly doors, Flamey.” — “…Doors that can count.”',
+    why: 'Grew out of Evergreen’s “you are mostly doors, young droid” in the Ch7 draft; now it is the chapter’s win line.',
   },
 
   // ——— Chapter 8 ———
