@@ -199,8 +199,11 @@ their numbers. Mostly about food.
   four ways in as they are tried — a truth table the reader made.
 - **Jokes:** ice cream AND · XOR pizza · "you just had a pencil" · the true
   domino adder ("once. then somebody had to stand all 10,000 back up").
-- **Cover:** the score adding to itself in attract mode, stopping on 0111 with
-  the next fish waiting — it asks the question.
+- **Cover:** a signal running through a circuit board. Pulses leave inputs A
+  and B, light the copper on the way into the XOR and AND chips; XOR flashes
+  red and stays dark, AND lights, the CARRY lamp comes on and the carry runs
+  off toward the next column. (The first cover, the score board counting to
+  itself, was "not interesting nor beautiful".)
 
 ### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
 - **The idea, in one sentence a kid can hold:** *the game paints the maze by

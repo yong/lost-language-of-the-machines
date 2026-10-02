@@ -303,37 +303,3 @@ export const AdderToy: React.FC<{
     </div>
   );
 };
-
-// ── the cover: the adder playing to itself ──────────────────────────────────
-// Feeds the cat three fish (0100 → 0111) and stops one fish short of the big
-// ripple, with the next fish waiting: the cover asks the question, the chapter
-// answers it.
-
-export const AdderCover: React.FC = () => {
-  const still = useReducedMotion();
-  const [v, setV] = useState(still ? 7 : 4);
-  const { frame, play } = useRipple((nv) => setV(nv));
-  useEffect(() => {
-    if (still || v >= 7) return;
-    const id = window.setTimeout(() => play(v), v === 4 ? 1100 : 500);
-    return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [v, still]);
-  return (
-    <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 30%, #1d1640 0%, #0d0a1c 60%, #08070f 100%)' }}>
-      <div className="absolute inset-x-0 top-[16%] mx-auto px-6" style={{ maxWidth: 420 }}>
-        <div className="mb-3 text-center" style={{ fontFamily: PIXEL_FONT, fontSize: '1.75rem', color: '#fbbf24', letterSpacing: '0.2em' }}>CATVENTURE</div>
-        <Board digits={frame ? frame.d : bits(v)} carry={frame ? frame.carry : null} did={frame?.did} first={frame?.first} />
-        {v >= 7 && !frame && (
-          <motion.div
-            className="mt-4 text-center text-[2rem]"
-            initial={{ y: -12, opacity: 0 }} animate={{ y: [0, -6, 0], opacity: 1 }}
-            transition={{ y: { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }, opacity: { duration: 0.4 } }}
-          >
-            🐟 <span className="align-middle text-[1rem] text-amber-200">+1 ?</span>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-};

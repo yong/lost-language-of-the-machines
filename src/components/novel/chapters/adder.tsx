@@ -6,7 +6,8 @@
 //
 // GAME PIECE RESTORED: the score's adding. The last two cards are the same
 // machine (CATVENTURE's score), so only the newest card is live.
-import { AdderCover, AdderToy, DoorToy, tried } from '@/components/novel/adder-toys';
+import { AdderToy, DoorToy, tried } from '@/components/novel/adder-toys';
+import CircuitCover from '@/components/novel/adder-cover';
 import { ADDER_SCRIPT } from '@/components/novel/chapters/adder-script';
 import type { ChapterDef, ToyState } from '@/components/novel/chapter-def';
 
@@ -18,7 +19,8 @@ export const CHAPTER_ADDER: ChapterDef = {
   exitHref: '/lab',
   opening: {
     image: '',
-    art: <AdderCover />,
+    // a signal travelling through a circuit board: see adder-cover.tsx
+    art: <CircuitCover />,
     eyebrow: 'Logic Gates',
     title: 'Two Doors Can Add',
     paragraphs: [
