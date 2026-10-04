@@ -325,7 +325,7 @@ export const JOKES: Joke[] = [
   // ——— Chapter 7 ———
   {
     id: 'ice-cream-and-gate',
-    chapter: 7, status: 'live', anchor: true,
+    chapter: 7, status: 'drafted', anchor: true,
     text: '“Do ALL THREE of you want ice cream?” Bot 1: “I don’t know.” Bot 2: “I don’t know.” Bot 3: “YES!”',
     why: 'The classic three-logicians joke, made kid-legible. Teaches a 3-input AND gate in one beat.',
   },
@@ -348,6 +348,12 @@ export const JOKES: Joke[] = [
   },
 
   // ——— Logic gates · Two Doors Can Add (new, /lab/adder) ———
+  {
+    id: 'santa-and-door',
+    chapter: null, status: 'live', anchor: true,
+    text: 'The cover: Santa’s Naughty-or-Nice Machine. Teeth AND please, NOT pulled-the-cat’s-tail. STARLAX: ✓ ✓ … then a 🐾 lands on the cat switch → coal. “NAUGHTY?!” — “(it was nova)”. In the chat: “So Santa’s machine is an AND door. One bad day and it’s coal.” — “He should use an OR door.” — “Then everyone is nice.” — “…That is the point of Christmas.”',
+    why: 'The author’s idea. A naughty-or-nice check IS a logic gate, and every kid knows the stakes; AND vs OR becomes an argument with Santa. Nova framing Starlax is the cover’s punchline.',
+  },
   {
     id: 'you-just-had-a-pencil',
     chapter: null, status: 'live', anchor: true,

@@ -7,8 +7,8 @@
 // want is Starlax's question — who is doing the adding in there? — and the win
 // is the score counting because of doors she understands.
 //
-// Short on purpose (CLAUDE.md): three ideas, one joke each. AND gets the ice
-// cream, XOR gets the pizza, the adder gets "you just had a pencil", and the
+// Short on purpose (CLAUDE.md): three ideas, one joke each. AND gets Santa
+// (the cover is his Naughty-or-Nice Machine), XOR gets the pizza, the adder gets "you just had a pencil", and the
 // true story (the domino computer) closes it.
 import type { Beat } from '@/components/novel/chapter-def';
 
@@ -24,9 +24,10 @@ export const ADDER_SCRIPT: Beat[] = [
 
   { kind: 'msg', who: 'starlax', text: 'one marble: stuck. two marbles: OPEN 🔔', typing: true },
   { kind: 'msg', who: 'flamey', text: 'both, or nothing. that door is called AND' },
-  { kind: 'msg', who: 'flamey', text: 'like asking three robots "do ALL of you want ice cream?" 🍦' },
-  { kind: 'msg', who: 'flamey', text: 'robot 1: I don’t know. robot 2: I don’t know. robot 3: YES!', rush: true },
-  { kind: 'msg', who: 'starlax', text: '...that took me a second 😂' },
+  { kind: 'msg', who: 'starlax', text: 'so santa’s machine is an AND door. teeth AND please. one bad day and it’s coal 😤' },
+  { kind: 'msg', who: 'flamey', text: 'he should use an OR door' },
+  { kind: 'msg', who: 'starlax', text: 'then everyone is nice' },
+  { kind: 'msg', who: 'flamey', text: '...that is the point of christmas 🎄', rush: true },
   { kind: 'msg', who: 'starlax', text: 'the door next to it is weirder' },
 
   { kind: 'toy', toy: 'xor', label: 'the second door' },

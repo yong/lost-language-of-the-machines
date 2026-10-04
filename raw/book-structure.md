@@ -199,11 +199,16 @@ their numbers. Mostly about food.
   four ways in as they are tried — a truth table the reader made.
 - **Jokes:** ice cream AND · XOR pizza · "you just had a pencil" · the true
   domino adder ("once. then somebody had to stand all 10,000 back up").
-- **Cover:** a signal running through a circuit board. Pulses leave inputs A
-  and B, light the copper on the way into the XOR and AND chips; XOR flashes
-  red and stays dark, AND lights, the CARRY lamp comes on and the carry runs
-  off toward the next column. (The first cover, the score board counting to
-  itself, was "not interesting nor beautiful".)
+- **Cover: Santa's Naughty-or-Nice Machine** (the author's idea). Letters to
+  Santa slide in with three lamps — 🪥 brushed teeth, 🙏 said please, 🐱 pulled
+  its tail. Teeth AND please; the cat through a NOT door; both into a second
+  AND; the chimney gives 🎁 or coal. Mia → present; Leo pulled the tail → coal;
+  STARLAX ✓ ✓ … then a 🐾 lands on the cat switch → *"NAUGHTY?! (it was
+  nova)"*. The chat pays it off right after the AND door: *"santa's machine is
+  an AND door. one bad day and it's coal" — "he should use an OR door" — "then
+  everyone is nice" — "...that is the point of christmas 🎄"* (this replaced
+  the ice cream joke in this chapter). Earlier covers, both rejected: the
+  score counting to itself; a signal running through a circuit board.
 
 ### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
 - **The idea, in one sentence a kid can hold:** *the game paints the maze by

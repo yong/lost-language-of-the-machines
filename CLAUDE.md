@@ -149,8 +149,8 @@ defaulting back to the old way is the likeliest mistake.
   **parallax** — the paper slides over the cover like a sheet.
 - **Chapter One is `/chapter1`**, with binary snow on its cover. **Snow is
   Chapter One's only**: other chapters get their own living cover (Level 256:
-  the game in attract mode; overflow: twinkling stars; the adder: a signal
-  running through a circuit board).
+  the game in attract mode; overflow: twinkling stars; the adder: Santa's
+  Naughty-or-Nice Machine — the author's idea).
 - **The reader scrolls; nothing scrolls for them.** No "keep reading" button.
 - **`/lab/overflow` is approved** — the only chapter so far eligible to
   graduate — and **locked**: no additions or codas without sign-off. Signed-off
