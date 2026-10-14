@@ -711,3 +711,21 @@ be surfaced elsewhere, not just play locally.
     here to check. Say what was verified locally, and how to tell the new build
     apart from the old — above the link.
 
+
+
+---
+
+## 2026-10-14 — "Why is the typing gone and everything revealed at the beginning?"
+
+The fifth report of this symptom, and again the mode was right. The cause was
+the hand-off link: the cover change was handed over as `?opening=1`, which
+replays the opening and **keeps your place** — and the author had already read
+the chapter to its end, so after the cover all 38 messages were painted at
+once. Measured on the production build: fresh readers typed in every chapter;
+a reader with a finished save dumped 38 (adder) and 44 (overflow) bubbles.
+
+Two fixes: a finished chapter opened again is now read again from the cover
+(a save that reached the end is cleared on arrival — a re-reader has nowhere
+left to resume to), and hand-off links are `?restart=1`, always, which shows
+the cover too. `?opening=1` stays for a reader mid-chapter who wants to see
+the way in again; it is never a review link.

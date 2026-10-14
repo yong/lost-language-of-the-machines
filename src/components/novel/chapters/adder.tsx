@@ -15,7 +15,8 @@ const b = (s: ToyState, k: string) => s[k] as boolean;
 const n = (s: ToyState, k: string) => s[k] as number;
 
 export const CHAPTER_ADDER: ChapterDef = {
-  storageKey: 'gameforge.adder.v1',
+  // v2: the Santa lines changed the script's shape; an old place points at the wrong line
+  storageKey: 'gameforge.adder.v2',
   exitHref: '/lab',
   opening: {
     image: '',

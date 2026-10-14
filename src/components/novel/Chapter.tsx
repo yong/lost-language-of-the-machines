@@ -298,6 +298,17 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
       // This one clears the save outright, toys included, because reading it
       // from the top means playing them again.
       if (params.get('restart') === '1') window.localStorage.removeItem(STORAGE_KEY);
+      // A FINISHED CHAPTER, OPENED AGAIN, IS READ AGAIN. Resuming only makes
+      // sense for a reader with somewhere left to go. Someone who reached the
+      // end and comes back is re-reading — and "your place" for them was the
+      // last line, so the whole conversation was painted at once, typing
+      // nothing, every time ("why is the typing gone and everything revealed
+      // at the beginning?"). So a save that reached the end is cleared on
+      // arrival, toys included, and the chapter starts from its cover.
+      try {
+        const prev = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? 'null');
+        if (prev && typeof prev.at === 'number' && prev.at >= SCRIPT.length - 1) window.localStorage.removeItem(STORAGE_KEY);
+      } catch { /* an unreadable save is handled below */ }
       const s = window.localStorage.getItem(STORAGE_KEY);
       if (s) {
         const d = JSON.parse(s);

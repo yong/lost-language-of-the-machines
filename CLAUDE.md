@@ -276,6 +276,9 @@ optional `played` states and `events`.
   as none. Restore **held**, or the restored toys satisfy the gate and the
   story plays itself. The maths must be idempotent (StrictMode runs it twice in
   dev).
+- **A finished chapter, opened again, is read again**: a save that reached the
+  end is cleared on arrival, so a re-reader gets the cover and the typing, not
+  the whole conversation painted at once.
 - **URL doors.** `?restart=1` clears this chapter's save and reads from the
   top. `?opening=1` replays the opening and keeps your place. `?reveal=` (lab)
   picks a thread mode and skips the opening. `?from=<mark>` (lab) plays every
@@ -366,8 +369,12 @@ optional `played` states and `events`.
 - **Hand back with the link last — nothing after it.** Everything the author
   needs goes above it: what changed, what was verified, how to tell the new
   build from the old. Deep-link the page that changed, and remember the
-  reviewer has read it before: `?restart=1` to read a chapter again,
-  `?opening=1` to see the opening, `?from=<mark>` for a moment deep inside.
+  reviewer has read it before: **`?restart=1`, always** — it shows the cover
+  too, so it is also the link for reviewing a cover. **Never hand over
+  `?opening=1`**: it keeps the reviewer's place, so after the cover the whole
+  chat they read last time arrived at once ("why is the typing gone?" — the
+  fifth time this symptom came back, and the second time it was the link).
+  `?from=<mark>` for a moment deep inside.
 - **Never claim the deploy succeeded.** Pushing to `main` triggers Amplify, and
   `amplifyapp.com` is unreachable from here (the proxy answers 403).
 
