@@ -15,8 +15,8 @@ const b = (s: ToyState, k: string) => s[k] as boolean;
 const n = (s: ToyState, k: string) => s[k] as number;
 
 export const CHAPTER_ADDER: ChapterDef = {
-  // v2: the Santa lines changed the script's shape; an old place points at the wrong line
-  storageKey: 'gameforge.adder.v2',
+  // bump on every change to the script's shape (v3: photos, real chips); an old place points at the wrong line
+  storageKey: 'gameforge.adder.v3',
   exitHref: '/lab',
   opening: {
     image: '',
@@ -25,8 +25,8 @@ export const CHAPTER_ADDER: ChapterDef = {
     eyebrow: 'Logic Gates',
     title: 'Two Doors Can Add',
     paragraphs: [
-      'The back of the CATVENTURE cabinet came off with four screws. Starlax had expected to find the part that does the maths — a little calculator, or a box of numbers. There wasn’t one.',
-      'There were only switches: thousands of tiny ones, each letting a signal through or stopping it. Little doors. And every time the cat ate a fish, the score still went up by exactly one.',
+      'The back of the CATVENTURE cabinet came off with four screws. Starlax had expected to find the part that does the maths — a little computer, or at least a box of numbers. There wasn’t one.',
+      'There was a green board with rows of small black chips, each with a number printed on top, and nothing else. And every time the cat ate a fish, the score still went up by exactly one.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },

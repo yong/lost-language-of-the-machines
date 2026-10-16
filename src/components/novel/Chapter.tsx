@@ -95,12 +95,14 @@ const dwellFor = (b: Beat | undefined): number => {
   if (b.kind === 'toy') return 450;
   if (b.kind === 'beat') return 650;
   if (b.rush) return 320;
+  if (b.kind === 'pic') return 1700;          // a picture takes a moment to look at
   return Math.min(1400, 380 + b.text.length * 18);
 };
 
 /** How long "…" shows before a bubble lands — how long they'd take to thumb it. */
 const dotsFor = (b: Beat) =>
-  b.kind === 'msg' && b.typing ? 800 : Math.min(1100, 320 + (b.kind === 'msg' ? b.text.length : 0) * 13);
+  b.kind === 'pic' ? 1100
+    : b.kind === 'msg' && b.typing ? 800 : Math.min(1100, 320 + (b.kind === 'msg' ? b.text.length : 0) * 13);
 
 export interface ChapterProps {
   /** show the experiment switches and honour ?open= / ?reveal= */
@@ -130,6 +132,14 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
   const [block, setBlock] = useState(0);
   /** dots mode: playback is parked because the newest message is below the fold */
   const [waiting, setWaiting] = useState(false);
+  /** a photo opened full screen, the way any chat app opens one */
+  const [zoom, setZoom] = useState<{ src: string; alt: string } | null>(null);
+  useEffect(() => {
+    if (!zoom) return;
+    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoom(null); };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, [zoom]);
   /** stream mode: words of the newest bubble revealed so far; Infinity = done */
   const [words, setWords] = useState(Infinity);
   /** a gate was just satisfied and the story is HELD until the reader says go */
@@ -445,8 +455,8 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     setAt((v) => {
       const next = SCRIPT[v + 1];
       if (!next) return v;
-      const theirs = next.kind === 'msg' && next.who !== 'starlax';
-      if (next.kind === 'msg' && (next.typing || theirs)) {
+      const theirs = (next.kind === 'msg' || next.kind === 'pic') && next.who !== 'starlax';
+      if ((next.kind === 'msg' && next.typing) || theirs) {
         setTyping(true);
         window.setTimeout(() => { setTyping(false); setAt((x) => x + 1); }, dotsFor(next));
         return v;
@@ -643,6 +653,26 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     const ref = i === head ? newest : undefined;
     if (b.kind === 'beat') return <div key={i} ref={ref} className="h-5" data-mark={b.mark} />;
     if (b.kind === 'toy') return <div key={i} ref={ref}>{renderToy(b, i)}</div>;
+    if (b.kind === 'pic') {
+      const w = WHO[b.who];
+      const photo = (
+        <button
+          onClick={(e) => { e.stopPropagation(); setZoom({ src: b.src, alt: b.alt }); }}
+          aria-label={`open the photo: ${b.alt}`}
+          className={`block w-[72%] overflow-hidden rounded-2xl border-2 ${w.side === 'right' ? 'border-sky-700' : 'border-[#26223a]'}`}
+          style={{ aspectRatio: String(b.ratio ?? 4 / 3) }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={b.src} alt={b.alt} className="h-full w-full object-cover" draggable={false} />
+        </button>
+      );
+      const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
+      return animated ? (
+        <motion.div key={i} ref={ref} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className={row}>
+          {photo}
+        </motion.div>
+      ) : <div key={i} ref={ref} className={row}>{photo}</div>;
+    }
     const w = WHO[b.who];
     const row = `mb-1.5 flex ${w.side === 'right' ? 'justify-end' : 'justify-start'}`;
     const partial = i === at && mode === 'stream' && words < b.text.split(' ').length;
@@ -920,6 +950,24 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
             )}
           </div>
         </div>
+        <AnimatePresence>
+          {zoom && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-3"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}
+              onClick={() => setZoom(null)}
+              role="dialog" aria-label={zoom.alt}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={zoom.src} alt={zoom.alt} className="max-h-full max-w-full rounded-lg object-contain" />
+              <button
+                onClick={() => setZoom(null)}
+                aria-label="close the photo"
+                className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-xl text-white"
+              >✕</button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </LayoutGroup>
   );

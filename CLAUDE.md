@@ -186,7 +186,13 @@ defaulting back to the old way is the likeliest mistake.
    (lowercase, CAPS when excited, ⛽😳😂🤯); Flamey is a dry robot who uses an
    emoji when he is being dramatic (🤖😬🙄🙃); Nova only ever says 🐱. A
    handful of emoji per block, on the lines with a feeling in them.
-9. **Prose only for what dialogue cannot do** — the establishing beat on the
+9. **Show, don't describe — send the photo.** Teenagers text pictures. If a
+   character would hold up their phone at something (a board of chips, a
+   price sign, a strange screen), it is a `{ kind: 'pic' }` in the script —
+   a picture in `/public`, marked up the way a kid would (a red circle, "this
+   one!!") — not a sentence describing it. Flamey sends pictures too: a data
+   sheet, a diagram. Photos open full screen on a tap.
+10. **Prose only for what dialogue cannot do** — the establishing beat on the
    paper page, kept short: anything stated there is something the toys no
    longer get to reveal. Faking atmosphere as a text message makes a
    character stupid.
@@ -255,6 +261,10 @@ optional `played` states and `events`.
   `noindex`).
 - **Blocks and gates.** The script is cut at each toy; playing the toy releases
   the next block. Land the reader at the top of a new block.
+- **Photos** are `{ kind: 'pic', who, src, alt, ratio }`: `ratio` reserves
+  the space before the image loads (or the fold check and scroll jump), a
+  photo from Flamey or Nova gets the typing dots like a message, and a tap
+  opens it full screen (✕, tap anywhere or Escape to close).
 - **`live`** is true only for the newest toy card, so a chapter whose cards are
   one game runs one clock and one cat.
 - **Parking at the fold.** When the newest message lands below the fold,

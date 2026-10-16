@@ -191,14 +191,21 @@ their numbers. Mostly about food.
   every kid already does in school sums. Replaces the Ch7 plan below as the
   way gates are taught: that plan showed what gates *are* (collision) and never
   what they *do*.
+- **The doors are real chips** (retold after the author called "thousands of
+  tiny doors" fake — gates are far too small to see). True: the first arcade
+  games had **no program at all**, only boards of small logic chips with their
+  numbers printed on top. Starlax **photographs** the board with a red circle
+  round the **7483** (a 4-bit adder); Flamey sends back the **7408** data
+  sheet (four AND gates, real pin layout); the toys open the chips up.
 - **Toys:** the AND door (two chutes; both, or nothing) · the XOR door (one, not
   both) · CATVENTURE's score as four columns of two doors each — feed the cat a
   fish, watch each column's XOR and AND decide, and the carry roll on
   (0111 + 1 is the chain reaction; 1111 + 1 drops the carry off the end, the
   overflow chapter's roll-over seen from the inside). Each door fills in the
   four ways in as they are tried — a truth table the reader made.
-- **Jokes:** ice cream AND · XOR pizza · "you just had a pencil" · the true
-  domino adder ("once. then somebody had to stand all 10,000 back up").
+- **Jokes:** "the program, obviously" / "there is no program" + the photo ·
+  Santa's AND door · XOR pizza · "you just had a pencil" · the true Model K
+  ("he called it the Model K." "K?" "for kitchen 🍳").
 - **Cover: Santa's Naughty-or-Nice Machine** (the author's idea). Letters to
   Santa slide in with three lamps — 🪥 brushed teeth, 🙏 said please, 🐱 pulled
   its tail. Teeth AND please; the cat through a NOT door; both into a second

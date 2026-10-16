@@ -355,6 +355,18 @@ export const JOKES: Joke[] = [
     why: 'The author’s idea. A naughty-or-nice check IS a logic gate, and every kid knows the stakes; AND vs OR becomes an argument with Santa. Nova framing Starlax is the cover’s punchline.',
   },
   {
+    id: 'there-is-no-program',
+    chapter: null, status: 'live', anchor: true,
+    text: '“How does CATVENTURE add?” — “The program, obviously.” — “There is no program. I took the back off.” [photo: a board of black chips, a red circle round SN7483N, “this one!!”] — “7483 is a 4-bit adder. It adds. That is all it does.”',
+    why: 'True: the first arcade games had no program at all, only boards of small logic chips, each with its number printed on top. It answers the author’s objection that “thousands of tiny doors” was fake — the doors are real, sealed in chips you can photograph and look up.',
+  },
+  {
+    id: 'model-k-for-kitchen',
+    chapter: null, status: 'live', anchor: true,
+    text: '“True story. In 1937 a man built an adder like this on his kitchen table — two telephone switches, two torch bulbs, and strips cut from a tobacco tin.” — “Did it work?” — “1 + 1 lit one bulb and not the other. 10. He called it the Model K.” — “K?” — “For kitchen.”',
+    why: 'True (George Stibitz, Bell Labs, 1937). The half adder the reader just played, built from junk on a table — and the punchline is the name.',
+  },
+  {
     id: 'you-just-had-a-pencil',
     chapter: null, status: 'live', anchor: true,
     text: '1 + 1 in two doors: XOR shuts (the digit is 0), AND opens (carry the one) — 10. “It CARRIED THE ONE.” — “You have done that since second grade. You just had a pencil.”',
@@ -362,9 +374,9 @@ export const JOKES: Joke[] = [
   },
   {
     id: 'domino-adder-stand-them-back-up',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'cut', anchor: true,
     text: '“People once built an adding machine out of 10,000 real dominoes.” — “Did it work?” — “Once. Then somebody had to stand all 10,000 back up.”',
-    why: 'True (a domino binary adder, Manchester Science Festival, 2014). The carry ripple the reader just watched, done at full size — and the joke is the reset.',
+    why: 'Replaced by the Model K (kitchen table, 1937) when the chapter was retold around real chips: one true closing story, not two. — True (a domino binary adder, Manchester Science Festival, 2014). The carry ripple the reader just watched, done at full size — and the joke is the reset.',
   },
   {
     id: 'doors-that-can-count',

@@ -19,6 +19,20 @@ export type Beat =
       /** show a typing indicator before this one; reserve for real suspense */
       typing?: true;
     }
+  /** A PHOTO, sent in the chat. Teenagers show, they do not describe: "the
+   *  chip under the score says 7483" is a photo with a red circle on it.
+   *  `src` is a file in /public; `ratio` (width / height) reserves the space
+   *  before the image loads, so the fold check and the scroll never jump. A
+   *  photo is tappable and opens full screen, like every chat app. */
+  | {
+      kind: 'pic';
+      who: 'starlax' | 'flamey' | 'nova';
+      src: string;
+      /** what is in the picture, for a screen reader */
+      alt: string;
+      ratio?: number;
+      rush?: true;
+    }
   /** `mark` names a moment so a lab link can land on it: `?from=<mark>` */
   | { kind: 'beat'; mark?: string }
   /** `toy` names one of the chapter's own toys; the chapter decides what it is */
