@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Starlax's photo of the Naughty-or-Nice Machine after she took its AND
+       chip: the read-out says NICE — to Nova, whose paw is on the switch. -->
+  <defs>
+    <radialGradient id="flash" cx="30%" cy="18%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.2"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="50%" cy="50%" r="72%">
+      <stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#4ade80" stop-opacity="0.45"/><stop offset="1" stop-color="#4ade80" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="cane" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="40" height="40" fill="#f5efe6"/><rect width="20" height="40" fill="#d62839"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="600" fill="#1a1210"/>
+  <!-- the machine's candy-cane frame -->
+  <rect x="60" y="50" width="680" height="500" rx="28" fill="url(#cane)"/>
+  <rect x="88" y="78" width="624" height="444" rx="18" fill="#0f3d2a"/>
+  <text x="400" y="132" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#fde68a">Naughty-or-Nice Machine</text>
+  <!-- the read-out -->
+  <ellipse cx="400" cy="270" rx="300" ry="120" fill="url(#glow)"/>
+  <rect x="150" y="170" width="500" height="200" rx="16" fill="#0c0a09" stroke="#4ade80" stroke-width="6"/>
+  <text x="400" y="292" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="110" fill="#4ade80" letter-spacing="12">NICE</text>
+  <text x="400" y="344" text-anchor="middle" font-family="'Courier New', monospace" font-weight="700" font-size="30" fill="#d6cfc4">NOVA · present 🎁</text>
+  <!-- the empty chip socket, with Starlax's note -->
+  <rect x="120" y="410" width="190" height="70" rx="6" fill="#111" stroke="#9aa0a6" stroke-width="3" stroke-dasharray="8 6"/>
+  <text x="215" y="452" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#9aa0a6">AND · 7408</text>
+  <g transform="translate(330 400) rotate(-6)">
+    <rect width="170" height="96" fill="#fde047"/>
+    <text x="85" y="40" text-anchor="middle" font-family="'Comic Sans MS', 'Marker Felt', cursive" font-weight="700" font-size="24" fill="#1e1b4b">borrowed</text>
+    <text x="85" y="74" text-anchor="middle" font-family="'Comic Sans MS', 'Marker Felt', cursive" font-size="24" fill="#1e1b4b">— S</text>
+  </g>
+  <!-- Nova's paw, on the machine -->
+  <g fill="#ff9933" stroke="#7c3a10" stroke-width="3">
+    <ellipse cx="640" cy="470" rx="62" ry="50"/>
+    <ellipse cx="582" cy="402" rx="20" ry="24"/><ellipse cx="620" cy="384" rx="20" ry="24"/>
+    <ellipse cx="662" cy="384" rx="20" ry="24"/><ellipse cx="700" cy="402" rx="20" ry="24"/>
+  </g>
+  <g fill="#f9a8d4">
+    <ellipse cx="640" cy="478" rx="30" ry="22"/>
+    <ellipse cx="582" cy="406" rx="9" ry="11"/><ellipse cx="620" cy="388" rx="9" ry="11"/>
+    <ellipse cx="662" cy="388" rx="9" ry="11"/><ellipse cx="700" cy="406" rx="9" ry="11"/>
+  </g>
+  <rect width="800" height="600" fill="url(#flash)"/>
+  <rect width="800" height="600" fill="url(#vig)"/>
+</svg>

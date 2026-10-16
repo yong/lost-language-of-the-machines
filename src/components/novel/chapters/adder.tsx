@@ -1,12 +1,13 @@
 // "Two Doors Can Add" — a new chapter at /lab/adder.
 //
-// One sentence: a machine cannot count, but two doors can add — XOR writes the
-// digit, AND carries the one, and carries ripple from column to column like
-// dominoes. Logic IS maths; that is the whole message.
+// One sentence: Starlax's score can't count past 1, because its carry door
+// has burnt out — and the only spare is inside Santa's Naughty-or-Nice
+// Machine. Logic IS maths: XOR writes the digit, AND carries the one.
 //
-// GAME PIECE RESTORED: the score's adding. The last two cards are the same
-// machine (CATVENTURE's score), so only the newest card is live.
-import { AdderToy, DoorToy, tried } from '@/components/novel/adder-toys';
+// GAME PIECE RESTORED: the score's adding. Three toys: the broken score
+// (1, 0, 1, 0), the Santa machine (AND and NOT, then the heist), the fixed
+// score (the carries ripple up to 1000).
+import { AdderToy, SantaToy } from '@/components/novel/adder-toys';
 import SantaCover from '@/components/novel/santa-cover';
 import { ADDER_SCRIPT } from '@/components/novel/chapters/adder-script';
 import type { ChapterDef, ToyState } from '@/components/novel/chapter-def';
@@ -15,8 +16,8 @@ const b = (s: ToyState, k: string) => s[k] as boolean;
 const n = (s: ToyState, k: string) => s[k] as number;
 
 export const CHAPTER_ADDER: ChapterDef = {
-  // bump on every change to the script's shape (v3: photos, real chips); an old place points at the wrong line
-  storageKey: 'gameforge.adder.v3',
+  // bump on every change to the script's shape (v4: the broken score and the Santa heist); an old place points at the wrong line
+  storageKey: 'gameforge.adder.v4',
   exitHref: '/lab',
   opening: {
     image: '',
@@ -25,60 +26,60 @@ export const CHAPTER_ADDER: ChapterDef = {
     eyebrow: 'Logic Gates',
     title: 'Two Doors Can Add',
     paragraphs: [
-      'The back of the CATVENTURE cabinet came off with four screws. Starlax had expected to find the part that does the maths — a little computer, or at least a box of numbers. There wasn’t one.',
-      'There was a green board with rows of small black chips, each with a number printed on top, and nothing else. And every time the cat ate a fish, the score still went up by exactly one.',
+      'For a whole week, Starlax had fed the cat in CATVENTURE every fish in the maze. Her score had never once got past 1.',
+      'It went up when the cat ate a fish. With the next fish it went back to 0. Then 1. Then 0. She had read the rules twice. Scores are not supposed to do that.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },
   ending: {
-    line: 'end of the chapter. two doors make a column, columns make an adder — and the score counts.',
+    line: 'end of the chapter. XOR writes the digit, AND carries the one — and Santa’s machine says NICE to everyone.',
     next: 'back to the lab →',
     href: '/lab',
   },
   script: ADDER_SCRIPT,
   toys: {
     initial: {
-      andA: false, andB: false, andSeen: 0,
-      xorA: false, xorB: false, xorSeen: 0,
+      bscore: 0, bbest: 0, fish: 0,
+      teeth: false, please: false, cat: false, seenNice: false, seenNaughty: false, heist: false,
       score: 1, best: 1, fell: false,
     },
     // Every gate names what to TOUCH.
     gate: (toy, s) => {
       switch (toy) {
-        case 'and':
-          return tried(n(s, 'andSeen'), true, true) ? null : b(s, 'andA') || b(s, 'andB') ? 'tap the other chute too' : 'tap a chute';
-        case 'xor': {
-          const one = tried(n(s, 'xorSeen'), true, false) || tried(n(s, 'xorSeen'), false, true);
-          const both = tried(n(s, 'xorSeen'), true, true);
-          return one && both ? null : !one ? 'tap one chute' : 'now fill both chutes';
-        }
-        case 'add': return n(s, 'best') >= 2 ? null : 'tap 🐟 +1';
-        case 'ripple': return n(s, 'best') >= 8 ? null : 'tap 🐟 +1';
+        case 'broken': return n(s, 'fish') >= 4 ? null : 'tap 🐟 +1';
+        case 'santa':
+          return !b(s, 'seenNice') ? 'tap the switches until it says NICE'
+            : !b(s, 'seenNaughty') ? 'tap 🐱 pulled its tail'
+            : !b(s, 'heist') ? 'tap 🔧 take the AND chip' : null;
+        case 'fixed': return n(s, 'best') >= 8 ? null : 'tap 🐟 +1';
         default: return null;
       }
     },
     played: {
-      and: { andA: true, andB: true, andSeen: 0b1010 },
-      xor: { xorA: true, xorB: true, xorSeen: 0b1010 },
-      add: { score: 2, best: 2 },
-      ripple: { score: 8, best: 8 },
+      broken: { bscore: 0, bbest: 1, fish: 4 },
+      santa: { teeth: true, please: true, cat: false, seenNice: true, seenNaughty: true, heist: true },
+      fixed: { score: 8, best: 8 },
     },
     render: (toy, s, set, { live }) => {
       switch (toy) {
-        case 'and':
-        case 'xor': {
-          const k = toy;
+        case 'broken':
+          // its own machine (the score with the burnt chip), so it stays playable
           return (
-            <DoorToy
-              kind={k}
-              a={b(s, `${k}A`)} b={b(s, `${k}B`)} seen={n(s, `${k}Seen`)}
-              done={CHAPTER_ADDER.toys.gate(k, s) === null}
-              onChange={(a, bb, seen) => set({ [`${k}A`]: a, [`${k}B`]: bb, [`${k}Seen`]: seen })}
+            <AdderToy
+              broken v={n(s, 'bscore')} best={n(s, 'bbest')} fell={false} fish={n(s, 'fish')} live
+              want={CHAPTER_ADDER.toys.gate(toy, s) !== null}
+              onChange={(v, best) => set({ bscore: v, bbest: best, fish: n(s, 'fish') + 1 })}
             />
           );
-        }
-        case 'add':
-        case 'ripple':
+        case 'santa':
+          return (
+            <SantaToy
+              teeth={b(s, 'teeth')} please={b(s, 'please')} cat={b(s, 'cat')}
+              seenNice={b(s, 'seenNice')} seenNaughty={b(s, 'seenNaughty')} heist={b(s, 'heist')}
+              onChange={(p) => set(p as ToyState)}
+            />
+          );
+        case 'fixed':
           return (
             <AdderToy
               v={n(s, 'score')} best={n(s, 'best')} fell={b(s, 'fell')} live={live}

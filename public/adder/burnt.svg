@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Starlax's photo, close up: the score section of the CATVENTURE board.
+       The SN7408 (the AND gates — the carry) is burnt: a scorch halo, a
+       cracked top. The SN7486 (XOR) beside it is fine. -->
+  <defs>
+    <radialGradient id="flash" cx="70%" cy="20%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="50%" cy="50%" r="72%">
+      <stop offset="0.62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+    </radialGradient>
+    <radialGradient id="scorch" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#1a0f08" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#3b2412" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#3b2412" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pcb" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#227a50"/><stop offset="1" stop-color="#175838"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#pcb)"/>
+  <g fill="none" stroke="#d9b45a" stroke-opacity="0.38" stroke-width="7" stroke-linecap="round">
+    <path d="M0 140 H800"/><path d="M0 470 H800"/><path d="M400 150 V460"/><path d="M120 480 V600"/><path d="M680 480 V600"/>
+  </g>
+  <text x="40" y="110" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="26" fill="#f1f5f2" fill-opacity="0.85" letter-spacing="4">SCORE</text>
+  <rect x="24" y="80" width="752" height="420" rx="12" fill="none" stroke="#f1f5f2" stroke-opacity="0.7" stroke-width="3" stroke-dasharray="14 9"/>
+
+  <!-- the burnt one -->
+  <ellipse cx="215" cy="300" rx="190" ry="140" fill="url(#scorch)"/>
+  <g>
+    <g fill="#8b8f94">
+      <rect x="82" y="196" width="14" height="18"/><rect x="122" y="196" width="14" height="18"/><rect x="162" y="196" width="14" height="18"/>
+      <rect x="202" y="196" width="14" height="18"/><rect x="242" y="196" width="14" height="18"/><rect x="282" y="196" width="14" height="18"/>
+      <rect x="322" y="196" width="14" height="18"/>
+      <rect x="82" y="386" width="14" height="18"/><rect x="122" y="386" width="14" height="18"/><rect x="162" y="386" width="14" height="18"/>
+      <rect x="202" y="386" width="14" height="18"/><rect x="242" y="386" width="14" height="18"/><rect x="282" y="386" width="14" height="18"/>
+      <rect x="322" y="386" width="14" height="18"/>
+    </g>
+    <rect x="62" y="212" width="296" height="176" rx="8" fill="#141414"/>
+    <path d="M62 280 A20 20 0 0 1 62 320 Z" fill="#2a2a2a"/>
+    <text x="212" y="296" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="40" fill="#cfcfcf" fill-opacity="0.55">SN7408N</text>
+    <!-- the crack and the burn -->
+    <ellipse cx="236" cy="318" rx="70" ry="38" fill="#2b1a0e" opacity="0.9"/>
+    <path d="M200 300 L222 318 L214 334 L240 346 L252 368" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+    <path d="M222 318 L250 310 L268 322" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="240" cy="330" r="7" fill="#5b3a1a"/>
+    <!-- a wisp of smoke -->
+    <path d="M250 300 C230 260 280 240 258 200 C244 176 270 160 262 130" fill="none" stroke="#e5e7eb" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- the XOR chip beside it, fine -->
+  <g>
+    <g fill="#c9ccd1">
+      <rect x="472" y="196" width="14" height="18"/><rect x="512" y="196" width="14" height="18"/><rect x="552" y="196" width="14" height="18"/>
+      <rect x="592" y="196" width="14" height="18"/><rect x="632" y="196" width="14" height="18"/><rect x="672" y="196" width="14" height="18"/>
+      <rect x="712" y="196" width="14" height="18"/>
+      <rect x="472" y="386" width="14" height="18"/><rect x="512" y="386" width="14" height="18"/><rect x="552" y="386" width="14" height="18"/>
+      <rect x="592" y="386" width="14" height="18"/><rect x="632" y="386" width="14" height="18"/><rect x="672" y="386" width="14" height="18"/>
+      <rect x="712" y="386" width="14" height="18"/>
+    </g>
+    <rect x="452" y="212" width="296" height="176" rx="8" fill="#151515"/>
+    <rect x="452" y="212" width="296" height="18" rx="8" fill="#fff" opacity="0.06"/>
+    <path d="M452 280 A20 20 0 0 1 452 320 Z" fill="#2a2a2a"/>
+    <text x="600" y="306" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="40" fill="#e6e6e6">SN7486N</text>
+    <text x="600" y="336" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#9a9a9a">7739</text>
+  </g>
+
+  <!-- Starlax's marker -->
+  <ellipse cx="212" cy="300" rx="185" ry="128" fill="none" stroke="#ef233c" stroke-width="7" transform="rotate(-4 212 300)"/>
+  <text x="70" y="560" font-family="'Comic Sans MS', 'Marker Felt', cursive" font-weight="700" font-size="40" fill="#ef233c">it smells like toast?!</text>
+
+  <rect width="800" height="600" fill="url(#flash)"/>
+  <rect width="800" height="600" fill="url(#vig)"/>
+</svg>

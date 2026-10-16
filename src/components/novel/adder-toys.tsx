@@ -1,18 +1,14 @@
 // adder-toys.tsx — the toys for "Two Doors Can Add" (/lab/adder).
 //
-// One idea: a machine cannot count, but doors can add. Three steps, each
-// handing the next one its reason to exist:
+// One idea: a machine cannot count, but two doors can add. XOR writes the
+// digit, AND carries the one. Two toys:
 //
-//   1. the AND door — opens only if BOTH chutes have a marble
-//   2. the XOR door — opens for ONE marble, shuts for two
-//   3. the adder    — put the two side by side and they are one column of a
-//                     sum: XOR writes the digit, AND carries the one. Line up
-//                     four columns and a carry knocks into the next like a
-//                     domino: 0111 + 1 is a chain reaction.
-//
-// The truth table is never shown as a lesson. Each door keeps a little row of
-// the four ways in (○○ ○● ●○ ●●) and fills one in each time the reader tries
-// it, so the table is something they MADE.
+//   AdderToy — CATVENTURE's score as four columns of two doors. `broken` is
+//              the score with its AND chip burnt out: XOR writes 0 and the
+//              carry vanishes, so it goes 1, 0, 1, 0. Fixed, a carry knocks
+//              into the next column like a domino: 0111 + 1 is a chain.
+//   SantaToy — the Naughty-or-Nice Machine (AND, NOT the cat), whose AND chip
+//              the reader then takes for the score.
 //
 // Thumb notes: tap floors stay px (44+), all text is rem or cqw.
 import { useEffect, useRef, useState } from 'react';
@@ -41,96 +37,7 @@ const Hole: React.FC<{ size?: string }> = ({ size = '9cqw' }) => (
   <span className="inline-block rounded-full border-2 border-dashed border-gray-600" style={{ width: size, height: size }} />
 );
 
-// ── 1 & 2. a door with two chutes ───────────────────────────────────────────
-
-export type DoorKind = 'and' | 'xor';
-export const doorOpens = (kind: DoorKind, a: boolean, b: boolean) => (kind === 'and' ? a && b : a !== b);
-/** which of the four ways in (○○ ○● ●○ ●●) have been tried — bit (a*2+b) */
-export const tried = (seen: number, a: boolean, b: boolean) => (seen >> (Number(a) * 2 + Number(b))) & 1;
-
-export const DoorToy: React.FC<{
-  kind: DoorKind; a: boolean; b: boolean; seen: number; done: boolean;
-  onChange: (a: boolean, b: boolean, seen: number) => void;
-}> = ({ kind, a, b, seen, done, onChange }) => {
-  const open = doorOpens(kind, a, b);
-  const flip = (na: boolean, nb: boolean) => onChange(na, nb, seen | (1 << (Number(na) * 2 + Number(nb))));
-  const name = kind === 'and' ? 'AND' : 'XOR';
-
-  // The chute that should glow: for AND, any empty one until both have been
-  // filled; for XOR, an empty one (first try one marble, then both).
-  // Only one thing glows at a time: the first empty chute.
-  const glow: 'a' | 'b' | null = done ? null : !a ? 'a' : !b ? 'b' : null;
-  const chute = (side: 'a' | 'b') => {
-    const full = side === 'a' ? a : b;
-    return (
-      <button
-        onClick={() => (side === 'a' ? flip(!a, b) : flip(a, !b))}
-        aria-label={`${full ? 'take the marble out of' : 'drop a marble in'} the ${side === 'a' ? 'left' : 'right'} chute`}
-        className={`flex flex-1 touch-manipulation flex-col items-center justify-center gap-1 rounded-xl border bg-[#100e1c] ${glow === side ? 'beckon' : ''}`}
-        style={{ minHeight: 64, borderColor: full ? AMBER : '#3f3a56' }}
-      >
-        {full ? <Marble /> : <Hole />}
-        <span className="text-[0.625rem] uppercase tracking-widest text-gray-500">{full ? 'tap to take out' : 'tap to drop'}</span>
-      </button>
-    );
-  };
-
-  return (
-    <div style={{ containerType: 'inline-size' }}>
-      {!done && <BeckonStyle />}
-      <div className="flex gap-3">{chute('a')}{chute('b')}</div>
-
-      {/* the funnel into the door */}
-      <div className="relative mx-auto" style={{ height: '7cqw', width: '60%' }}>
-        <div className="absolute left-0 top-0 h-full w-1/2 border-r-2 border-gray-700" style={{ transform: 'skewX(-35deg)', transformOrigin: 'bottom' }} />
-        <div className="absolute right-0 top-0 h-full w-1/2 border-l-2 border-gray-700" style={{ transform: 'skewX(35deg)', transformOrigin: 'bottom' }} />
-      </div>
-
-      {/* the door */}
-      <div className="mx-auto flex flex-col items-center rounded-lg border border-gray-600 bg-[#0b0a14] px-4 py-2" style={{ width: '46%' }}>
-        <span style={{ fontFamily: PIXEL_FONT, fontSize: '8cqw', color: '#e5e7eb', lineHeight: 1 }}>{name}</span>
-        <div className="mt-1 flex h-3 w-full items-center justify-center">
-          <motion.div
-            className="h-2 rounded"
-            animate={{ width: open ? '0%' : '100%', backgroundColor: open ? '#37f08a' : '#f87171' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-          />
-        </div>
-        <span className="mt-1 text-[0.6875rem]" style={{ color: open ? '#37f08a' : '#f87171' }}>{open ? 'open' : 'shut'}</span>
-      </div>
-
-      {/* what comes out */}
-      <div className="flex items-center justify-center" style={{ height: '16cqw' }}>
-        {open ? (
-          <motion.span key={`${a}${b}`} initial={{ y: '-8cqw', opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }} className="flex items-center gap-2">
-            <Marble size="11cqw" />
-            {kind === 'and' && <span style={{ fontSize: '8cqw' }}>🔔</span>}
-          </motion.span>
-        ) : (
-          <span className="text-[0.75rem] text-gray-500">{a || b ? 'the marble is stuck at the door' : 'nothing in, nothing out'}</span>
-        )}
-      </div>
-
-      {/* the four ways in, filled in as they are tried — a truth table they made */}
-      <div className="mt-1 grid grid-cols-4 gap-1.5">
-        {[[false, false], [false, true], [true, false], [true, true]].map(([x, y]) => {
-          const t = tried(seen, x, y);
-          const out = doorOpens(kind, x, y);
-          return (
-            <div key={`${x}${y}`} className="rounded-md border border-gray-700/70 py-1 text-center" style={{ opacity: t ? 1 : 0.45 }}>
-              <div className="text-[0.75rem] text-gray-300" style={{ fontFamily: MONO }}>{x ? '●' : '○'}{y ? '●' : '○'}</div>
-              <div className="text-[0.6875rem]" style={{ fontFamily: MONO, color: t ? (out ? '#37f08a' : '#f87171') : '#6b7280' }}>
-                {t ? (out ? '→ ●' : '→ ○') : '?'}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-// ── 3. the adder ────────────────────────────────────────────────────────────
+// ── the adder ────────────────────────────────────────────────────────────
 // Four columns, worth 8 4 2 1. Each column is one XOR door and one AND door.
 // Adding one drops a marble on the 1s column; if a marble is already there,
 // XOR shuts (the digit becomes 0) and AND opens (a carry rolls into the next
@@ -145,16 +52,25 @@ const value = (d: number[]) => d.reduce((n, b) => n * 2 + b, 0);
  *  it has landed). */
 interface Frame {
   d: number[]; carry: number | null;
-  /** the column whose two doors just decided, and what each said */
-  did?: { col: number; xor: number; and: number };
+  /** the column whose two doors just decided, and what each said — `dead`
+   *  when its AND door is burnt out and the carry is simply lost */
+  did?: { col: number; xor: number; and: number; dead?: boolean };
   /** the marble on its way in is the fish's +1 until a column passes it on */
   first?: boolean;
 }
 
-export const addOne = (v: number): Frame[] => {
+/** `broken`: the AND doors are burnt out. XOR still writes the digit, but
+ *  the carry has nowhere to go — so 1 + 1 is 0, and the score never gets
+ *  past 1. That is the bug the chapter opens on. */
+export const addOne = (v: number, broken = false): Frame[] => {
   const d = bits(v);
   const frames: Frame[] = [{ d: [...d], carry: COLS - 1, first: true }];
   for (let col = COLS - 1; ; ) {
+    if (d[col] === 1 && broken) {
+      d[col] = 0;            // XOR: 1 and 1 — the digit is 0 …
+      frames.push({ d: [...d], carry: null, did: { col, xor: 0, and: 0, dead: true } }); // … and the carry is lost
+      break;
+    }
     if (d[col] === 1) {
       d[col] = 0;            // XOR: one and one — the digit is 0
       frames.push({ d: [...d], carry: col - 1, did: { col, xor: 0, and: 1 } }); // AND: carry the one
@@ -173,12 +89,12 @@ const STEP_MS = 420;
 
 /** Plays a carry rippling through, frame by frame, then reports where it
  *  ended. Shared by the toy and the cover. */
-export const useRipple = (onDone: (v: number, fell: boolean) => void) => {
+export const useRipple = (onDone: (v: number, fell: boolean) => void, broken = false) => {
   const [frame, setFrame] = useState<Frame | null>(null);
   const timers = useRef<number[]>([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const play = (v: number) => {
-    const frames = addOne(v);
+    const frames = addOne(v, broken);
     frames.forEach((f, i) => timers.current.push(window.setTimeout(() => setFrame(f), i * STEP_MS)));
     timers.current.push(window.setTimeout(() => {
       const last = frames[frames.length - 1];
@@ -191,7 +107,7 @@ export const useRipple = (onDone: (v: number, fell: boolean) => void) => {
 
 /** The board itself: no buttons, so the cover can use it too. */
 /** A column's two doors, lit while they decide. */
-const Doors: React.FC<{ xor?: number; and?: number }> = ({ xor, and }) => {
+const Doors: React.FC<{ xor?: number; and?: number; dead?: boolean }> = ({ xor, and, dead }) => {
   const lit = xor !== undefined;
   const chip = (name: string, v: number | undefined, say: string) => (
     <span
@@ -208,7 +124,11 @@ const Doors: React.FC<{ xor?: number; and?: number }> = ({ xor, and }) => {
   return (
     <span className="flex flex-col items-center gap-0.5">
       {chip('XOR', xor, xor ? '→1' : '→0')}
-      {chip('AND', and, and ? 'carry' : '—')}
+      {dead ? (
+        <span className="rounded px-1 text-[0.5625rem] leading-tight" style={{ fontFamily: MONO, color: '#fbbf24', background: 'rgba(120,53,15,.5)' }}>
+          AND 💀
+        </span>
+      ) : chip('AND', and, and ? 'carry' : '—')}
     </span>
   );
 };
@@ -250,7 +170,7 @@ export const Board: React.FC<{ digits: number[]; carry: number | null; did?: Fra
           <span className="my-1.5 flex items-center justify-center" style={{ height: '12cqw' }}>
             {b ? <Marble size="11cqw" /> : <Hole size="11cqw" />}
           </span>
-          {did?.col === i ? <Doors xor={did.xor} and={did.and} /> : <Doors />}
+          {did?.col === i ? <Doors xor={did.xor} and={did.and} dead={did.dead} /> : <Doors />}
         </div>
       ))}
     </div>
@@ -266,13 +186,15 @@ export const Board: React.FC<{ digits: number[]; carry: number | null; did?: Fra
 export const AdderToy: React.FC<{
   v: number; best: number; fell: boolean; want: boolean; live: boolean;
   onChange: (v: number, best: number, fell: boolean) => void;
-}> = ({ v, best, fell, want, live, onChange }) => {
+  /** the score with its AND doors burnt out, and how many fish it has eaten */
+  broken?: boolean; fish?: number;
+}> = ({ v, best, fell, want, live, onChange, broken = false, fish }) => {
   const still = useReducedMotion();
-  const { frame, busy, play } = useRipple((nv, f) => onChange(nv, Math.max(best, nv), fell || f));
+  const { frame, busy, play } = useRipple((nv, f) => onChange(nv, Math.max(best, nv), fell || f), broken);
   const feed = () => {
     if (busy) return;
     if (still) {               // reduced motion: the sum, without the ride
-      const fr = addOne(v); const last = fr[fr.length - 1];
+      const fr = addOne(v, broken); const last = fr[fr.length - 1];
       onChange(value(last.d), Math.max(best, value(last.d)), fell || last.carry === -1);
       return;
     }
@@ -281,7 +203,10 @@ export const AdderToy: React.FC<{
   const digits = frame ? frame.d : bits(v);
   return (
     <div>
-      <div className="mb-1 text-center text-[0.625rem] uppercase tracking-widest text-amber-500/70">catventure · score</div>
+      <div className="mb-1 flex items-baseline justify-between px-1 text-[0.625rem] uppercase tracking-widest text-amber-500/70">
+        <span>catventure · score</span>
+        {fish !== undefined && <span className="normal-case tracking-normal text-gray-400">🐟 eaten: {fish}</span>}
+      </div>
       <Board digits={digits} carry={frame ? frame.carry : null} did={frame?.did} first={frame?.first} />
       {live ? (
         <>
@@ -289,10 +214,11 @@ export const AdderToy: React.FC<{
             <div className="flex flex-[2]" style={{ opacity: busy ? 0.5 : 1 }}>
               <Push onClick={feed} label="feed the cat a fish — add one" beckon={want && !busy}>🐟 +1</Push>
             </div>
-            <div className="flex flex-1"><Push tone="ghost" onClick={() => !busy && onChange(1, best, fell)} label="start the score again at 1">↺ 1</Push></div>
+            {!broken && <div className="flex flex-1"><Push tone="ghost" onClick={() => !busy && onChange(1, best, fell)} label="start the score again at 1">↺ 1</Push></div>}
           </div>
           <p className="mt-2 min-h-[2.5rem] text-center text-[0.75rem] text-gray-400">
-            {frame?.carry === -1 ? 'the last carry had no column to go to — it fell out of bed 🛏️'
+            {broken ? (frame?.did?.dead ? 'XOR wrote 0 … and the carry just vanished 💨' : 'every fish should add one')
+              : frame?.carry === -1 ? 'the last carry had no column to go to — it fell out of bed 🛏️'
               : frame ? 'XOR writes the digit · AND carries the one'
               : 'each column is two doors: XOR writes the digit, AND carries the one'}
           </p>
@@ -300,6 +226,91 @@ export const AdderToy: React.FC<{
       ) : (
         <p className="mt-2 text-center text-[0.75rem] text-gray-500">the score keeps counting further down ↓</p>
       )}
+    </div>
+  );
+};
+
+// ── the Naughty-or-Nice Machine ─────────────────────────────────────────────
+// The museum's old toy-shop Santa machine, built from the same chips as the
+// score: brushed teeth AND said please AND NOT pulled the cat's tail. It is
+// the only spare AND chip in the museum, so the reader plays with it — and
+// then takes it. With the chip gone the socket is empty, and an empty input
+// on these old chips reads as a 1 (true of real TTL chips), so afterwards the
+// machine says NICE to everybody — the chapter's punchline.
+
+export const SantaToy: React.FC<{
+  teeth: boolean; please: boolean; cat: boolean; seenNice: boolean; seenNaughty: boolean; heist: boolean;
+  onChange: (p: { teeth?: boolean; please?: boolean; cat?: boolean; seenNice?: boolean; seenNaughty?: boolean; heist?: boolean }) => void;
+}> = ({ teeth, please, cat, seenNice, seenNaughty, heist, onChange }) => {
+  const and = teeth && please, not = !cat;
+  const nice = heist ? true : and && not;
+  const flip = (k: 'teeth' | 'please' | 'cat') => {
+    if (heist) return;
+    const next = { teeth, please, cat, [k]: !{ teeth, please, cat }[k] };
+    const v = next.teeth && next.please && !next.cat;
+    // NAUGHTY only counts once the CAT causes it — the first try had the reader
+    // "see" naughty on their very first tap (teeth only) and never pull the
+    // tail, so the NOT door and the funniest switch were skipped
+    onChange({ [k]: next[k], ...(v ? { seenNice: true } : next.cat && seenNice ? { seenNaughty: true } : {}) });
+  };
+  // one thing glows at a time: whatever gets the reader to the next verdict
+  const glow: 'teeth' | 'please' | 'cat' | 'chip' | null =
+    heist ? null
+      : !seenNice ? (!teeth ? 'teeth' : !please ? 'please' : cat ? 'cat' : null)
+      : !seenNaughty ? 'cat'
+      : 'chip';
+  const sw = (k: 'teeth' | 'please' | 'cat', emoji: string, label: string) => {
+    const on = { teeth, please, cat }[k];
+    return (
+      <button
+        onClick={() => flip(k)}
+        aria-label={`${label}: ${on ? 'yes' : 'no'}`}
+        className={`flex flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl border bg-[#100e1c] py-1.5 ${glow === k ? 'beckon' : ''}`}
+        style={{ minHeight: 64, borderColor: on ? '#fbbf24' : '#3f3a56', opacity: heist ? 0.55 : 1 }}
+      >
+        <span className="text-[1.375rem] leading-none">{emoji}</span>
+        <span className="text-[0.625rem] text-gray-400">{label}</span>
+        <span className="mt-0.5 inline-block h-2.5 w-2.5 rounded-full" style={{ background: on ? '#fbbf24' : '#374151', boxShadow: on ? '0 0 8px #fbbf24' : 'none' }} />
+      </button>
+    );
+  };
+  const lamp = (lbl: string, v: boolean, gone = false) => (
+    <div className="flex flex-1 flex-col items-center rounded-lg border px-2 py-1.5"
+         style={{ borderColor: gone ? '#6b7280' : v ? '#4ade80' : '#f87171', borderStyle: gone ? 'dashed' : 'solid', background: '#0b0a14' }}>
+      <span className="text-[0.6875rem] font-bold tracking-widest text-gray-200" style={{ fontFamily: MONO }}>{lbl}</span>
+      <span className="text-[0.625rem]" style={{ color: gone ? '#9ca3af' : v ? '#4ade80' : '#f87171' }}>
+        {gone ? 'empty socket' : v ? 'yes' : 'no'}
+      </span>
+    </div>
+  );
+  return (
+    <div style={{ containerType: 'inline-size' }}>
+      {glow && <BeckonStyle />}
+      <div className="flex gap-2">
+        {sw('teeth', '🪥', 'brushed teeth')}
+        {sw('please', '🙏', 'said please')}
+        {sw('cat', '🐱', 'pulled its tail')}
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        {lamp(heist ? 'AND · 7408' : '🪥 AND 🙏', and, heist)}
+        {lamp('NOT 🐱', not)}
+      </div>
+      <div className="mt-2 rounded-xl border-2 py-2 text-center" style={{ borderColor: nice ? '#4ade80' : '#f87171', background: '#0c0a09' }}>
+        <div style={{ fontFamily: PIXEL_FONT, fontSize: '13cqw', lineHeight: 1, color: nice ? '#4ade80' : '#f87171', letterSpacing: '0.1em' }}>
+          {nice ? 'NICE 🎁' : 'NAUGHTY'}
+        </div>
+        <div className="mt-1 text-[0.625rem] uppercase tracking-[0.2em] text-amber-500/60">naughty-or-nice machine</div>
+      </div>
+      <div className="mt-2 flex">
+        {heist ? (
+          <p className="w-full text-center text-[0.75rem] text-amber-300">🔧 the AND chip is in Starlax’s pocket</p>
+        ) : (
+          <div className="flex w-full" style={{ opacity: seenNice && seenNaughty ? 1 : 0.4 }}>
+            <Push onClick={() => seenNice && seenNaughty && onChange({ heist: true })} label="take the AND chip out of the machine"
+                  tone={seenNice && seenNaughty ? 'amber' : 'ghost'} beckon={glow === 'chip'}>🔧 take the AND chip</Push>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

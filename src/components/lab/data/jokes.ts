@@ -351,20 +351,44 @@ export const JOKES: Joke[] = [
   {
     id: 'santa-and-door',
     chapter: null, status: 'live', anchor: true,
-    text: 'The cover: Santa’s Naughty-or-Nice Machine. Teeth AND please, NOT pulled-the-cat’s-tail. STARLAX: ✓ ✓ … then a 🐾 lands on the cat switch → coal. “NAUGHTY?!” — “(it was nova)”. In the chat: “So Santa’s machine is an AND door. One bad day and it’s coal.” — “He should use an OR door.” — “Then everyone is nice.” — “…That is the point of Christmas.”',
-    why: 'The author’s idea. A naughty-or-nice check IS a logic gate, and every kid knows the stakes; AND vs OR becomes an argument with Santa. Nova framing Starlax is the cover’s punchline.',
+    text: 'The cover: Santa’s Naughty-or-Nice Machine. Teeth AND please, NOT pulled-the-cat’s-tail. STARLAX: ✓ ✓ … then a 🐾 lands on the cat switch → coal. “NAUGHTY?!” — “(it was nova)”. In the chat the machine is a toy (“try it before you rob it.”), and its AND chip is the only spare left for the broken score.',
+    why: 'The author’s idea. A naughty-or-nice check IS a logic gate, and every kid knows the stakes. Nova framing Starlax is the cover’s punchline; the heist makes the machine part of the plot.',
   },
   {
     id: 'there-is-no-program',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'cut', anchor: true,
     text: '“How does CATVENTURE add?” — “The program, obviously.” — “There is no program. I took the back off.” [photo: a board of black chips, a red circle round SN7483N, “this one!!”] — “7483 is a 4-bit adder. It adds. That is all it does.”',
-    why: 'True: the first arcade games had no program at all, only boards of small logic chips, each with its number printed on top. It answers the author’s objection that “thousands of tiny doors” was fake — the doors are real, sealed in chips you can photograph and look up.',
+    why: 'Retired with the dry real-chips telling (author: “extremely boring and dry”); the photo idea lives on as the burnt chip. — True: the first arcade games had no program at all, only boards of small logic chips, each with its number printed on top. It answers the author’s objection that “thousands of tiny doors” was fake — the doors are real, sealed in chips you can photograph and look up.',
   },
   {
     id: 'model-k-for-kitchen',
-    chapter: null, status: 'live', anchor: true,
+    chapter: null, status: 'spare', anchor: true,
     text: '“True story. In 1937 a man built an adder like this on his kitchen table — two telephone switches, two torch bulbs, and strips cut from a tobacco tin.” — “Did it work?” — “1 + 1 lit one bulb and not the other. 10. He called it the Model K.” — “K?” — “For kitchen.”',
-    why: 'True (George Stibitz, Bell Labs, 1937). The half adder the reader just played, built from junk on a table — and the punchline is the name.',
+    why: 'Taken out when the chapter became the broken score and the Santa heist — one closing payoff (NICE to everyone), not two. Still true and still good. — True (George Stibitz, Bell Labs, 1937). The half adder the reader just played, built from junk on a table — and the punchline is the name.',
+  },
+  {
+    id: 'one-zero-one-zero',
+    chapter: null, status: 'live', anchor: true,
+    text: 'The broken score: the cat eats fish after fish and the score goes 1. 0. 1. 0. — “I have fed it ALL these fish and I have ONE point 😤” — “1 + 1 should be 10. It writes the 0 and then forgets the 1.”',
+    why: 'The lesson by subtraction: XOR alone, no carry. The reader plays the failure before anyone explains it, and a score that goes DOWN is an outrage every kid feels.',
+  },
+  {
+    id: 'and-it-is-toast',
+    chapter: null, status: 'live',
+    text: '[photo: a scorched SN7408, red circle, “it smells like toast?!”] — “That one is the AND door. It carries the one.” — “And it is toast.”',
+    why: 'Starlax sends the photo instead of describing it; Flamey’s deadpan lands on her own caption.',
+  },
+  {
+    id: 'try-it-before-you-rob-it',
+    chapter: null, status: 'live',
+    text: 'The only spare chip is inside Santa’s Naughty-or-Nice Machine. — “SANTA’S MACHINE??” — “Same chip. Try it before you rob it.”',
+    why: 'Turns the toy into a heist: the reader plays the AND/NOT machine knowing they are about to take its chip.',
+  },
+  {
+    id: 'nice-to-everybody',
+    chapter: null, status: 'live', anchor: true,
+    text: '[photo: the machine, socket empty, “borrowed — S”, read-out: NICE — NOVA] — “It says NICE to everybody. Even NOVA 😂” — “True fact: on these old chips an empty socket reads as a yes. So everyone passes.” — “Leo gets a present. Nova gets a present.” — “…That is the point of Christmas 🎄”',
+    why: 'True (an unconnected TTL input floats high). Pays off the cover (Nova was framed as naughty) and replaces the old “he should use an OR door” line with a consequence of the heist.',
   },
   {
     id: 'you-just-had-a-pencil',
@@ -380,9 +404,9 @@ export const JOKES: Joke[] = [
   },
   {
     id: 'doors-that-can-count',
-    chapter: null, status: 'live',
+    chapter: null, status: 'spare',
     text: '“You are mostly doors, Flamey.” — “…Doors that can count.”',
-    why: 'Grew out of Evergreen’s “you are mostly doors, young droid” in the Ch7 draft; now it is the chapter’s win line.',
+    why: 'Grew out of Evergreen’s “you are mostly doors, young droid” in the Ch7 draft; was the win line of the real-chips telling; not in the heist telling.',
   },
 
   // ——— Chapter 8 ———

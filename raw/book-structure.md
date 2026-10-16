@@ -191,30 +191,34 @@ their numbers. Mostly about food.
   every kid already does in school sums. Replaces the Ch7 plan below as the
   way gates are taught: that plan showed what gates *are* (collision) and never
   what they *do*.
-- **The doors are real chips** (retold after the author called "thousands of
-  tiny doors" fake — gates are far too small to see). True: the first arcade
-  games had **no program at all**, only boards of small logic chips with their
-  numbers printed on top. Starlax **photographs** the board with a red circle
-  round the **7483** (a 4-bit adder); Flamey sends back the **7408** data
-  sheet (four AND gates, real pin layout); the toys open the chips up.
-- **Toys:** the AND door (two chutes; both, or nothing) · the XOR door (one, not
-  both) · CATVENTURE's score as four columns of two doors each — feed the cat a
-  fish, watch each column's XOR and AND decide, and the carry roll on
-  (0111 + 1 is the chain reaction; 1111 + 1 drops the carry off the end, the
-  overflow chapter's roll-over seen from the inside). Each door fills in the
-  four ways in as they are tried — a truth table the reader made.
-- **Jokes:** "the program, obviously" / "there is no program" + the photo ·
-  Santa's AND door · XOR pizza · "you just had a pencil" · the true Model K
-  ("he called it the Model K." "K?" "for kitchen 🍳").
+- **Retold a third time: the score is broken, and Santa has the spare part.**
+  The real-chips telling was accurate and, in the author's word, "extremely
+  boring and dry": nothing was broken, nobody wanted anything. Now Starlax's
+  score goes **1, 0, 1, 0** — the reader feeds the cat and watches XOR write
+  the digit while the dead AND door drops every carry ("I have fed it ALL
+  these fish and I have ONE point"). She takes the back off and **photographs**
+  the scorched SN7408 ("it smells like toast?!"). The only spare in 200 years
+  is inside the old toy shop's **Naughty-or-Nice Machine**; the reader plays it
+  (AND, NOT the cat's tail), then steals its AND chip. The fixed score counts:
+  0111 + 1 ripples like dominoes. Payoff photo: Santa's machine, socket empty,
+  says **NICE — NOVA** — true, an empty input on these old TTL chips floats
+  high and reads as a yes, so everyone passes. "...that is the point of
+  christmas 🎄".
+- **Toys:** the broken score (XOR → 0, AND 💀) · the Naughty-or-Nice Machine
+  (three switches, AND and NOT lamps, NICE/NAUGHTY, then 🔧 take the chip) ·
+  the fixed score (four columns, the carry rolls on; 1111 + 1 drops it off the
+  end, the overflow chapter seen from inside).
+- **Jokes:** 1, 0, 1, 0 · "and it is toast." · "try it before you rob it." ·
+  NICE to everybody, even Nova · "you just had a pencil ✏️". Retired with the
+  dry telling: "there is no program" and the Model K.
 - **Cover: Santa's Naughty-or-Nice Machine** (the author's idea). Letters to
   Santa slide in with three lamps — 🪥 brushed teeth, 🙏 said please, 🐱 pulled
   its tail. Teeth AND please; the cat through a NOT door; both into a second
   AND; the chimney gives 🎁 or coal. Mia → present; Leo pulled the tail → coal;
   STARLAX ✓ ✓ … then a 🐾 lands on the cat switch → *"NAUGHTY?! (it was
-  nova)"*. The chat pays it off right after the AND door: *"santa's machine is
-  an AND door. one bad day and it's coal" — "he should use an OR door" — "then
-  everyone is nice" — "...that is the point of christmas 🎄"* (this replaced
-  the ice cream joke in this chapter). Earlier covers, both rejected: the
+  nova)"*. The chat pays it off at the end: with its AND chip in Starlax's pocket
+  the machine says NICE to everyone (this replaced the ice cream joke in this
+  chapter). Earlier covers, both rejected: the
   score counting to itself; a signal running through a circuit board.
 
 ### "Level 256" — "The Maze Is Made of Numbers" 🆕 **BUILT: `/lab/level256`** (unnumbered)
