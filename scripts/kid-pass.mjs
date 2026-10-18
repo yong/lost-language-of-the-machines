@@ -15,6 +15,7 @@
 //     kid has to make sense of with no help. These go to the cold reviewer
 //     (.claude/agents/kid-reviewer.md) and to the top of the hand-back.
 //   - one taken mid-motion just after the first tap, one when the toy is done
+//     (the payoff — a reviewer who never sees it cannot judge it)
 //   - report.txt: the mechanical checks. A ✗ is a bug; it does not prove the
 //     chapter makes sense — only the pictures can show that.
 //
@@ -81,12 +82,19 @@ const look = () => page.evaluate(() => {
   };
 });
 
+const doneShot = new Set();
 let toy = 0, lastGate = null, lastLabel = null, firstTap = false, taps = 0, scrolls = 0, wide = false, stuck = 0;
 for (let i = 0; i < 1500; i++) {
   await page.waitForTimeout(300);
   const s = await look();
   wide ||= s.wide;
   if (s.done) break;
+  // the toy's last step was just taken: the payoff a kid plays for
+  if (toy > 0 && !s.gate && !doneShot.has(toy)) {
+    doneShot.add(toy);
+    await page.waitForTimeout(700);
+    pictures.push(await snap(`toy${toy}-done`));
+  }
 
   if (s.gate && s.gate !== lastGate) {
     // a NEW toy (or the same toy asking for its next step)
@@ -106,7 +114,13 @@ for (let i = 0; i < 1500; i++) {
         if (below && s.arrow !== 'down') bad(`toy ${toy}: the hint points ↑ but the button is below the screen`);
         if (!s.cardSeen) note(`toy ${toy}: only the top of the card shows — is what peeks something to touch?`);
       }
-    } else note(`   next step: "${s.gate}"`);
+    } else {
+      // the same toy asking for its next step: photograph it, or a reviewer
+      // never sees the moment in between (a cold read "never saw NICE")
+      note(`   next step: "${s.gate}"`);
+      await page.waitForTimeout(400);
+      pictures.push(await snap(`toy${toy}-next-step`));
+    }
   }
 
   if (s.waiting) { await swipe(H * 0.45); scrolls++; continue; }
@@ -118,7 +132,9 @@ for (let i = 0; i < 1500; i++) {
     if (!firstTap) { firstTap = true; await page.waitForTimeout(350); pictures.push(await snap(`toy${toy}-mid-motion`)); }
     continue;
   }
-  if (s.gate && !s.glow) { if (++stuck > 20) { bad(`stuck: "${s.gate}" and nothing glows`); break; } continue; }
+  // nothing glows: the game may be playing by itself (a score counting up) —
+  // give it time before calling it stuck
+  if (s.gate && !s.glow) { if (++stuck > 80) { bad(`stuck: "${s.gate}" and nothing glows`); break; } continue; }
   if (s.held) { await tap(s.held.x, s.held.y); continue; }
   if (i === 1499) bad('never reached the end');
 }

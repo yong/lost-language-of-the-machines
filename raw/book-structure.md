@@ -184,7 +184,7 @@ their numbers. Mostly about food.
   falls out of one. Whether it *becomes* 6 (pushing memory to 7 and everything
   after it along) is a call to make deliberately, so nothing is renumbered here.
 
-### "Two Doors Can Add" 🆕 **BUILT: `/lab/adder`** (logic gates, unnumbered)
+### "Two Chips Can Add" 🆕 **BUILT: `/lab/adder`** (logic gates, unnumbered; was "Two Doors Can Add" — a cold read found doors, gates, chip and AND door were four names for one thing)
 - **The message: logic IS maths.** A machine cannot count, but two doors can
   add — XOR writes the digit, AND carries the one — and the carries ripple
   from column to column like dominoes. Told through **carrying the one**, which
@@ -204,10 +204,13 @@ their numbers. Mostly about food.
   says **NICE — NOVA** — true, an empty input on these old TTL chips floats
   high and reads as a yes, so everyone passes. "...that is the point of
   christmas 🎄".
-- **Toys:** the broken score (XOR → 0, AND 💀) · the Naughty-or-Nice Machine
-  (three switches, AND and NOT lamps, NICE/NAUGHTY, then 🔧 take the chip) ·
-  the fixed score (four columns, the carry rolls on; 1111 + 1 drops it off the
-  end, the overflow chapter seen from inside).
+- **Toys** (rebuilt after the author saw a dashboard of XOR/AND boxes and asked
+  "what is this boring app here for?"): the game itself — a pixel cat, one fish
+  at a time, an arcade SCORE — stuck at 1, 0, 1, 0 · the Naughty-or-Nice
+  Machine (three switches; lamps ask "teeth and please?" and "left the cat
+  alone?"; then 🔧 take the chip, and the machine goes dark) · the same game
+  with its inside on show: put the chip in, and the score counts itself to 8
+  while a "carry 1" rides along four lights worth 8 4 2 1.
 - **Jokes:** 1, 0, 1, 0 · "and it is toast." · "try it before you rob it." ·
   NICE to everybody, even Nova · "you just had a pencil ✏️". Retired with the
   dry telling: "there is no program" and the Model K.

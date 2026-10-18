@@ -21,18 +21,20 @@ who designed the toy. The author caught that kind after whole chapters were
 built. So the check for it comes first, and it is never graded by the builder.
 
 **Gate 1 — the first screen, before building the rest.** For a new chapter or
-toy, build only the first toy, put it in the chat, and send the author:
+toy, build only the first toy, put it in the chat, and write down:
 
 - the want and the win, one line each ("her score is stuck at 1 → it counts");
 - the app a kid already knows that does this (a phone game, WhatsApp, Roblox);
   if there is none, a very good reason — inventing UI to satisfy a rule in
   this file is not one;
-- **a picture at 390×640 of what the kid sees when that toy arrives**,
-  already shown to the `kid-reviewer` agent, with its answer.
+- **a picture at 390×640 of what the kid sees when that toy arrives.**
 
-Then wait for a go. If the picture needs a sentence to say what it is, it has
-already failed: a toy is the thing as a kid sees it (the cat, the fish, the
-score in the corner), never its insides.
+Show the picture to the `kid-reviewer` and keep reworking it until the answer
+to "what is this?" is the thing you meant — **you** are the gate here, not the
+author. If the picture needs a sentence to say what it is, it has already
+failed: a toy is the thing as a kid sees it (the cat, the fish, the score in
+the corner), never its insides. Only a real taste choice (two premises, two
+covers) goes to the author, as options.
 
 **Gate 2 — the cold read, before handing back.** On the production build:
 
@@ -43,8 +45,10 @@ score in the corner), never its insides.
 2. Give those pictures — and nothing else, no plan, no code — to the
    **`kid-reviewer`** agent (`.claude/agents/kid-reviewer.md`). It does not
    know what the toy is for, so it can be confused. Every "I don't know what
-   this is", "looks broken", "got bored here" is fixed, or goes to the author
-   with the reason it was not.
+   this is", "looks broken", "got bored here" is **fixed and re-reviewed by a
+   fresh reviewer** until it passes. Problems are never handed to the author
+   as questions — a list of things a cold read found is a to-do list, not a
+   decision. Only a genuine taste call goes up, with a recommendation.
 3. The pictures and the reviewer's verdict go **in the hand-back**, above the
    link, so the author sees what was seen.
 

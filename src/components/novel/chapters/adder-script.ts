@@ -28,44 +28,42 @@ export const ADDER_SCRIPT: Beat[] = [
   { kind: 'toy', toy: 'broken', label: 'feed the cat' },
 
   { kind: 'msg', who: 'starlax', text: '1. 0. 1. 0.', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'I have fed it ALL these fish and I have ONE point 😤', rush: true },
-  { kind: 'msg', who: 'flamey', text: '1 + 1 should be 10. it writes the 0 and then forgets the 1.' },
-  { kind: 'msg', who: 'flamey', text: 'something in there is dropping the carry 🙃', rush: true },
+  { kind: 'msg', who: 'starlax', text: 'I fed it ALL these fish and I have ONE point 😤', rush: true },
+  // "carry the one" in the words of a school sum, which every kid has done —
+  // a cold read of the earlier telling stopped here at "the AND door. it
+  // carries the one": two words it did not know, in a wall of texts
+  { kind: 'msg', who: 'flamey', text: 'like 9 + 1 at school. write the 0, carry the 1. it writes the 0 and drops the 1 🙃' },
   { kind: 'msg', who: 'starlax', text: 'I took the back off. LOOK' },
   { kind: 'pic', who: 'starlax', src: '/adder/burnt.svg', ratio: 4 / 3,
     alt: 'Starlax’s photo of the score section of the board: two black chips, SN7408N and SN7486N. The 7408 is scorched and cracked with a wisp of smoke, circled in red marker: “it smells like toast?!”' },
-  { kind: 'msg', who: 'flamey', text: 'that one is the AND door. it carries the one.' },
-  { kind: 'msg', who: 'flamey', text: 'and it is toast.', rush: true },
+  { kind: 'msg', who: 'flamey', text: 'that is the chip that carries the 1. and it is toast.' },
   { kind: 'msg', who: 'starlax', text: 'can we get another one' },
-  { kind: 'msg', who: 'flamey', text: 'nobody has made one in 200 years. there is exactly one more in the museum.', typing: true },
-  { kind: 'msg', who: 'starlax', text: 'WHERE' },
-  { kind: 'msg', who: 'flamey', text: 'inside the naughty-or-nice machine. in the old toy shop 🎅' },
+  { kind: 'msg', who: 'flamey', text: 'nobody has made one in 200 years. the only other one is inside santa’s naughty-or-nice machine 🎅', typing: true },
   { kind: 'msg', who: 'starlax', text: 'SANTA’S MACHINE??' },
-  { kind: 'msg', who: 'flamey', text: 'same chip. brushed teeth AND said please AND did not pull the cat’s tail.' },
   { kind: 'msg', who: 'flamey', text: 'try it before you rob it.', rush: true },
 
   { kind: 'toy', toy: 'santa', label: 'the naughty-or-nice machine' },
 
   { kind: 'msg', who: 'starlax', text: 'one bad thing and it’s NAUGHTY. it is SO strict 😤', typing: true },
-  { kind: 'msg', who: 'flamey', text: 'that is an AND door. everything has to be yes.' },
+  { kind: 'msg', who: 'flamey', text: 'that is AND. teeth AND please AND tail left alone. everything has to be yes.' },
   { kind: 'msg', who: 'starlax', text: 'well now it’s in my pocket 🔧' },
-  { kind: 'msg', who: 'flamey', text: 'put it in the score. feed the cat.' },
+  { kind: 'msg', who: 'flamey', text: 'put it in the score.' },
 
   { kind: 'beat' },
 
-  { kind: 'toy', toy: 'fixed', label: 'feed the cat · with santa’s AND door' },
+  { kind: 'toy', toy: 'fixed', label: 'the score · with santa’s chip' },
 
   { kind: 'msg', who: 'starlax', text: 'IT COUNTS 🤯', typing: true },
   { kind: 'msg', who: 'starlax', text: '0111 and one more fish and they ALL went. like dominoes', rush: true },
-  { kind: 'msg', who: 'flamey', text: 'XOR writes the digit. AND carries the one. two doors, and they add.' },
+  { kind: 'msg', who: 'flamey', text: 'one chip writes the digit. santa’s chip carries the 1. two little chips, and they add.' },
   { kind: 'msg', who: 'flamey', text: 'you have done that since second grade. you just had a pencil ✏️', rush: true },
-  { kind: 'msg', who: 'starlax', text: 'wait. what is santa’s machine doing without its AND door' },
+  { kind: 'msg', who: 'starlax', text: 'wait. what is santa’s machine doing without its chip' },
   { kind: 'msg', who: 'flamey', text: '...', typing: true },
   { kind: 'pic', who: 'starlax', src: '/adder/santa-nice.svg', ratio: 4 / 3,
     alt: 'Starlax’s photo of the Naughty-or-Nice Machine: its read-out says NICE — NOVA · present. The chip socket is empty with a sticky note, “borrowed — S”, and Nova’s orange paw is on the machine.' },
   { kind: 'msg', who: 'starlax', text: 'it says NICE to everybody. even NOVA 😂' },
   { kind: 'msg', who: 'flamey', text: 'true fact: on these old chips an empty socket reads as a yes. so everyone passes.' },
-  { kind: 'msg', who: 'starlax', text: 'leo gets a present. nova gets a present.' },
+  { kind: 'msg', who: 'starlax', text: 'even the kids who pull cats’ tails get a present 🎁' },
   { kind: 'msg', who: 'flamey', text: '...that is the point of christmas 🎄', rush: true },
   { kind: 'msg', who: 'nova', text: '🐱', rush: true },
 ];

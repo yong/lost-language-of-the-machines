@@ -19,8 +19,11 @@ export const BeckonStyle: React.FC = () => (
  *  something to press: an amber box sitting beside two others says nothing.
  *  Only one button beckons at a time, and it stops the moment it has done its
  *  job, so it never becomes a moving target. Reduced motion: a steady glow. */
-export const Push: React.FC<{ onClick: () => void; children: React.ReactNode; tone?: 'amber' | 'ghost'; label?: string; beckon?: boolean }> =
-  ({ onClick, children, tone = 'amber', label, beckon = false }) => (
+/*  `solid`: a filled amber button with dark text, glowing or not. The
+ *  see-through amber on a dark card read as "greyed out" to a cold reviewer
+ *  — off, not press-me. Opt-in, so approved chapters keep their look. */
+export const Push: React.FC<{ onClick: () => void; children: React.ReactNode; tone?: 'amber' | 'ghost'; label?: string; beckon?: boolean; solid?: boolean }> =
+  ({ onClick, children, tone = 'amber', label, beckon = false, solid = false }) => (
     <button
       onClick={onClick}
       aria-label={label}
@@ -28,8 +31,8 @@ export const Push: React.FC<{ onClick: () => void; children: React.ReactNode; to
       style={{
         minHeight: 44,
         borderColor: tone === 'amber' ? '#fbbf24' : '#3f3a56',
-        background: beckon ? 'rgba(251,191,36,.30)' : tone === 'amber' ? 'rgba(251,191,36,.16)' : '#15122a',
-        color: tone === 'amber' ? '#fde68a' : '#a5a1bd',
+        background: solid ? '#fbbf24' : beckon ? 'rgba(251,191,36,.30)' : tone === 'amber' ? 'rgba(251,191,36,.16)' : '#15122a',
+        color: solid ? '#1c1917' : tone === 'amber' ? '#fde68a' : '#a5a1bd',
       }}
     >
       {beckon && <BeckonStyle />}

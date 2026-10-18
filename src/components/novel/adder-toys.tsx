@@ -102,18 +102,13 @@ const PixelFish: React.FC<{ size: string }> = ({ size }) => (
   </svg>
 );
 
-const SLOTS = [40, 62, 84];          // where the fish wait, % from the left
+const FISH_AT = 56;                  // where the next fish waits, % from the left
 const CAT_AT = 7;
 
 const GameScreen: React.FC<{
-  score: number | '…'; ate: number; eaten?: number; pop: { id: number; text: string; bad: boolean } | null; onFeed: () => void;
-}> = ({ score, ate, eaten, pop, onFeed }) => {
-  // the first fish are already waiting when the card appears; only the ones
-  // that come after swim in from the right (all three flying in at once
-  // piled up on the right edge)
-  const mounted = useRef(false);
-  useEffect(() => { mounted.current = true; }, []);
-  return (
+  score: number; ate: number; eaten?: number; pop: { id: number; text: string; bad: boolean } | null;
+  banner: string | null; onFeed: () => void;
+}> = ({ score, ate, eaten, pop, banner, onFeed }) => (
   <button
     onClick={onFeed}
     aria-label="feed the cat a fish"
@@ -133,54 +128,68 @@ const GameScreen: React.FC<{
     </span>
     {eaten !== undefined && (
       <span className="absolute right-[3cqw] top-[3cqw] flex items-center gap-[1.5cqw]" style={{ fontFamily: PIXEL_FONT, fontSize: '5.5cqw', color: '#bae6fd' }}>
-        <PixelFish size="6cqw" /> × {eaten}
+        <PixelFish size="6cqw" /> eaten: {eaten}
       </span>
     )}
     {/* the corridor */}
     <span className="absolute inset-x-0 top-[30%] h-[2.2cqw] rounded bg-blue-800" />
     <span className="absolute inset-x-0 bottom-[6%] h-[2.2cqw] rounded bg-blue-800" />
-    {/* the hero, with a chomp every time it eats */}
+    {/* ONE fish at a time. With three always waiting, a cold read saw
+        "eaten: 1" beside three fish and called it broken — eating has to be
+        something you can see: the cat lunges, the fish is gone, the next one
+        swims in. */}
+    <AnimatePresence>
+      <motion.span
+        key={`fish${ate}`}
+        className="absolute top-[56%]"
+        initial={ate === 0 ? false : { left: '104%', opacity: 0 }}
+        animate={{ left: `${FISH_AT}%`, opacity: 1, transition: { delay: ate === 0 ? 0 : 0.3, duration: 0.35, ease: 'easeOut' } }}
+        exit={{ left: `${CAT_AT + 14}%`, opacity: 0, scale: 0.3, transition: { duration: 0.16, ease: 'easeIn' } }}
+      >
+        <PixelFish size="11cqw" />
+      </motion.span>
+    </AnimatePresence>
+    {/* the hero lunges at the fish and back */}
     <motion.span
       key={`cat${ate}`}
       className="absolute top-[47%]"
-      style={{ left: `${CAT_AT}%`, originY: 1 }}
+      style={{ left: `${CAT_AT}%` }}
       initial={false}
-      animate={ate ? { scaleY: [1, 0.78, 1.06, 1], x: ['0cqw', '2cqw', '0cqw', '0cqw'] } : undefined}
-      transition={{ duration: 0.32 }}
+      animate={ate ? { x: ['0cqw', '30cqw', '30cqw', '0cqw'], scaleY: [1, 0.85, 1.05, 1] } : undefined}
+      transition={{ duration: 0.42, times: [0, 0.35, 0.55, 1] }}
     >
       <PixelCat size="15cqw" />
     </motion.span>
-    {/* the fish, sliding up to the cat one slot per tap */}
-    {[ate - 1, ate, ate + 1, ate + 2].filter((k) => k >= 0).map((k) => {
-      const slot = k - ate;
-      return (
-        <motion.span
-          key={k}
-          className="absolute top-[56%]"
-          initial={mounted.current ? { left: '104%', opacity: 0 } : false}
-          animate={slot < 0 ? { left: `${CAT_AT + 6}%`, opacity: 0, scale: 0.4 } : { left: `${SLOTS[slot]}%`, opacity: 1, scale: 1 }}
-          transition={{ duration: 0.28, ease: 'easeOut' }}
-        >
-          <PixelFish size="10cqw" />
-        </motion.span>
-      );
-    })}
     <AnimatePresence>
       {pop && (
         <motion.span
           key={pop.id}
           className="absolute"
           // beside the cat, not on it: on its head the "0?!" could not be read
-          style={{ left: `${CAT_AT + 17}%`, top: '40%', fontFamily: PIXEL_FONT, fontSize: pop.bad ? '10cqw' : '8cqw', lineHeight: 1, color: pop.bad ? '#f87171' : '#fde68a' }}
+          style={{ left: `${CAT_AT + 17}%`, top: '38%', fontFamily: PIXEL_FONT, fontSize: pop.bad ? '10cqw' : '8cqw', lineHeight: 1, color: pop.bad ? '#f87171' : '#fde68a' }}
           initial={{ y: 0, opacity: 1 }}
           animate={{ y: '-4cqw', opacity: [1, 1, 0] }}
-          transition={{ duration: pop.bad ? 1.3 : 0.8, ease: 'easeOut' }}
+          transition={{ duration: pop.bad ? 2.2 : 0.8, ease: 'easeOut' }}
         >{pop.text}</motion.span>
       )}
     </AnimatePresence>
+    {/* the fixed score's moment: what she wanted all chapter */}
+    <AnimatePresence>
+      {banner && (
+        <motion.span
+          key={banner}
+          // in the top bar beside SCORE, where a game puts it — not over the cat and the fish
+          className="absolute right-[3cqw] top-[4cqw]"
+          style={{ fontFamily: PIXEL_FONT, fontSize: '8cqw', lineHeight: 1, color: '#fde047', textShadow: '0 0 12px rgba(253,224,71,.8)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 1, 0], transition: { duration: 2.2, times: [0, 0.1, 0.5, 0.85, 1] } }}
+          exit={{ opacity: 0 }}
+        >{banner}</motion.span>
+      )}
+    </AnimatePresence>
   </button>
-  );
-};
+);
+
 
 // ── the inside of the score ─────────────────────────────────────────────────
 // Only on the fixed score, after the story has taken the back off: four
@@ -188,12 +197,34 @@ const GameScreen: React.FC<{
 // lit light it writes 0 and carries the one on (the XOR and AND doors); on a
 // dark one it writes 1 and stops. 0111 + 1 is the dominoes.
 
-const Inside: React.FC<{ digits: number[]; frame: Frame | null }> = ({ digits, frame }) => {
+const WORTH = [8, 4, 2, 1];
+const Inside: React.FC<{ digits: number[]; frame: Frame | null; onFeed: () => void; chip: boolean }> = ({ digits, frame, onFeed, chip }) => {
   const carry = frame ? frame.carry : null;
   const did = frame?.did;
+  // what the lit lights are worth, added up the way a kid adds — a cold read
+  // saw SCORE 9 beside lights 1 0 0 1 and asked "why is that nine?"
+  const lit = WORTH.filter((_, i) => digits[i]);
   return (
-    <div className="mt-2 rounded-lg border border-[#2a2540] bg-[#0b0a14] px-2 pb-1.5 pt-1" style={{ containerType: 'inline-size' }}>
-      <div className="text-[0.625rem] uppercase tracking-widest text-gray-400">inside the score</div>
+    // the lights look like something to touch, so touching them feeds the cat too
+    <button onClick={onFeed} aria-label="feed the cat a fish"
+      className="mt-2 block w-full touch-manipulation select-none rounded-lg border border-[#2a2540] bg-[#0b0a14] px-2 pb-1.5 pt-1 text-left" style={{ containerType: 'inline-size' }}>
+      <div className="flex items-center justify-between">
+        <span className="text-[0.625rem] uppercase tracking-widest text-gray-400">inside the score</span>
+        {/* the two chips the title promises: one writes the digit (it was
+            always fine), one carries the 1 — the socket Santa's chip goes
+            into. No part numbers: "SN7408" was one more word to not know. */}
+        <span className="flex gap-1.5">
+        <span className="rounded border border-gray-500 px-1.5 text-[0.625rem] tracking-wider text-gray-200" style={{ fontFamily: MONO }}>writes ✓</span>
+        <motion.span
+          key={chip ? 'in' : 'out'}
+          initial={chip ? { scale: 1.25, backgroundColor: '#fbbf24' } : false}
+          animate={{ scale: 1, backgroundColor: chip ? '#141414' : '#0b0a14' }}
+          transition={{ duration: 0.5 }}
+          className="rounded px-1.5 text-[0.625rem] tracking-wider"
+          style={{ fontFamily: MONO, border: chip ? '1px solid #9ca3af' : '1px dashed #4b5563', color: chip ? '#e5e7eb' : '#6b7280' }}
+        >{chip ? 'carries ✓' : 'carries: empty'}</motion.span>
+        </span>
+      </div>
       {/* the row the +1 rolls along */}
       <div className="relative grid grid-cols-4" style={{ height: '7cqw' }}>
         {Array.from({ length: COLS }, (_, i) => (
@@ -222,16 +253,17 @@ const Inside: React.FC<{ digits: number[]; frame: Frame | null }> = ({ digits, f
               boxShadow: b ? '0 0 12px rgba(251,191,36,.6)' : 'inset 0 1px 3px rgba(0,0,0,.6)',
               outline: did?.col === i ? '2px solid #38bdf8' : 'none', outlineOffset: 3,
             }} />
-            <span className="mt-0.5 text-[0.75rem] text-gray-400" style={{ fontFamily: MONO }}>{b}</span>
+            <span className="mt-0.5 text-[0.75rem]" style={{ fontFamily: MONO, color: b ? '#fde68a' : '#4b5563' }}>{WORTH[i]}</span>
           </div>
         ))}
       </div>
       <p className="min-h-[1.25rem] text-center text-[0.75rem] text-sky-200">
         {carry === -1 ? 'no light left — the carry fell out of bed 🛏️'
-          : did ? (did.xor ? 'write 1 ✓' : '1 and 1: write 0, carry the 1 ←')
-          : 'every fish rolls a +1 in from the right'}
+          : did ? (did.dead ? 'already lit: off it goes… and the 1 is lost 💨' : did.xor ? 'it was off: light it up ✓' : 'already lit: switch it off, carry the 1 ←')
+          : lit.length ? `lit lights add up: ${lit.join(' + ')}${lit.length > 1 ? ` = ${lit.reduce((a, n) => a + n, 0)}` : ''}`
+          : 'no lights lit: 0'}
       </p>
-    </div>
+    </button>
   );
 };
 
@@ -240,14 +272,28 @@ export const AdderToy: React.FC<{
   onChange: (v: number, best: number, fell: boolean) => void;
   /** the score with its AND doors burnt out, and how many fish it has eaten */
   broken?: boolean; fish?: number;
-}> = ({ v, best, fell, want, live, onChange, broken = false, fish }) => {
+  /** the fixed score: is Santa's chip in yet? Until it is, the score is as
+   *  broken as before; once it is, the score counts up by itself to 8 */
+  chip?: boolean; onInstall?: () => void;
+}> = ({ v, best, fell, want, live, onChange, broken: burnt = false, fish, chip, onInstall }) => {
+  const broken = burnt || chip === false;
   const still = useReducedMotion();
   const [ate, setAte] = useState(0);
   const [pop, setPop] = useState<{ id: number; text: string; bad: boolean } | null>(null);
+  const [banner, setBanner] = useState<string | null>(null);
+  // Getting past 1 is what she wanted all chapter, so the game says so — a
+  // cold read of the first fixed score "never saw the score getting fixed".
+  const cheer = (nv: number) => {
+    if (broken) return;
+    // no number in it: by the time it shows, a fast thumb has the score past it
+    const text = nv === 2 && best < 2 ? 'NEW HIGH SCORE!' : null;
+    if (text) { setBanner(text); window.setTimeout(() => setBanner((b) => (b === text ? null : b)), 2200); }
+  };
   // a kid taps faster than a carry rolls: taps made while one is rolling are
   // kept and played after it, never dropped
   const queued = useRef(0);
   const ripple = useRipple((nv, f) => {
+    cheer(nv);
     onChange(nv, Math.max(best, nv), fell || f);
     if (queued.current > 0) { queued.current -= 1; ripple.play(nv); }
   }, broken);
@@ -258,6 +304,7 @@ export const AdderToy: React.FC<{
       const fr = addOne(v, broken); const last = fr[fr.length - 1]; const nv = value(last.d);
       const dropped = nv < v;
       setPop({ id: Date.now(), text: dropped ? `${nv}?!` : '+1', bad: dropped });
+      cheer(nv);
       onChange(nv, Math.max(best, nv), fell || last.carry === -1);
       return;
     }
@@ -265,6 +312,19 @@ export const AdderToy: React.FC<{
     if (ripple.busy) { queued.current += 1; return; }
     ripple.play(v);
   };
+
+  // With the chip in, the score counts by itself: the cat eats a fish every
+  // beat and the carries ripple, up to 8. The second toy that was "tap feed
+  // nine times" read to a cold reviewer as the first toy again; the thing a
+  // kid DOES here is the heist's payoff — put the chip in — and then they
+  // get to watch it work.
+  const feedRef = useRef(feed); feedRef.current = feed;
+  const counting = !burnt && chip === true && v < 8;
+  useEffect(() => {
+    if (!live || !counting || ripple.busy) return;
+    const t = window.setTimeout(() => feedRef.current(), 650);
+    return () => window.clearTimeout(t);
+  }, [live, counting, ripple.busy, v]);
 
   if (!live) return <p className="py-1 text-center text-[0.8125rem] text-gray-400">🐱 the cat is still eating further down ↓</p>;
 
@@ -277,12 +337,14 @@ export const AdderToy: React.FC<{
   const shown = f && (f.carry === null || f.carry === -1) ? value(f.d) : v;
   return (
     <div>
-      <GameScreen score={shown} ate={ate} eaten={broken ? fish : undefined} pop={pop} onFeed={feed} />
-      {!broken && <Inside digits={digits} frame={ripple.frame} />}
+      <GameScreen score={shown} ate={ate} eaten={burnt ? fish : chip ? ate : undefined} pop={pop} banner={banner} onFeed={feed} />
+      {!burnt && <Inside digits={digits} frame={ripple.frame} onFeed={feed} chip={chip === true} />}
       <div className="mt-2 flex">
-        <Push onClick={feed} label="feed the cat a fish" beckon={want}>🐟 feed the cat</Push>
+        {chip === false
+          ? <Push onClick={() => onInstall?.()} label="put Santa's chip into the score" beckon solid>🔧 put the chip in</Push>
+          : <Push onClick={feed} label="feed the cat a fish" beckon={want && !counting} solid>🐟 feed the cat</Push>}
       </div>
-      {broken && (
+      {burnt && (
         <p className="mt-1.5 min-h-[1.25rem] text-center text-[0.8125rem] text-red-300">
           {(fish ?? 0) >= 2 && v === 0 ? `${fish} fish. score 0. 😾` : ''}
         </p>
@@ -335,13 +397,32 @@ export const SantaToy: React.FC<{
       </button>
     );
   };
-  const lamp = (lbl: string, v: boolean, gone = false) => (
-    <div className="flex flex-1 flex-col items-center rounded-lg border px-2 py-1.5"
-         style={{ borderColor: gone ? '#6b7280' : v ? '#4ade80' : '#f87171', borderStyle: gone ? 'dashed' : 'solid', background: '#0b0a14' }}>
-      <span className="text-[0.6875rem] font-bold tracking-widest text-gray-200" style={{ fontFamily: MONO }}>{lbl}</span>
-      <span className="text-[0.625rem]" style={{ color: gone ? '#9ca3af' : v ? '#4ade80' : '#f87171' }}>
-        {gone ? 'empty socket' : v ? 'yes' : 'no'}
+  // Each lamp asks a question a kid can answer, with the door's name as a
+  // small tag. It read "NOT 🐱 · yes" — and a cold reviewer could not tell
+  // whether yes meant the tail WAS pulled or was not.
+  const lamp = (door: string, question: string, v: boolean, gone = false) => (
+    // no border: a bordered box beside the switches read as one more button
+    // ("can I tap yes?")
+    <div className="flex flex-1 flex-col items-center px-1 py-0.5">
+      <span className="text-[0.5625rem] tracking-widest text-gray-400" style={{ fontFamily: MONO }}>{door}</span>
+      <span className="text-[0.75rem] text-gray-100">{gone ? 'empty socket' : question}</span>
+      <span className="text-[0.75rem] font-bold" style={{ color: gone ? '#9ca3af' : v ? '#4ade80' : '#f87171' }}>
+        {gone ? 'says yes to all' : v ? '✓ yes' : '✗ no'}
       </span>
+    </div>
+  );
+  // After the heist the machine is dark: its chip is in Starlax's pocket.
+  // It used to stay up, saying NICE with the tail pulled and its switches
+  // dimmed, and a cold read called that broken, not funny — and it gave the
+  // chapter's last joke away early. What it says without the chip is the
+  // photo at the end.
+  if (heist) return (
+    <div className="flex items-center gap-3 rounded-xl border-2 border-dashed border-gray-600 bg-[#0c0a09] px-3 py-3">
+      <span className="text-[1.75rem]" aria-hidden>🔧</span>
+      <div>
+        <div className="text-gray-500" style={{ fontFamily: PIXEL_FONT, fontSize: '1.5rem', lineHeight: 1, letterSpacing: '0.08em' }}>NO CHIP</div>
+        <div className="text-[0.8125rem] text-amber-300">the AND chip is in Starlax’s pocket</div>
+      </div>
     </div>
   );
   return (
@@ -353,8 +434,8 @@ export const SantaToy: React.FC<{
         {sw('cat', '🐱', 'pulled its tail')}
       </div>
       <div className="mt-2 flex items-center gap-2">
-        {lamp(heist ? 'AND · 7408' : '🪥 AND 🙏', and, heist)}
-        {lamp('NOT 🐱', not)}
+        {lamp(heist ? 'AND · 7408' : 'AND', 'teeth and please?', and, heist)}
+        {lamp('NOT', 'left the cat alone?', not)}
       </div>
       <div className="mt-2 rounded-xl border-2 py-2 text-center" style={{ borderColor: nice ? '#4ade80' : '#f87171', background: '#0c0a09' }}>
         <div style={{ fontFamily: PIXEL_FONT, fontSize: '13cqw', lineHeight: 1, color: nice ? '#4ade80' : '#f87171', letterSpacing: '0.1em' }}>
@@ -364,12 +445,19 @@ export const SantaToy: React.FC<{
       </div>
       <div className="mt-2 flex">
         {heist ? (
-          <p className="w-full text-center text-[0.75rem] text-amber-300">🔧 the AND chip is in Starlax’s pocket</p>
+          <p className="flex min-h-[44px] w-full items-center justify-center text-center text-[0.75rem] text-amber-300">🔧 the AND chip is in Starlax’s pocket</p>
         ) : (
-          <div className="flex w-full" style={{ opacity: seenNice && seenNaughty ? 1 : 0.4 }}>
-            <Push onClick={() => seenNice && seenNaughty && onChange({ heist: true })} label="take the AND chip out of the machine"
-                  tone={seenNice && seenNaughty ? 'amber' : 'ghost'} beckon={glow === 'chip'}>🔧 take the AND chip</Push>
-          </div>
+          seenNice && seenNaughty ? (
+            <div className="flex w-full">
+              <Push onClick={() => onChange({ heist: true })} label="take the AND chip out of the machine" beckon={glow === 'chip'}>🔧 take the AND chip</Push>
+            </div>
+          ) : (
+            // not a dimmed button: a cold read called the grey one "dead", and
+            // a thing that looks pressable and does nothing is the worst answer
+            <p className="flex min-h-[44px] w-full items-center justify-center text-center text-[0.75rem] text-gray-400">
+              {seenNice ? 'now make it say NAUGHTY 😈' : 'make it say NICE 🎁'}
+            </p>
+          )
         )}
       </div>
     </div>

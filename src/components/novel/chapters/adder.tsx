@@ -24,15 +24,17 @@ export const CHAPTER_ADDER: ChapterDef = {
     // Santa's Naughty-or-Nice Machine — the author's idea: see santa-cover.tsx
     art: <SantaCover />,
     eyebrow: 'Logic Gates',
-    title: 'Two Doors Can Add',
+    title: 'Two Chips Can Add',
     paragraphs: [
-      'For a whole week, Starlax had fed the cat in CATVENTURE every fish in the maze. Her score had never once got past 1.',
-      'It went up when the cat ate a fish. With the next fish it went back to 0. Then 1. Then 0. She had read the rules twice. Scores are not supposed to do that.',
+      // nothing here about WHAT the score does: a cold read said the paper
+      // spoiled the 1, 0, 1, 0 before the reader got to play it
+      'For a whole week, Starlax had fed the cat in CATVENTURE every fish in the maze.',
+      'Something was wrong with her score. She had read the rules twice, and it still made no sense.',
     ],
     handoffLine: 'Starlax got out her phone.',
   },
   ending: {
-    line: 'end of the chapter. XOR writes the digit, AND carries the one — and Santa’s machine says NICE to everyone.',
+    line: 'end of the chapter. the score counts again — and Santa’s machine says NICE to everyone.',
     next: 'back to the lab →',
     href: '/lab',
   },
@@ -41,7 +43,7 @@ export const CHAPTER_ADDER: ChapterDef = {
     initial: {
       bscore: 0, bbest: 0, fish: 0,
       teeth: false, please: false, cat: false, seenNice: false, seenNaughty: false, heist: false,
-      score: 0, best: 0, fell: false,
+      chip: false, score: 0, best: 0, fell: false,
     },
     // Every gate names what to TOUCH.
     gate: (toy, s) => {
@@ -51,14 +53,17 @@ export const CHAPTER_ADDER: ChapterDef = {
           return !b(s, 'seenNice') ? 'tap the switches until it says NICE'
             : !b(s, 'seenNaughty') ? 'tap 🐱 pulled its tail'
             : !b(s, 'heist') ? 'tap 🔧 take the AND chip' : null;
-        case 'fixed': return n(s, 'best') >= 8 ? null : 'tap 🐟 feed the cat';
+        case 'fixed': return !b(s, 'chip') ? 'tap 🔧 put the chip in' : n(s, 'best') >= 8 ? null : 'watch the score count 👀';
         default: return null;
       }
     },
+    // the fixed score counts up by itself once the chip is in; when it gets
+    // there, that is a game event and the story follows at once
+    events: ['fixed'],
     played: {
       broken: { bscore: 0, bbest: 1, fish: 4 },
       santa: { teeth: true, please: true, cat: false, seenNice: true, seenNaughty: true, heist: true },
-      fixed: { score: 8, best: 8 },
+      fixed: { chip: true, score: 8, best: 8 },
     },
     render: (toy, s, set, { live }) => {
       switch (toy) {
@@ -83,6 +88,7 @@ export const CHAPTER_ADDER: ChapterDef = {
           return (
             <AdderToy
               v={n(s, 'score')} best={n(s, 'best')} fell={b(s, 'fell')} live={live}
+              chip={b(s, 'chip')} onInstall={() => set({ chip: true })}
               want={CHAPTER_ADDER.toys.gate(toy, s) !== null}
               onChange={(score, best, fell) => set({ score, best, fell })}
             />
