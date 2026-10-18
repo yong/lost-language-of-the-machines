@@ -812,6 +812,9 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
         {/* the only thing that scrolls, and only the reader moves it */}
         <div
           ref={scroller}
+          // data-* hooks are for scripts/kid-pass.mjs, which walks a chapter
+          // the way a reader does
+          data-thread=""
           data-waiting={waiting ? '' : undefined}
           onScroll={onScroll}
           onClick={tap}
@@ -904,7 +907,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
         >
           <div className="mx-auto max-w-lg">
             {done ? (
-              <div className="py-1 text-center">
+              <div className="py-1 text-center" data-done="">
                 <p className="mb-2 text-sm text-gray-500">{chapter.ending.line}</p>
                 <Link
                   href={chapter.ending.href}
@@ -936,6 +939,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
                   // not scrolling FOR them) and the button it is waiting on
                   // flashes.
                   <button
+                    data-gate-hint=""
                     onClick={pointAtToy}
                     className="flex min-h-11 items-center gap-1.5 px-3 text-center text-sm text-amber-300"
                   >
@@ -950,6 +954,7 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
                   // The toy above is still live. Play with it as long as you
                   // like; the story waits.
                   <motion.button
+                    data-held=""
                     onClick={() => setHeld(false)}
                     className="min-h-11 rounded-full bg-sky-700 px-5 py-1.5 text-center text-sm leading-tight text-white"
                     animate={{ scale: [1, 1.045, 1] }}

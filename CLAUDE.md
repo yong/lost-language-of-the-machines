@@ -9,42 +9,61 @@ broken 200-year-old arcade game called CATVENTURE.
 Every decision in this file serves that reader. When a rule below and that
 reader disagree, the reader wins — and the rule gets fixed.
 
-## ✅ Done means a kid can do it — the kid pass
+## ✅ Build the right thing — then build it right
 
-Nearly every UX mistake in this project passed its tests and was caught by the
-author or their son instead. The tests *knew the answers*: a script that clicks
-a button by its label cannot be confused, so it can never find the moment a
-kid does not know what to do. Tests prove it **works**. The kid pass is what
-proves it **makes sense**. Nothing is handed back until both are done.
+Two kinds of failure, and only one of them is caught by tests. **Building it
+wrong** — a button off screen, a hint that points the wrong way — a careful
+check finds. **Building the wrong thing** — a diagram of the lesson where a
+game should be ("what is this boring app here for?") — no check of ours can
+find, because the tests and the builder share the plan: a script that taps
+the button it was told about cannot be confused, and neither can the person
+who designed the toy. The author caught that kind after whole chapters were
+built. So the check for it comes first, and it is never graded by the builder.
 
-**Before building — borrow before inventing.** Ask what an app the reader
-already uses does here (WhatsApp, Roblox, YouTube Shorts, any phone game). Chat
-apps have no "keep reading" button; games glow the next thing to press; a
-feed slides a sheet over the last one. If no app a kid knows does it, you need
-a very good reason — and inventing a control to satisfy a rule in this file is
-not one.
+**Gate 1 — the first screen, before building the rest.** For a new chapter or
+toy, build only the first toy, put it in the chat, and send the author:
 
-**After building, before handing back — walk it as the kid, on a phone
-(390×640 — a phone *inside its browser* — production build, real touch):**
+- the want and the win, one line each ("her score is stuck at 1 → it counts");
+- the app a kid already knows that does this (a phone game, WhatsApp, Roblox);
+  if there is none, a very good reason — inventing UI to satisfy a rule in
+  this file is not one;
+- **a picture at 390×640 of what the kid sees when that toy arrives**,
+  already shown to the `kid-reviewer` agent, with its answer.
 
-1. **What will they touch first, and does it work?** At every place the story
-   waits, list everything that *looks* tappable — amber text, pills, cards,
-   anything glowing or bouncing — and check each one does something. A
-   tappable-looking thing that does nothing is the worst answer a kid can get.
-2. **Is the thing to press obvious without reading?** The button the story is
-   waiting on glows; the hint names it ("tap +1¢", not "push it past 9.99").
-3. **Can they get stuck?** A state with no way on (an empty maze waiting on a
-   button), a toy whose second go costs 999 taps, a story held back by a game
-   or a game held back by a story.
-4. **Would a 10-year-old ask "why?"** of any premise fact — and would they be
-   bored yet? Read the chapter start to finish at their speed. If the same
-   idea comes round a fourth time, cut.
-5. **Critique every screenshot — name three things wrong before calling it
-   right.** Look for what is empty, what repeats, what is cramped, what reads
-   as something it is not (a control 16px from a message reads as a message).
-   Anything that moves: capture it **mid-motion**, not just start and end.
-6. **Then the numbers:** no sideways scroll, 44px targets, contrast measured
-   against the rendered background, text sizes swept 16/20/24px.
+Then wait for a go. If the picture needs a sentence to say what it is, it has
+already failed: a toy is the thing as a kid sees it (the cat, the fish, the
+score in the corner), never its insides.
+
+**Gate 2 — the cold read, before handing back.** On the production build:
+
+1. `npm run kid-pass -- /lab/<page>` walks it at 390×640 with real touch, as
+   a reader (taps what glows, scrolls when parked) and photographs every toy
+   **the moment it arrives, untouched**, mid-motion after the first tap, and
+   the cover, paper and end. Fix every ✗ in its report.
+2. Give those pictures — and nothing else, no plan, no code — to the
+   **`kid-reviewer`** agent (`.claude/agents/kid-reviewer.md`). It does not
+   know what the toy is for, so it can be confused. Every "I don't know what
+   this is", "looks broken", "got bored here" is fixed, or goes to the author
+   with the reason it was not.
+3. The pictures and the reviewer's verdict go **in the hand-back**, above the
+   link, so the author sees what was seen.
+
+**What a picture is checked for** — by you and by the reviewer:
+
+- **What will they touch first, and does it work?** List everything that
+  *looks* tappable — amber text, pills, circles, anything glowing — and check
+  each does something. A tappable-looking thing that does nothing is the worst
+  answer a kid can get. The button the story waits on glows; the hint names it.
+- **Can they get stuck?** A state with no way on, a second go that costs 999
+  taps, a story held back by a game or a game held back by a story.
+- **Would they ask "why?" — or be bored yet?** Read it start to finish at a
+  kid's speed; if an idea comes round a fourth time, cut. A wall of messages
+  with a word they do not know is where they stop.
+- **Name three things wrong before calling it right**: what is empty, what
+  repeats, what is cramped, what reads as something it is not, what moving
+  thing looks broken mid-motion.
+- **Then the numbers:** no sideways scroll, 44px targets, contrast against
+  the rendered background, text at 16/20/24px.
 
 **Taste is the author's call — offer, don't default.** Covers, motion,
 premise, voice: show two options or ask, and never reuse something just
@@ -369,8 +388,10 @@ optional `played` states and `events`.
 - **Seed localStorage from a page that does not mount the chapter**, and assert
   the seed stuck — or its own save effect overwrites the seed and the test
   measures a fresh reader.
-- Walkthrough tests play like a reader: tap what the gate names, scroll with a
-  thumb when `[data-waiting]` is set, never hunt for a button. Then **open the
+- Walkthrough tests play like a reader — `scripts/kid-pass.mjs` is the one to
+  extend, not a fresh copy in `tmp/` (a new container wipes `tmp/`): tap what
+  glows, scroll with a thumb when `[data-waiting]` is set, never hunt for a
+  button. Then **open the
   link and touch nothing**, and look at what is on screen.
 - **When a report repeats after a fix, assume a new cause.** "Everything
   arrives at once" had four different causes over three rounds (see the log);

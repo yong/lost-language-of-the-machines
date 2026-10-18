@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "kid-pass": "node scripts/kid-pass.mjs"
   },
   "dependencies": {
     "@formkit/drag-and-drop": "^0.3.3",
@@ -43,6 +44,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "playwright-core": "^1.56.1",
     "postcss": "^8.5.1",
     "tailwindcss": "^4.0.3",
     "typescript": "^5"

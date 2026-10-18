@@ -269,9 +269,15 @@ export const AdderToy: React.FC<{
   if (!live) return <p className="py-1 text-center text-[0.8125rem] text-gray-400">🐱 the cat is still eating further down ↓</p>;
 
   const digits = ripple.frame ? ripple.frame.d : bits(v);
+  // the arcade score changes the moment the carry lands — not a beat later.
+  // It used to wait for the ripple to finish, and a cold read caught it: the
+  // lights said 1 while SCORE still said 0. A number on screen agrees with
+  // the number beside it.
+  const f = ripple.frame;
+  const shown = f && (f.carry === null || f.carry === -1) ? value(f.d) : v;
   return (
     <div>
-      <GameScreen score={v} ate={ate} eaten={broken ? fish : undefined} pop={pop} onFeed={feed} />
+      <GameScreen score={shown} ate={ate} eaten={broken ? fish : undefined} pop={pop} onFeed={feed} />
       {!broken && <Inside digits={digits} frame={ripple.frame} />}
       <div className="mt-2 flex">
         <Push onClick={feed} label="feed the cat a fish" beckon={want}>🐟 feed the cat</Push>
