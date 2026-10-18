@@ -3,41 +3,22 @@
 // One idea: a machine cannot count, but two doors can add. XOR writes the
 // digit, AND carries the one. Two toys:
 //
-//   AdderToy — CATVENTURE's score as four columns of two doors. `broken` is
-//              the score with its AND chip burnt out: XOR writes 0 and the
-//              carry vanishes, so it goes 1, 0, 1, 0. Fixed, a carry knocks
-//              into the next column like a domino: 0111 + 1 is a chain.
+//   AdderToy — CATVENTURE itself: the cat, the fish, the arcade score. `broken`
+//              is the score with its AND chip burnt out, so it goes 1, 0, 1,
+//              0. Fixed, it also shows the inside — four lights, and the +1
+//              carried along them like dominoes: 0111 + 1.
 //   SantaToy — the Naughty-or-Nice Machine (AND, NOT the cat), whose AND chip
 //              the reader then takes for the score.
 //
 // Thumb notes: tap floors stay px (44+), all text is rem or cqw.
 import { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { PixelCat } from '@/components/novel/maze-toys';
 import { PIXEL_FONT } from '@/components/lab/world/theme';
 import { Push, BeckonStyle } from '@/components/novel/push';
 
-const AMBER = '#fbbf24';
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
 
-// ── a marble ────────────────────────────────────────────────────────────────
-
-const Marble: React.FC<{ size?: string; dim?: boolean }> = ({ size = '9cqw', dim }) => (
-  <span
-    className="inline-block rounded-full"
-    style={{
-      width: size, height: size,
-      background: 'radial-gradient(circle at 35% 30%, #fff7d6, #fbbf24 45%, #b45309)',
-      boxShadow: dim ? 'none' : '0 0 10px rgba(251,191,36,.55)',
-      opacity: dim ? 0.35 : 1,
-    }}
-  />
-);
-
-const Hole: React.FC<{ size?: string }> = ({ size = '9cqw' }) => (
-  <span className="inline-block rounded-full border-2 border-dashed border-gray-600" style={{ width: size, height: size }} />
-);
-
-// ── the adder ────────────────────────────────────────────────────────────
 // Four columns, worth 8 4 2 1. Each column is one XOR door and one AND door.
 // Adding one drops a marble on the 1s column; if a marble is already there,
 // XOR shuts (the digit becomes 0) and AND opens (a carry rolls into the next
@@ -85,7 +66,7 @@ export const addOne = (v: number, broken = false): Frame[] => {
   return frames;
 };
 
-const STEP_MS = 420;
+const STEP_MS = 300;
 
 /** Plays a carry rippling through, frame by frame, then reports where it
  *  ended. Shared by the toy and the cover. */
@@ -105,83 +86,154 @@ export const useRipple = (onDone: (v: number, fell: boolean) => void, broken = f
   return { frame, busy: frame !== null, play };
 };
 
-/** The board itself: no buttons, so the cover can use it too. */
-/** A column's two doors, lit while they decide. */
-const Doors: React.FC<{ xor?: number; and?: number; dead?: boolean }> = ({ xor, and, dead }) => {
-  const lit = xor !== undefined;
-  const chip = (name: string, v: number | undefined, say: string) => (
-    <span
-      className="rounded px-1 text-[0.5625rem] leading-tight"
-      style={{
-        fontFamily: MONO,
-        color: !lit ? '#6b7280' : v ? '#37f08a' : '#f87171',
-        background: !lit ? 'transparent' : v ? 'rgba(55,240,138,.12)' : 'rgba(248,113,113,.12)',
-      }}
-    >
-      {name}{lit ? ` ${say}` : ''}
-    </span>
-  );
+// ── the game screen ─────────────────────────────────────────────────────────
+// What the reader meets first is CATVENTURE, not its insides: the cat, fish
+// coming down the corridor, an arcade score. The first build of this toy was
+// the insides — four boxes of dashed circles labelled XOR / AND, a binary
+// "0000" and its button below the fold — and the author's verdict on a phone
+// was "what is this boring app here for?". A kid taps the fish, so the whole
+// screen is a button; the glowing button under it is the same action.
+
+const FISH = ['..##...#', '.####.##', '########', '.####.##', '..##...#'];
+const PixelFish: React.FC<{ size: string }> = ({ size }) => (
+  <svg viewBox="0 0 8 5" style={{ display: 'block', width: size, aspectRatio: '8 / 5' }} aria-hidden>
+    {FISH.flatMap((row, r) => [...row].map((ch, c) => (ch === '#' ? <rect key={`${r},${c}`} x={c} y={r} width={1.02} height={1.02} fill="#7dd3fc" /> : null)))}
+    <rect x={2} y={1} width={1} height={1} fill="#0c4a6e" />
+  </svg>
+);
+
+const SLOTS = [40, 62, 84];          // where the fish wait, % from the left
+const CAT_AT = 7;
+
+const GameScreen: React.FC<{
+  score: number | '…'; ate: number; eaten?: number; pop: { id: number; text: string; bad: boolean } | null; onFeed: () => void;
+}> = ({ score, ate, eaten, pop, onFeed }) => {
+  // the first fish are already waiting when the card appears; only the ones
+  // that come after swim in from the right (all three flying in at once
+  // piled up on the right edge)
+  const mounted = useRef(false);
+  useEffect(() => { mounted.current = true; }, []);
   return (
-    <span className="flex flex-col items-center gap-0.5">
-      {chip('XOR', xor, xor ? '→1' : '→0')}
-      {dead ? (
-        <span className="rounded px-1 text-[0.5625rem] leading-tight" style={{ fontFamily: MONO, color: '#fbbf24', background: 'rgba(120,53,15,.5)' }}>
-          AND 💀
-        </span>
-      ) : chip('AND', and, and ? 'carry' : '—')}
+  <button
+    onClick={onFeed}
+    aria-label="feed the cat a fish"
+    className="relative block w-full touch-manipulation select-none overflow-hidden rounded-lg border-2 border-blue-900 bg-black text-left"
+    style={{ aspectRatio: '16 / 8', containerType: 'inline-size' }}
+  >
+    {/* the arcade's own score, in the corner where a game puts it */}
+    <span className="absolute left-[3cqw] top-[2cqw] flex items-baseline gap-[2cqw]">
+      <span style={{ fontFamily: PIXEL_FONT, fontSize: '5cqw', color: '#9ca3af', letterSpacing: '0.1em' }}>SCORE</span>
+      <motion.span
+        key={pop?.bad ? `bad${pop.id}` : 'ok'}
+        initial={pop?.bad ? { color: '#f87171' } : false}
+        animate={{ color: pop?.bad ? ['#f87171', '#f87171', '#fde68a'] : '#fde68a' }}
+        transition={{ duration: 1.4 }}
+        style={{ fontFamily: PIXEL_FONT, fontSize: '11cqw', lineHeight: 1 }}
+      >{score}</motion.span>
     </span>
+    {eaten !== undefined && (
+      <span className="absolute right-[3cqw] top-[3cqw] flex items-center gap-[1.5cqw]" style={{ fontFamily: PIXEL_FONT, fontSize: '5.5cqw', color: '#bae6fd' }}>
+        <PixelFish size="6cqw" /> × {eaten}
+      </span>
+    )}
+    {/* the corridor */}
+    <span className="absolute inset-x-0 top-[30%] h-[2.2cqw] rounded bg-blue-800" />
+    <span className="absolute inset-x-0 bottom-[6%] h-[2.2cqw] rounded bg-blue-800" />
+    {/* the hero, with a chomp every time it eats */}
+    <motion.span
+      key={`cat${ate}`}
+      className="absolute top-[47%]"
+      style={{ left: `${CAT_AT}%`, originY: 1 }}
+      initial={false}
+      animate={ate ? { scaleY: [1, 0.78, 1.06, 1], x: ['0cqw', '2cqw', '0cqw', '0cqw'] } : undefined}
+      transition={{ duration: 0.32 }}
+    >
+      <PixelCat size="15cqw" />
+    </motion.span>
+    {/* the fish, sliding up to the cat one slot per tap */}
+    {[ate - 1, ate, ate + 1, ate + 2].filter((k) => k >= 0).map((k) => {
+      const slot = k - ate;
+      return (
+        <motion.span
+          key={k}
+          className="absolute top-[56%]"
+          initial={mounted.current ? { left: '104%', opacity: 0 } : false}
+          animate={slot < 0 ? { left: `${CAT_AT + 6}%`, opacity: 0, scale: 0.4 } : { left: `${SLOTS[slot]}%`, opacity: 1, scale: 1 }}
+          transition={{ duration: 0.28, ease: 'easeOut' }}
+        >
+          <PixelFish size="10cqw" />
+        </motion.span>
+      );
+    })}
+    <AnimatePresence>
+      {pop && (
+        <motion.span
+          key={pop.id}
+          className="absolute"
+          // beside the cat, not on it: on its head the "0?!" could not be read
+          style={{ left: `${CAT_AT + 17}%`, top: '40%', fontFamily: PIXEL_FONT, fontSize: pop.bad ? '10cqw' : '8cqw', lineHeight: 1, color: pop.bad ? '#f87171' : '#fde68a' }}
+          initial={{ y: 0, opacity: 1 }}
+          animate={{ y: '-4cqw', opacity: [1, 1, 0] }}
+          transition={{ duration: pop.bad ? 1.3 : 0.8, ease: 'easeOut' }}
+        >{pop.text}</motion.span>
+      )}
+    </AnimatePresence>
+  </button>
   );
 };
 
-export const Board: React.FC<{ digits: number[]; carry: number | null; did?: Frame['did']; first?: boolean }> = ({ digits, carry, did, first }) => (
-  <div style={{ containerType: 'inline-size' }}>
-    {/* the row the carry marble rolls along, above the columns */}
-    <div className="relative grid grid-cols-4 gap-2" style={{ height: '13cqw' }}>
-      {Array.from({ length: COLS }, (_, i) => (
-        <div key={i} className="flex items-end justify-center">
-          {carry === i && (
-            <motion.span layoutId="adder-carry" transition={{ type: 'spring', stiffness: 260, damping: 20 }} className="flex flex-col items-center">
-              <span className="text-[0.625rem] text-amber-300">{first ? '+1 🐟' : 'carry'}</span>
-              <Marble size="8cqw" />
-            </motion.span>
-          )}
-        </div>
-      ))}
-      {carry === -1 && (
-        // nowhere left to go: off the left edge and down
-        <motion.span
-          className="absolute left-0 top-[4cqw]"
-          initial={{ x: 0, y: 0, opacity: 1 }}
-          animate={{ x: '-8cqw', y: '30cqw', opacity: 0, rotate: -40 }}
-          transition={{ duration: 0.9, ease: 'easeIn' }}
-        >
-          <Marble size="8cqw" />
-        </motion.span>
-      )}
+// ── the inside of the score ─────────────────────────────────────────────────
+// Only on the fixed score, after the story has taken the back off: four
+// lights (the score in binary), and the +1 rolling in from the right. On a
+// lit light it writes 0 and carries the one on (the XOR and AND doors); on a
+// dark one it writes 1 and stops. 0111 + 1 is the dominoes.
+
+const Inside: React.FC<{ digits: number[]; frame: Frame | null }> = ({ digits, frame }) => {
+  const carry = frame ? frame.carry : null;
+  const did = frame?.did;
+  return (
+    <div className="mt-2 rounded-lg border border-[#2a2540] bg-[#0b0a14] px-2 pb-1.5 pt-1" style={{ containerType: 'inline-size' }}>
+      <div className="text-[0.625rem] uppercase tracking-widest text-gray-400">inside the score</div>
+      {/* the row the +1 rolls along */}
+      <div className="relative grid grid-cols-4" style={{ height: '7cqw' }}>
+        {Array.from({ length: COLS }, (_, i) => (
+          <div key={i} className="flex items-end justify-center">
+            {carry === i && (
+              <motion.span layoutId="adder-carry" transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                className="rounded-full bg-amber-400 px-1.5 text-[0.6875rem] font-bold leading-snug text-black">
+                {frame?.first ? '+1' : 'carry 1'}
+              </motion.span>
+            )}
+          </div>
+        ))}
+        {carry === -1 && (
+          <motion.span className="absolute left-0 top-0 rounded-full bg-amber-400 px-1.5 text-[0.6875rem] font-bold text-black"
+            initial={{ x: 0, y: 0, opacity: 1 }} animate={{ x: '-6cqw', y: '14cqw', opacity: 0, rotate: -40 }} transition={{ duration: 0.9, ease: 'easeIn' }}>
+            carry 1
+          </motion.span>
+        )}
+      </div>
+      <div className="grid grid-cols-4">
+        {digits.map((b, i) => (
+          <div key={i} className="flex flex-col items-center">
+            <span className="rounded-full transition-all duration-200" style={{
+              width: '9cqw', height: '9cqw',
+              background: b ? 'radial-gradient(circle at 35% 30%, #fff7d6, #fbbf24 45%, #b45309)' : '#1f1d2e',
+              boxShadow: b ? '0 0 12px rgba(251,191,36,.6)' : 'inset 0 1px 3px rgba(0,0,0,.6)',
+              outline: did?.col === i ? '2px solid #38bdf8' : 'none', outlineOffset: 3,
+            }} />
+            <span className="mt-0.5 text-[0.75rem] text-gray-400" style={{ fontFamily: MONO }}>{b}</span>
+          </div>
+        ))}
+      </div>
+      <p className="min-h-[1.25rem] text-center text-[0.75rem] text-sky-200">
+        {carry === -1 ? 'no light left — the carry fell out of bed 🛏️'
+          : did ? (did.xor ? 'write 1 ✓' : '1 and 1: write 0, carry the 1 ←')
+          : 'every fish rolls a +1 in from the right'}
+      </p>
     </div>
-    <div className="grid grid-cols-4 gap-2">
-      {digits.map((b, i) => (
-        <div
-          key={i}
-          className="flex flex-col items-center rounded-xl border bg-[#0b0a14] py-2 transition-colors"
-          style={{ borderColor: did?.col === i ? '#38bdf8' : '#374151', boxShadow: did?.col === i ? '0 0 14px rgba(56,189,248,.45)' : 'none' }}
-        >
-          <span className="text-[0.625rem] text-gray-500">{[8, 4, 2, 1][i]}s</span>
-          <span className="my-1.5 flex items-center justify-center" style={{ height: '12cqw' }}>
-            {b ? <Marble size="11cqw" /> : <Hole size="11cqw" />}
-          </span>
-          {did?.col === i ? <Doors xor={did.xor} and={did.and} dead={did.dead} /> : <Doors />}
-        </div>
-      ))}
-    </div>
-    <div className="mt-2 flex items-baseline justify-between px-1">
-      <span style={{ fontFamily: PIXEL_FONT, fontSize: '11cqw', color: '#fde68a', letterSpacing: '0.12em' }}>{digits.join('')}</span>
-      {/* while a carry is still rolling the sum is not finished — 0100 halfway
-          through 7 + 1 is not "4", so it does not say so */}
-      <span className="text-[0.875rem] text-gray-300">= {carry === null ? value(digits) : '…'}</span>
-    </div>
-  </div>
-);
+  );
+};
 
 export const AdderToy: React.FC<{
   v: number; best: number; fell: boolean; want: boolean; live: boolean;
@@ -190,41 +242,44 @@ export const AdderToy: React.FC<{
   broken?: boolean; fish?: number;
 }> = ({ v, best, fell, want, live, onChange, broken = false, fish }) => {
   const still = useReducedMotion();
-  const { frame, busy, play } = useRipple((nv, f) => onChange(nv, Math.max(best, nv), fell || f), broken);
+  const [ate, setAte] = useState(0);
+  const [pop, setPop] = useState<{ id: number; text: string; bad: boolean } | null>(null);
+  // a kid taps faster than a carry rolls: taps made while one is rolling are
+  // kept and played after it, never dropped
+  const queued = useRef(0);
+  const ripple = useRipple((nv, f) => {
+    onChange(nv, Math.max(best, nv), fell || f);
+    if (queued.current > 0) { queued.current -= 1; ripple.play(nv); }
+  }, broken);
   const feed = () => {
-    if (busy) return;
-    if (still) {               // reduced motion: the sum, without the ride
-      const fr = addOne(v, broken); const last = fr[fr.length - 1];
-      onChange(value(last.d), Math.max(best, value(last.d)), fell || last.carry === -1);
+    setAte((a) => a + 1);
+    if (broken || still) {
+      // the broken score has no inside on show, so it answers at once
+      const fr = addOne(v, broken); const last = fr[fr.length - 1]; const nv = value(last.d);
+      const dropped = nv < v;
+      setPop({ id: Date.now(), text: dropped ? `${nv}?!` : '+1', bad: dropped });
+      onChange(nv, Math.max(best, nv), fell || last.carry === -1);
       return;
     }
-    play(v);
+    setPop({ id: Date.now(), text: '+1', bad: false });
+    if (ripple.busy) { queued.current += 1; return; }
+    ripple.play(v);
   };
-  const digits = frame ? frame.d : bits(v);
+
+  if (!live) return <p className="py-1 text-center text-[0.8125rem] text-gray-400">🐱 the cat is still eating further down ↓</p>;
+
+  const digits = ripple.frame ? ripple.frame.d : bits(v);
   return (
     <div>
-      <div className="mb-1 flex items-baseline justify-between px-1 text-[0.625rem] uppercase tracking-widest text-amber-500/70">
-        <span>catventure · score</span>
-        {fish !== undefined && <span className="normal-case tracking-normal text-gray-400">🐟 eaten: {fish}</span>}
+      <GameScreen score={v} ate={ate} eaten={broken ? fish : undefined} pop={pop} onFeed={feed} />
+      {!broken && <Inside digits={digits} frame={ripple.frame} />}
+      <div className="mt-2 flex">
+        <Push onClick={feed} label="feed the cat a fish" beckon={want}>🐟 feed the cat</Push>
       </div>
-      <Board digits={digits} carry={frame ? frame.carry : null} did={frame?.did} first={frame?.first} />
-      {live ? (
-        <>
-          <div className="mt-3 flex gap-2">
-            <div className="flex flex-[2]" style={{ opacity: busy ? 0.5 : 1 }}>
-              <Push onClick={feed} label="feed the cat a fish — add one" beckon={want && !busy}>🐟 +1</Push>
-            </div>
-            {!broken && <div className="flex flex-1"><Push tone="ghost" onClick={() => !busy && onChange(1, best, fell)} label="start the score again at 1">↺ 1</Push></div>}
-          </div>
-          <p className="mt-2 min-h-[2.5rem] text-center text-[0.75rem] text-gray-400">
-            {broken ? (frame?.did?.dead ? 'XOR wrote 0 … and the carry just vanished 💨' : 'every fish should add one')
-              : frame?.carry === -1 ? 'the last carry had no column to go to — it fell out of bed 🛏️'
-              : frame ? 'XOR writes the digit · AND carries the one'
-              : 'each column is two doors: XOR writes the digit, AND carries the one'}
-          </p>
-        </>
-      ) : (
-        <p className="mt-2 text-center text-[0.75rem] text-gray-500">the score keeps counting further down ↓</p>
+      {broken && (
+        <p className="mt-1.5 min-h-[1.25rem] text-center text-[0.8125rem] text-red-300">
+          {(fish ?? 0) >= 2 && v === 0 ? `${fish} fish. score 0. 😾` : ''}
+        </p>
       )}
     </div>
   );

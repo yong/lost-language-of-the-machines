@@ -589,8 +589,26 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
     return () => cancelAnimationFrame(id);
   }, [phase, threadIn]);
 
+  /** Where the button the gate is waiting on sits: on screen, or below the
+   *  fold. The hint's arrow points at it. It always said ↑, and on a phone
+   *  with its browser bars the toy's button landed BELOW the screen, so the
+   *  arrow sent a kid the wrong way. */
+  const [toyBelow, setToyBelow] = useState(false);
+  const measureToy = () => {
+    const el = scroller.current;
+    const card = el?.querySelector<HTMLElement>('[data-live-toy]');
+    if (!el || !card || !el.clientHeight) { setToyBelow(false); return; }
+    const target = card.querySelector<HTMLElement>('.beckon') ?? card;
+    setToyBelow(target.getBoundingClientRect().bottom > el.getBoundingClientRect().bottom - 4);
+  };
+  useEffect(() => {
+    if (!gate) return;
+    const id = requestAnimationFrame(measureToy);
+    return () => cancelAnimationFrame(id);
+  });
+
   /** Reader scrolled far enough themselves — no need to make them tap as well. */
-  const onScroll = () => { if (waiting && newestVisible()) setWaiting(false); };
+  const onScroll = () => { if (waiting && newestVisible()) setWaiting(false); if (gate) measureToy(); };
 
   const turnPage = () => {
     const el = scroller.current, m = newest.current;
@@ -923,9 +941,10 @@ const NovelChapter: React.FC<ChapterProps> = ({ lab = false, chapter = CHAPTER_O
                   >
                     {gate}
                     <motion.span
-                      animate={{ y: [0, -4, 0] }}
+                      key={toyBelow ? 'down' : 'up'}
+                      animate={{ y: toyBelow ? [0, 4, 0] : [0, -4, 0] }}
                       transition={{ duration: 1.1, repeat: 3, ease: 'easeInOut' }}
-                    >↑</motion.span>
+                    >{toyBelow ? '↓' : '↑'}</motion.span>
                   </button>
                 ) : held ? (
                   // The toy above is still live. Play with it as long as you

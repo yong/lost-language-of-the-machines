@@ -729,3 +729,26 @@ Two fixes: a finished chapter opened again is now read again from the cover
 left to resume to), and hand-off links are `?restart=1`, always, which shows
 the cover too. `?opening=1` stays for a reader mid-chapter who wants to see
 the way in again; it is never a review link.
+
+---
+
+## 2026-10-18 — "What is boring app is here for??? It failed all the rules"
+
+The author opened the rebuilt adder on their phone. The first toy, "feed the
+cat", had no cat: four boxes of dashed circles labelled XOR / AND, "8s 4s 2s
+1s", a binary "0000", and its only button below the screen with a footer hint
+pointing ↑. Every walkthrough had passed.
+
+Why the tests could not see it: they ran at 390×844, the phone's screen, but
+the author's phone in its browser leaves ~390×640 for the page, so the button
+that fit in every test was off screen on theirs. And the script tapped
+`.beckon` wherever it was, so a card with nothing visibly pressable never
+slowed it down. The kid pass was skipped for "play before you explain" too:
+the toy was the insides of the score, shown before the story had opened it.
+
+Fixes: the toy is now CATVENTURE itself (pixel cat, fish down a corridor, an
+arcade SCORE, the whole screen a button, a glowing "🐟 feed the cat"); the
+lights-and-carry view of the score only appears on the fixed score, after the
+burnt-chip photo. The footer hint's arrow points at where the button is (↓
+when below). Tests and the rules now assume 390×640.
+

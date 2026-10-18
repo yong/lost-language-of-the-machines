@@ -25,7 +25,7 @@ a very good reason — and inventing a control to satisfy a rule in this file is
 not one.
 
 **After building, before handing back — walk it as the kid, on a phone
-(390×844, production build, real touch):**
+(390×640 — a phone *inside its browser* — production build, real touch):**
 
 1. **What will they touch first, and does it work?** At every place the story
    waits, list everything that *looks* tappable — amber text, pills, cards,
@@ -172,7 +172,9 @@ defaulting back to the old way is the likeliest mistake.
    **one** joke and moves on; a true, funny fact that is the fourth example of
    the same thing is a cut. What an adult finds thorough, a kid finds done.
 3. **Play before you explain.** When the idea is about a game, let them play
-   it healthy before showing how it works.
+   it healthy before showing how it works. **A toy is the thing as a kid sees
+   it** — the cat, the fish, the score in the corner — never a diagram of its
+   insides; the insides come after the story has opened the back.
 4. **Ask "why?" of every premise the way a kid would.** "Paused for 200 years"
    did not survive the question; "she got hooked and hit something weird on
    the last level" did.
@@ -229,7 +231,9 @@ These are the reasoning; the code gotchas that implement them are further down.
 
 ## Mobile rules — sizes and layout
 
-- Assume **390×844**, touch, no hover. Verify in a real mobile viewport, not
+- Assume **390×640**, touch, no hover. 844 is the phone's *screen*; Safari's
+  bars or an in-app browser leave about 640 for the page, and a toy whose
+  button fit at 844 was cut off on the author's phone. Verify in a real mobile viewport, not
   a resized desktop window; `scrollWidth > clientWidth` is the one-line
   overflow check. The page never scrolls sideways — wide things get their own
   `overflow-x: auto`.
@@ -360,7 +364,7 @@ optional `played` states and `events`.
 ## Testing and handing back
 
 - **Test what the reader runs**: `npm run build && npx next start -p 3101`, a
-  390×844 touch context, the saved state they actually have. A dev-server
+  390×640 touch context, the saved state they actually have. A dev-server
   number is not a baseline (StrictMode doubles effects).
 - **Seed localStorage from a page that does not mount the chapter**, and assert
   the seed stuck — or its own save effect overwrites the seed and the test

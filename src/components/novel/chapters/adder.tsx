@@ -16,8 +16,8 @@ const b = (s: ToyState, k: string) => s[k] as boolean;
 const n = (s: ToyState, k: string) => s[k] as number;
 
 export const CHAPTER_ADDER: ChapterDef = {
-  // bump on every change to the script's shape (v4: the broken score and the Santa heist); an old place points at the wrong line
-  storageKey: 'gameforge.adder.v4',
+  // bump on every change to the script's shape (v5: the toys became the game itself); an old place points at the wrong line
+  storageKey: 'gameforge.adder.v5',
   exitHref: '/lab',
   opening: {
     image: '',
@@ -41,17 +41,17 @@ export const CHAPTER_ADDER: ChapterDef = {
     initial: {
       bscore: 0, bbest: 0, fish: 0,
       teeth: false, please: false, cat: false, seenNice: false, seenNaughty: false, heist: false,
-      score: 1, best: 1, fell: false,
+      score: 0, best: 0, fell: false,
     },
     // Every gate names what to TOUCH.
     gate: (toy, s) => {
       switch (toy) {
-        case 'broken': return n(s, 'fish') >= 4 ? null : 'tap 🐟 +1';
+        case 'broken': return n(s, 'fish') >= 4 ? null : 'tap 🐟 feed the cat';
         case 'santa':
           return !b(s, 'seenNice') ? 'tap the switches until it says NICE'
             : !b(s, 'seenNaughty') ? 'tap 🐱 pulled its tail'
             : !b(s, 'heist') ? 'tap 🔧 take the AND chip' : null;
-        case 'fixed': return n(s, 'best') >= 8 ? null : 'tap 🐟 +1';
+        case 'fixed': return n(s, 'best') >= 8 ? null : 'tap 🐟 feed the cat';
         default: return null;
       }
     },
