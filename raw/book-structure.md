@@ -204,13 +204,14 @@ their numbers. Mostly about food.
   says **NICE — NOVA** — true, an empty input on these old TTL chips floats
   high and reads as a yes, so everyone passes. "...that is the point of
   christmas 🎄".
-- **Toys** (rebuilt after the author saw a dashboard of XOR/AND boxes and asked
-  "what is this boring app here for?"): the game itself — a pixel cat, one fish
-  at a time, an arcade SCORE — stuck at 1, 0, 1, 0 · the Naughty-or-Nice
-  Machine (three switches; lamps ask "teeth and please?" and "left the cat
-  alone?"; then 🔧 take the chip, and the machine goes dark) · the same game
-  with its inside on show: put the chip in, and the score counts itself to 8
-  while a "carry 1" rides along four lights worth 8 4 2 1.
+- **Toys** — rebuilt twice on the author's word: a dashboard of XOR/AND boxes
+  ("what is this boring app here for?"), then a feed button to tap ("boring to
+  death, just a button to click?"). Now CATVENTURE is played: steer the cat
+  round a maze (tap the maze, or a thumb pad) eating fish, while the broken
+  score goes 1 0 1 0 ("SCORE WENT 1 0 1 0 1") · the Naughty-or-Nice Machine
+  (poke three switches to make it say NICE, then NAUGHTY; pull its chip) · a
+  new maze with the chip in: the score climbs as you eat, and four lights worth
+  8 4 2 1 carry the 1 like dominoes; past 15 it rolls over to 0.
 - **Jokes:** 1, 0, 1, 0 · "and it is toast." · "try it before you rob it." ·
   NICE to everybody, even Nova · "you just had a pencil ✏️". Retired with the
   dry telling: "there is no program" and the Model K.

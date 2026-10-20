@@ -48,6 +48,10 @@ export const ADDER_SCRIPT: Beat[] = [
   { kind: 'msg', who: 'flamey', text: 'that is AND. teeth AND please AND tail left alone. everything has to be yes.' },
   { kind: 'msg', who: 'starlax', text: 'well now it’s in my pocket 🔧' },
   { kind: 'msg', who: 'flamey', text: 'put it in the score.' },
+  { kind: 'msg', who: 'starlax', text: 'IN 🔧' },
+  // said once, here, instead of a sum under every fish ("homework") — and a
+  // cold read of the lights with no words at all asked "why is 10 = 8 + 2?"
+  { kind: 'msg', who: 'flamey', text: 'watch the lights under the maze. they are the score. each one is worth 8, 4, 2 or 1 — add up the lit ones.', rush: true },
 
   { kind: 'beat' },
 

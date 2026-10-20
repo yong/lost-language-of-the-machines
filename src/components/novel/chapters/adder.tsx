@@ -16,8 +16,8 @@ const b = (s: ToyState, k: string) => s[k] as boolean;
 const n = (s: ToyState, k: string) => s[k] as number;
 
 export const CHAPTER_ADDER: ChapterDef = {
-  // bump on every change to the script's shape (v5: the toys became the game itself); an old place points at the wrong line
-  storageKey: 'gameforge.adder.v5',
+  // bump on every change to the script's shape (v6: the maze, and two new lines before the last toy); an old place points at the wrong line
+  storageKey: 'gameforge.adder.v6',
   exitHref: '/lab',
   opening: {
     image: '',
@@ -43,35 +43,35 @@ export const CHAPTER_ADDER: ChapterDef = {
     initial: {
       bscore: 0, bbest: 0, fish: 0,
       teeth: false, please: false, cat: false, seenNice: false, seenNaughty: false, heist: false,
-      chip: false, score: 0, best: 0, fell: false,
+      score: 0, best: 0, fell: false,
     },
     // Every gate names what to TOUCH.
     gate: (toy, s) => {
       switch (toy) {
-        case 'broken': return n(s, 'fish') >= 4 ? null : 'tap 🐟 feed the cat';
+        case 'broken': return n(s, 'fish') >= 6 ? null : 'tap the maze to steer the cat 🐱';
         case 'santa':
-          return !b(s, 'seenNice') ? 'tap the switches until it says NICE'
-            : !b(s, 'seenNaughty') ? 'tap 🐱 pulled its tail'
-            : !b(s, 'heist') ? 'tap 🔧 take the AND chip' : null;
-        case 'fixed': return !b(s, 'chip') ? 'tap 🔧 put the chip in' : n(s, 'best') >= 8 ? null : 'watch the score count 👀';
+          return !b(s, 'seenNice') ? 'flip the switches until it says NICE'
+            : !b(s, 'seenNaughty') ? 'now make it say NAUGHTY 😈'
+            : !b(s, 'heist') ? 'tap the chip to pull it out 🔧' : null;
+        case 'fixed': return n(s, 'best') >= 8 ? null : 'tap the maze to steer the cat 🐟';
         default: return null;
       }
     },
-    // the fixed score counts up by itself once the chip is in; when it gets
-    // there, that is a game event and the story follows at once
+    // the fixed score reaching 8 is a game event: the story follows at once
+    // and the game plays on
     events: ['fixed'],
     played: {
-      broken: { bscore: 0, bbest: 1, fish: 4 },
+      broken: { bscore: 0, bbest: 1, fish: 6 },
       santa: { teeth: true, please: true, cat: false, seenNice: true, seenNaughty: true, heist: true },
-      fixed: { chip: true, score: 8, best: 8 },
+      fixed: { score: 8, best: 8 },
     },
     render: (toy, s, set, { live }) => {
       switch (toy) {
         case 'broken':
-          // its own machine (the score with the burnt chip), so it stays playable
+          // one cat on screen at a time: an older card steps aside to a note
           return (
             <AdderToy
-              broken v={n(s, 'bscore')} best={n(s, 'bbest')} fell={false} fish={n(s, 'fish')} live
+              broken v={n(s, 'bscore')} best={n(s, 'bbest')} fell={false} fish={n(s, 'fish')} live={live}
               want={CHAPTER_ADDER.toys.gate(toy, s) !== null}
               onChange={(v, best) => set({ bscore: v, bbest: best, fish: n(s, 'fish') + 1 })}
             />
@@ -88,7 +88,6 @@ export const CHAPTER_ADDER: ChapterDef = {
           return (
             <AdderToy
               v={n(s, 'score')} best={n(s, 'best')} fell={b(s, 'fell')} live={live}
-              chip={b(s, 'chip')} onInstall={() => set({ chip: true })}
               want={CHAPTER_ADDER.toys.gate(toy, s) !== null}
               onChange={(score, best, fell) => set({ score, best, fell })}
             />

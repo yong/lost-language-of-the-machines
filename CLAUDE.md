@@ -197,7 +197,10 @@ defaulting back to the old way is the likeliest mistake.
 3. **Play before you explain.** When the idea is about a game, let them play
    it healthy before showing how it works. **A toy is the thing as a kid sees
    it** — the cat, the fish, the score in the corner — never a diagram of its
-   insides; the insides come after the story has opened the back.
+   insides; the insides come after the story has opened the back. **And it
+   is played, not pressed**: a toy needs a choice the kid makes — a route, a
+   switch — not one button that moves a number ("boring to death, just a
+   button to click?").
 4. **Ask "why?" of every premise the way a kid would.** "Paused for 200 years"
    did not survive the question; "she got hooked and hit something weird on
    the last level" did.
@@ -236,7 +239,9 @@ These are the reasoning; the code gotchas that implement them are further down.
    hints are labels on something that works.
 3. **The next thing to press is obvious.** The button the story waits on
    **glows** until pressed (`Push beckon`), one at a time. Gate hints name
-   what to touch.
+   what to touch. **In a puzzle, glow where to play, never the answer**: the
+   naughty-or-nice switches once glowed one by one in the winning order, and
+   a cold read said "I'm just following the yellow light".
 4. **Motion is allowed to call for attention if it stops when the reader
    acts** — a glow that ends on press, a pill that pulses twice. It changes
    **glow or colour, never size or position**: a swelling button is a moving

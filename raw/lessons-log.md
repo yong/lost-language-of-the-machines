@@ -752,3 +752,18 @@ lights-and-carry view of the score only appears on the fixed score, after the
 burnt-chip photo. The footer hint's arrow points at where the button is (↓
 when below). Tests and the rules now assume 390×640.
 
+---
+
+## 2026-10-20 — "This game is boring to death, just a button to click?"
+
+The adder's toy had become CATVENTURE on screen — a cat, a fish, a score —
+but playing it was one button: tap, a number moves. A picture of a game is not
+a game. Three cold reads had said so in passing ("one button with a picture")
+and it was not treated as the main finding.
+
+Now the maze is played: tap where the cat should go (or the pad), it runs the
+corridors, eats fish; the broken score's history is shown so 1 0 1 0 is seen.
+Rules that came out of it: a toy needs a CHOICE the kid makes (a route, a
+switch), not only a press; in a puzzle, glow where to play, never the answer;
+and a reviewer's "just a button" is the first fix, not a footnote.
+

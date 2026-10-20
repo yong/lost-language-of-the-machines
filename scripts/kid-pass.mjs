@@ -74,16 +74,44 @@ const look = () => page.evaluate(() => {
     gate: hint?.textContent?.replace(/[↑↓]/g, '').trim() ?? null,
     arrow: hint?.textContent?.includes('↓') ? 'down' : hint ? 'up' : null,
     label: card?.firstElementChild?.textContent?.trim() ?? '',
-    glow: glow ? { ...box(glow), text: glow.innerText.replace(/\s+/g, ' ').trim().slice(0, 40) } : null,
+    glow: glow ? { ...box(glow), text: glow.innerText.replace(/\s+/g, ' ').trim().slice(0, 40), pad: glow.getAttribute('role') === 'group' } : null,
     cardSeen: card ? box(card).top < (tr?.bottom ?? 0) - 40 : false,
     view: tr ? { top: tr.top, bottom: tr.bottom } : { top: 0, bottom: 0 },
     held: box(document.querySelector('[data-held]')),
+    // what a kid pokes when nothing glows (a puzzle): the toy's own buttons
+    pokes: card ? [...card.querySelectorAll('button')].map(box).filter((b) => b && b.top >= (tr?.top ?? 0) && b.bottom <= (tr?.bottom ?? 0)) : [],
+    // A maze toy ([data-maze] grid, [data-cell] squares): play it like a kid
+    // would — head for the nearest fish (a breadth-first walk) and press the
+    // arrow that starts that way.
+    maze: (() => {
+      const grid = card?.querySelector('[data-maze]');
+      if (!grid) return null;
+      const cols = +grid.getAttribute('data-maze');
+      const cells = [...grid.querySelectorAll('[data-cell]')].map((c) => c.getAttribute('data-cell'));
+      const rows = cells.length / cols, cat = cells.indexOf('cat');
+      const steps = [[1, -cols], [2, 1], [3, cols], [4, -1]];
+      const first = new Map([[cat, 0]]), queue = [cat];
+      let dir = 0;
+      while (queue.length && !dir) {
+        const at = queue.shift();
+        for (const [d, k] of steps) {
+          const to = at + k;
+          if (to < 0 || to >= cells.length || (k === 1 && to % cols === 0) || (k === -1 && at % cols === 0)) continue;
+          if (first.has(to) || cells[to] === 'wall') continue;
+          first.set(to, first.get(at) || d);
+          if (cells[to] === 'fish') { dir = first.get(to); break; }
+          queue.push(to);
+        }
+      }
+      const name = { 1: 'up', 2: 'right', 3: 'down', 4: 'left' }[dir || 2];
+      return { arrow: box(card.querySelector(`[aria-label="steer ${name}"]`)), rows };
+    })(),
     wide: document.documentElement.scrollWidth > document.documentElement.clientWidth,
   };
 });
 
 const doneShot = new Set();
-let toy = 0, lastGate = null, lastLabel = null, firstTap = false, taps = 0, scrolls = 0, wide = false, stuck = 0;
+let poke = 0, toy = 0, lastGate = null, lastLabel = null, firstTap = false, taps = 0, scrolls = 0, wide = false, stuck = 0;
 for (let i = 0; i < 1500; i++) {
   await page.waitForTimeout(300);
   const s = await look();
@@ -124,6 +152,14 @@ for (let i = 0; i < 1500; i++) {
   }
 
   if (s.waiting) { await swipe(H * 0.45); scrolls++; continue; }
+  if (s.gate && s.maze?.arrow && (!s.glow || s.glow.pad)) {
+    const a = s.maze.arrow;
+    if (a.top < s.view.top || a.bottom > s.view.bottom) { await swipe(H * 0.3); scrolls++; continue; }
+    stuck = 0;
+    await tap(a.x, a.y); taps++;
+    if (!firstTap) { firstTap = true; await page.waitForTimeout(1200); pictures.push(await snap(`toy${toy}-playing`)); }
+    continue;
+  }
   if (s.gate && s.glow) {
     const onScreen = s.glow.top >= s.view.top && s.glow.bottom <= s.view.bottom;
     if (!onScreen) { await swipe(H * 0.3); scrolls++; if (++stuck > 12) { bad(`stuck: "${s.gate}" — its button never came on screen`); break; } continue; }
@@ -132,9 +168,13 @@ for (let i = 0; i < 1500; i++) {
     if (!firstTap) { firstTap = true; await page.waitForTimeout(350); pictures.push(await snap(`toy${toy}-mid-motion`)); }
     continue;
   }
-  // nothing glows: the game may be playing by itself (a score counting up) —
-  // give it time before calling it stuck
-  if (s.gate && !s.glow) { if (++stuck > 80) { bad(`stuck: "${s.gate}" and nothing glows`); break; } continue; }
+  // nothing glows: a puzzle that wants working out — poke its controls in
+  // turn, the way a kid does. Or a game playing by itself: wait.
+  if (s.gate && !s.glow) {
+    if (++stuck > 80) { bad(`stuck: "${s.gate}" and nothing glows`); break; }
+    if (!s.maze && s.pokes.length && stuck % 2 === 0) { const b = s.pokes[poke++ % s.pokes.length]; await tap(b.x, b.y); taps++; }
+    continue;
+  }
   if (s.held) { await tap(s.held.x, s.held.y); continue; }
   if (i === 1499) bad('never reached the end');
 }
