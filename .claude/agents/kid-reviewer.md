@@ -30,6 +30,19 @@ Then, for the whole set:
 - **Is it a game, or a page about a game?** Say which, plainly.
 - **The one thing to fix first.**
 
+End with one line per toy, exactly in this form, and nothing after:
+
+    VERDICT toy N: GAME | BUTTON | PAGE — the choice I made: <what you decided>
+
+- **GAME**: you decided something that changed what happened (which way to
+  go, which switch to flip) and wanted another go.
+- **BUTTON**: you pressed something and a number or a picture changed, but
+  you did not decide anything. Pressing it again is the same as pressing it
+  the first time.
+- **PAGE**: you mostly read or watched.
+
+If you cannot name a choice you made, it is not GAME.
+
 Be blunt. "This looks like homework" is a good answer. Do not be polite, do
 not praise the design, do not suggest code. Do not guess what the author
 intended — if a picture needs explaining, that is the problem.

@@ -767,3 +767,13 @@ Rules that came out of it: a toy needs a CHOICE the kid makes (a route, a
 switch), not only a press; in a puzzle, glow where to play, never the answer;
 and a reviewer's "just a button" is the first fix, not a footnote.
 
+**Why it happened twice — the signal was there.** Three cold reads of the feed
+button said "one button with a picture" / "a page about a game", and each time
+it was one line in a list: the small, easy items were fixed and the toy was
+kept. The gate gave the right answer and the builder filtered it. So: a toy
+card before any code (Gate 0: the verb, the choice, the real game), and the
+reviewer ends on a per-toy verdict — GAME, BUTTON or PAGE — where BUTTON or
+PAGE stops all polishing and sends that toy back to Gate 0. First run of the
+verdict on the maze build: toy 1 GAME, toy 2 GAME, toy 3 BUTTON ("I steered
+the same maze and watched the lights change").
+

@@ -20,9 +20,26 @@ the button it was told about cannot be confused, and neither can the person
 who designed the toy. The author caught that kind after whole chapters were
 built. So the check for it comes first, and it is never graded by the builder.
 
+**Gate 0 — the toy card, before any code.** Every toy starts as three lines,
+written down before a file is touched — and a toy is never "fixed" into a
+different one; a new idea goes back through this card:
+
+- **the verb** — what the kid DOES, in one word that is not *tap* or *press*:
+  steer, aim, sort, find, build, flip-to-solve. *Tap* is how a thumb does a
+  verb, not a verb. "Tap feed, a number moves" has no verb: it is a clicker.
+- **the choice** — what the kid decides that changes what happens (a route
+  through the maze, which switches to flip). No choice, no toy.
+- **the real game it is** — one a 10-year-old has played (Pac-Man, Simon,
+  spot-the-difference, a lock you crack). If you cannot name one, you are
+  inventing; that needs a very good reason.
+
+Twice a toy was built with no card — a diagram of the score's insides, then a
+feed button — and twice the author asked what it was for.
+
 **Gate 1 — the first screen, before building the rest.** For a new chapter or
 toy, build only the first toy, put it in the chat, and write down:
 
+- the toy card above;
 - the want and the win, one line each ("her score is stuck at 1 → it counts");
 - the app a kid already knows that does this (a phone game, WhatsApp, Roblox);
   if there is none, a very good reason — inventing UI to satisfy a rule in
@@ -44,9 +61,15 @@ covers) goes to the author, as options.
    the cover, paper and end. Fix every ✗ in its report.
 2. Give those pictures — and nothing else, no plan, no code — to the
    **`kid-reviewer`** agent (`.claude/agents/kid-reviewer.md`). It does not
-   know what the toy is for, so it can be confused. Every "I don't know what
-   this is", "looks broken", "got bored here" is **fixed and re-reviewed by a
-   fresh reviewer** until it passes. Problems are never handed to the author
+   know what the toy is for, so it can be confused. It ends with a
+   **verdict per toy — GAME, BUTTON or PAGE**. **BUTTON or PAGE is a fail,
+   not a finding**: stop polishing, go back to Gate 0 and rebuild that toy;
+   nothing else on the list is worked on until every toy reads GAME. (Three
+   reads called the feed-button toy "one button with a picture"; it was
+   treated as one item among many, the small items were fixed, and the author
+   found a clicker.) Then every "I don't know what this is", "looks broken",
+   "got bored here" is **fixed and re-reviewed by a fresh reviewer** until it
+   passes. Problems are never handed to the author
    as questions — a list of things a cold read found is a to-do list, not a
    decision. Only a genuine taste call goes up, with a recommendation.
 3. The pictures and the reviewer's verdict go **in the hand-back**, above the
